@@ -16,6 +16,7 @@
 		BA1AD36B29CDF1E700DCFB4B /* TrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1AD36A29CDF1E700DCFB4B /* TrackerTests.swift */; };
 		BA1AD37529CDF1E700DCFB4B /* TrackerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1AD37429CDF1E700DCFB4B /* TrackerUITests.swift */; };
 		BA1AD37729CDF1E700DCFB4B /* TrackerUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1AD37629CDF1E700DCFB4B /* TrackerUITestsLaunchTests.swift */; };
+		BA1AD38A29CE2EE500DCFB4B /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1AD38929CE2EE500DCFB4B /* TabBarViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		BA1AD37029CDF1E700DCFB4B /* TrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA1AD37429CDF1E700DCFB4B /* TrackerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerUITests.swift; sourceTree = "<group>"; };
 		BA1AD37629CDF1E700DCFB4B /* TrackerUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		BA1AD38929CE2EE500DCFB4B /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TabBarViewController.swift; path = Tracker/Views/TabBarViewController.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,6 +157,7 @@
 		BA1AD38629CE260D00DCFB4B /* TabBar */ = {
 			isa = PBXGroup;
 			children = (
+				BA1AD38929CE2EE500DCFB4B /* TabBarViewController.swift */,
 			);
 			path = TabBar;
 			sourceTree = "<group>";
@@ -292,6 +295,7 @@
 				BA1AD35B29CDF1E200DCFB4B /* Tracker.xcdatamodeld in Sources */,
 				BA1AD35529CDF1E200DCFB4B /* TrackersViewController.swift in Sources */,
 				BA1AD35129CDF1E200DCFB4B /* AppDelegate.swift in Sources */,
+				BA1AD38A29CE2EE500DCFB4B /* TabBarViewController.swift in Sources */,
 				BA1AD35329CDF1E200DCFB4B /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
