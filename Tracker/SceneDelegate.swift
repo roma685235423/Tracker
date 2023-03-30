@@ -17,8 +17,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowsScene)
 //        let trackersViewController = TrackersViewController()
 //        window?.rootViewController = trackersViewController
-        let tabBarViewController = TabBarViewController()
-        window?.rootViewController = tabBarViewController
+        let splashViewController = SplashScreenViewController()
+        window?.rootViewController = splashViewController
         window?.makeKeyAndVisible()
     }
 

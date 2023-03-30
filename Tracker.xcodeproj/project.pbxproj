@@ -21,6 +21,7 @@
 		BA8289E729D5E29900879101 /* InterfaceColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8289E629D5E29900879101 /* InterfaceColors.swift */; };
 		BA8289E929D5FBB600879101 /* ColorSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8289E829D5FBB600879101 /* ColorSelection.swift */; };
 		BA8289EC29D62E6B00879101 /* StatisticViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8289EB29D62E6B00879101 /* StatisticViewController.swift */; };
+		BA8289EF29D6347A00879101 /* SplashScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8289EE29D6347A00879101 /* SplashScreenViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +60,7 @@
 		BA8289E629D5E29900879101 /* InterfaceColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceColors.swift; sourceTree = "<group>"; };
 		BA8289E829D5FBB600879101 /* ColorSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSelection.swift; sourceTree = "<group>"; };
 		BA8289EB29D62E6B00879101 /* StatisticViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticViewController.swift; sourceTree = "<group>"; };
+		BA8289EE29D6347A00879101 /* SplashScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,7 +151,8 @@
 		BA1AD38429CE248400DCFB4B /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				BA8289EA29D62E3E00879101 /* StatisticViewController */,
+				BA8289ED29D6344800879101 /* SplashScreen */,
+				BA8289EA29D62E3E00879101 /* StatisticView */,
 				BA1AD38629CE260D00DCFB4B /* TabBar */,
 				BA1AD38529CE25FA00DCFB4B /* Trackers */,
 			);
@@ -182,12 +185,20 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
-		BA8289EA29D62E3E00879101 /* StatisticViewController */ = {
+		BA8289EA29D62E3E00879101 /* StatisticView */ = {
 			isa = PBXGroup;
 			children = (
 				BA8289EB29D62E6B00879101 /* StatisticViewController.swift */,
 			);
-			path = StatisticViewController;
+			path = StatisticView;
+			sourceTree = "<group>";
+		};
+		BA8289ED29D6344800879101 /* SplashScreen */ = {
+			isa = PBXGroup;
+			children = (
+				BA8289EE29D6347A00879101 /* SplashScreenViewController.swift */,
+			);
+			path = SplashScreen;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -328,6 +339,7 @@
 				BA1AD35129CDF1E200DCFB4B /* AppDelegate.swift in Sources */,
 				BA8289EC29D62E6B00879101 /* StatisticViewController.swift in Sources */,
 				BA1AD38A29CE2EE500DCFB4B /* TabBarViewController.swift in Sources */,
+				BA8289EF29D6347A00879101 /* SplashScreenViewController.swift in Sources */,
 				BA1AD35329CDF1E200DCFB4B /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

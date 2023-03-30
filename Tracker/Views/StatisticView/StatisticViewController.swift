@@ -5,6 +5,6 @@ final class StatisticViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = InterfaceColors.red
+        view.backgroundColor = InterfaceColors.whiteDay
     }
 }
