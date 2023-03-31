@@ -15,19 +15,13 @@ class TrackersViewController: UIViewController {
         button.imageView?.tintColor = InterfaceColors.blackDay
         button.imageView?.contentMode = .scaleAspectFit
         button.layer.masksToBounds = true
+        button.addTarget(self, action: #selector(didTapAddTrackerButton), for: .touchUpInside)
         return button
     }()
     
-    lazy var trackerLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Трекеры"
-        label.font = UIFont.systemFont(ofSize: 34, weight: .bold)
-        label.textColor = InterfaceColors.blackDay
-        return label
-    }()
-    
-    let trackersSearchBar = UISearchBar()
-    let mainSpacePlaceholderStack = UIStackView()
+    private let trackerLabel = UILabel()
+    private let trackersSearchBar = UISearchBar()
+    private let mainSpacePlaceholderStack = UIStackView()
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .darkContent
@@ -38,6 +32,12 @@ class TrackersViewController: UIViewController {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate()
         view.backgroundColor = InterfaceColors.whiteDay
+        trackerLabel.configureLabel(
+            text: "Трекеры",
+            addToView: view,
+            ofSize: 34,
+            weight: .bold
+        )
         setConstraintsForElements()
         configureTrackersSearchBar()
         configureMainSpacePlaceholderStack()
@@ -45,7 +45,6 @@ class TrackersViewController: UIViewController {
     
     
     // MARK: - Methods
-    
     private func configureMainSpacePlaceholderStack() {
         mainSpacePlaceholderStack.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(mainSpacePlaceholderStack)
@@ -79,7 +78,7 @@ class TrackersViewController: UIViewController {
         trackersSearchBar.searchTextField.attributedPlaceholder = NSAttributedString(
             string: "Поиск",
             attributes: [.foregroundColor: InterfaceColors.gray]
-            )
+        )
         trackersSearchBar.searchTextField.leftView?.tintColor = InterfaceColors.gray
         
         
@@ -94,19 +93,26 @@ class TrackersViewController: UIViewController {
         addTrackerButton.translatesAutoresizingMaskIntoConstraints = false
         trackerLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        view.addSubview(addTrackerButton)
         view.addSubview(trackerLabel)
+        view.addSubview(addTrackerButton)
         
         NSLayoutConstraint.activate([
-            addTrackerButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 18),
-            addTrackerButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            trackerLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 88),
+            trackerLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 18),
             
-            trackerLabel.leftAnchor.constraint(equalTo: addTrackerButton.leftAnchor),
-            trackerLabel.topAnchor.constraint(equalTo: addTrackerButton.bottomAnchor, constant: 13),
+            addTrackerButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 18),
+            addTrackerButton.bottomAnchor.constraint(equalTo: trackerLabel.topAnchor, constant: -5),
         ])
+    }
+    
+    @objc
+    private func didTapAddTrackerButton() {
+        let createTrackerViewController = CreateTrackerViewController()
+        createTrackerViewController.modalPresentationStyle = .pageSheet
+        present(createTrackerViewController, animated: true)
     }
 }
 
 extension TrackersViewController: UISearchBarDelegate {
-
+    
 }
