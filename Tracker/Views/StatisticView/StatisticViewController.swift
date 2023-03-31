@@ -1,14 +1,7 @@
 import UIKit
 
 final class StatisticViewController: UIViewController {
-    
-    lazy var statisticLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Статистика"
-        label.font = UIFont.systemFont(ofSize: 34, weight: .bold)
-        label.textColor = InterfaceColors.blackDay
-        return label
-    }()
+    private let statisticLabel = UILabel()
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .darkContent
@@ -17,6 +10,12 @@ final class StatisticViewController: UIViewController {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate()
         view.backgroundColor = InterfaceColors.whiteDay
+        statisticLabel.configureLabel(
+            text: "Статистика",
+            addToView: view,
+            ofSize: 34,
+            weight: .bold
+        )
         setConstraintsForElements()
     }
     
