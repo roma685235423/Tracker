@@ -10,14 +10,42 @@ final class NewTrackerConstructor: UIInputViewController {
     private var actionsArray: [String] = ["Категория"]
     private let emojies = [ "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
     private let collectionViewSectionHeaders = ["Emoji", "Цвет"]
-    
+    private lazy var cancelButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Отменить", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        button.setTitleColor(InterfaceColors.red, for: .normal)
+        button.backgroundColor = InterfaceColors.backgruondDay
+        button.layer.borderWidth = 1
+        button.layer.borderColor = InterfaceColors.red.cgColor
+        button.layer.cornerRadius = 16
+        button.layer.masksToBounds = true
+        return button
+    }()
+    private lazy var createButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Создать", for: .normal)
+        button.titleLabel?.textColor = InterfaceColors.whiteDay
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        button.backgroundColor = InterfaceColors.gray
+        button.layer.cornerRadius = 16
+        button.layer.masksToBounds = true
+        return button
+    }()
+    private lazy var buttonsStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [cancelButton, createButton])
+        stackView.axis = .horizontal
+        stackView.spacing = 8
+        stackView.distribution = .fillEqually
+        return stackView
+    }()
     private lazy var collectionView: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collection.dataSource = self
         collection.delegate = self
         collection.register(EmojiCell.self, forCellWithReuseIdentifier: "emojieCell")
         collection.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
-        collection.backgroundColor = .red
+        collection.backgroundColor = InterfaceColors.whiteDay
         return collection
     }()
     
@@ -45,7 +73,6 @@ final class NewTrackerConstructor: UIInputViewController {
             weight: .medium)
         configureTextField()
         setConstraints()
-        collectionView.layoutIfNeeded()
     }
     
     private func setConstraints() {
@@ -53,11 +80,13 @@ final class NewTrackerConstructor: UIInputViewController {
         textField.translatesAutoresizingMaskIntoConstraints = false
         categoryAndSchedulerTable.translatesAutoresizingMaskIntoConstraints = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
+        buttonsStackView.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(scrollView)
         scrollView.addSubview(textField)
         scrollView.addSubview(categoryAndSchedulerTable)
         scrollView.addSubview(collectionView)
+        scrollView.addSubview(buttonsStackView)
         
         NSLayoutConstraint.activate([
             screenTopLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
@@ -79,9 +108,14 @@ final class NewTrackerConstructor: UIInputViewController {
             categoryAndSchedulerTable.heightAnchor.constraint(equalToConstant: configureTableHeight()),
             
             collectionView.topAnchor.constraint(equalTo: categoryAndSchedulerTable.bottomAnchor, constant: 32),
-            collectionView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            
+            buttonsStackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -34),
+            buttonsStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            buttonsStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            buttonsStackView.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
     
@@ -192,9 +226,9 @@ extension NewTrackerConstructor: UICollectionViewDataSource {
 }
 
 extension NewTrackerConstructor: UICollectionViewDelegateFlowLayout {
-    //    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-    //        return CGSize(width: collectionView.bounds.width/5, height: collectionView.bounds.width/5)
-    //    }
+        func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+            return CGSize(width: collectionView.bounds.width/6, height: collectionView.bounds.width/6)
+        }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         0
