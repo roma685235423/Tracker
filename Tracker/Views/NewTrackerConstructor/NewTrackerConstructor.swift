@@ -4,9 +4,22 @@ final class NewTrackerConstructor: UIInputViewController {
     // MARK: - UIElements
     private let isRegularEvent: Bool
     private let screenTopLabel = UILabel()
+    private let scrollView = UIScrollView()
     private let textField = MyTextField()
     private let categoryAndSchedulerTable = UITableView()
     private var actionsArray: [String] = ["Категория"]
+    private let emojies = [ "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
+    private let collectionViewSectionHeaders = ["Emoji", "Цвет"]
+    
+    private lazy var collectionView: UICollectionView = {
+        let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        collection.dataSource = self
+        collection.delegate = self
+        collection.register(EmojiCell.self, forCellWithReuseIdentifier: "emojieCell")
+        collection.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
+        collection.backgroundColor = .red
+        return collection
+    }()
     
     private lazy var headerText: String = {
         isRegularEvent == true ? "Новая привычка" : "Новое нерегулярное событие"
@@ -22,6 +35,7 @@ final class NewTrackerConstructor: UIInputViewController {
     private func initialSettings() {
         view.backgroundColor = InterfaceColors.whiteDay
         textField.delegate = self
+        scrollView.delegate = self
         isNeedToAddSchedulerAction()
         configureCategoryAndSchedulerTable()
         screenTopLabel.configureLabel(
@@ -31,17 +45,30 @@ final class NewTrackerConstructor: UIInputViewController {
             weight: .medium)
         configureTextField()
         setConstraints()
+        collectionView.layoutIfNeeded()
     }
     
     private func setConstraints() {
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        textField.translatesAutoresizingMaskIntoConstraints = false
         categoryAndSchedulerTable.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(categoryAndSchedulerTable)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(scrollView)
+        scrollView.addSubview(textField)
+        scrollView.addSubview(categoryAndSchedulerTable)
+        scrollView.addSubview(collectionView)
         
         NSLayoutConstraint.activate([
             screenTopLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
             screenTopLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
-            textField.topAnchor.constraint(equalTo: screenTopLabel.bottomAnchor, constant: 38),
+            scrollView.topAnchor.constraint(equalTo: screenTopLabel.bottomAnchor, constant: 14),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            textField.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 24),
             textField.heightAnchor.constraint(equalToConstant: 75),
             textField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
@@ -49,7 +76,12 @@ final class NewTrackerConstructor: UIInputViewController {
             categoryAndSchedulerTable.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 24),
             categoryAndSchedulerTable.leadingAnchor.constraint(equalTo: textField.leadingAnchor),
             categoryAndSchedulerTable.trailingAnchor.constraint(equalTo: textField.trailingAnchor),
-            categoryAndSchedulerTable.heightAnchor.constraint(equalToConstant: configureTableHeight())
+            categoryAndSchedulerTable.heightAnchor.constraint(equalToConstant: configureTableHeight()),
+            
+            collectionView.topAnchor.constraint(equalTo: categoryAndSchedulerTable.bottomAnchor, constant: 32),
+            collectionView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
         ])
     }
     
@@ -58,8 +90,6 @@ final class NewTrackerConstructor: UIInputViewController {
     }
     
     private func configureTextField() {
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(textField)
         textField.backgroundColor = InterfaceColors.backgruondDay
         textField.layer.cornerRadius = 16
         textField.layer.masksToBounds = true
@@ -74,8 +104,6 @@ final class NewTrackerConstructor: UIInputViewController {
     }
     
     private func configureCategoryAndSchedulerTable() {
-        categoryAndSchedulerTable.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(categoryAndSchedulerTable)
         categoryAndSchedulerTable.delegate = self
         categoryAndSchedulerTable.dataSource = self
         categoryAndSchedulerTable.backgroundColor = InterfaceColors.backgruondDay
@@ -105,16 +133,9 @@ final class NewTrackerConstructor: UIInputViewController {
     }
 }
 
-extension NewTrackerConstructor: UITextFieldDelegate {
-    
-}
 
-extension NewTrackerConstructor: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
-    }
-}
-
+// MARK: - Extensions
 extension NewTrackerConstructor: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         actionsArray.count
@@ -127,10 +148,67 @@ extension NewTrackerConstructor: UITableViewDataSource {
         cell.textLabel?.font = UIFont.systemFont(ofSize: 17)
         cell.selectionStyle = .none
         cell.backgroundColor = InterfaceColors.backgruondDay
+        cell.accessoryType = .disclosureIndicator
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         75
     }
+}
+
+
+extension NewTrackerConstructor: UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return collectionViewSectionHeaders.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        emojies.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "emojieCell", for: indexPath) as? EmojiCell
+        else { fatalError("Cell configure error!") }
+        cell.emojiLabel.text = emojies[indexPath.row]
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        var id: String
+        switch kind {
+        case UICollectionView.elementKindSectionHeader:
+            id = "header"
+        case UICollectionView.elementKindSectionFooter:
+            id = "footer"
+        default:
+            id = ""
+        }
+        guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? SupplementaryView
+        else {fatalError("Supplementary view configuration error")}
+        view.titleLabel.text = collectionViewSectionHeaders[indexPath.row]
+        return view
+    }
+}
+
+extension NewTrackerConstructor: UICollectionViewDelegateFlowLayout {
+    //    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    //        return CGSize(width: collectionView.bounds.width/5, height: collectionView.bounds.width/5)
+    //    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        let indexPath = IndexPath(row: 0, section: section)
+        let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
+        return headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width, height: UIView.layoutFittingExpandedSize.height),
+                                                  withHorizontalFittingPriority: .required,
+                                                  verticalFittingPriority: .fittingSizeLevel
+        )
+    }
+}
+
+extension NewTrackerConstructor: UIScrollViewDelegate, UITableViewDelegate, UITextFieldDelegate, UICollectionViewDelegate {
 }

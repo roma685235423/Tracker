@@ -20,7 +20,7 @@ class TrackersViewController: UIViewController {
     }()
     
     private let trackerLabel = UILabel()
-    private let trackersSearchBar = UISearchBar()
+    private let trackersSearchBar = UISearchTextField()
     private let mainSpacePlaceholderStack = UIStackView()
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -74,13 +74,14 @@ class TrackersViewController: UIViewController {
         view.addSubview(trackersSearchBar)
         trackersSearchBar.contentMode = .scaleAspectFit
         trackersSearchBar.layer.masksToBounds = true
-        trackersSearchBar.searchBarStyle = .minimal
-        trackersSearchBar.searchTextField.attributedPlaceholder = NSAttributedString(
+        trackersSearchBar.clearButtonMode = .whileEditing
+        trackersSearchBar.keyboardType = .default
+        trackersSearchBar.attributedPlaceholder = NSAttributedString(
             string: "Поиск",
-            attributes: [.foregroundColor: InterfaceColors.gray]
+            attributes: [
+                NSAttributedString.Key.foregroundColor: InterfaceColors.gray,
+            ]
         )
-        trackersSearchBar.searchTextField.leftView?.tintColor = InterfaceColors.gray
-        
         
         NSLayoutConstraint.activate([
             trackersSearchBar.topAnchor.constraint(equalTo: trackerLabel.bottomAnchor, constant: 7),
