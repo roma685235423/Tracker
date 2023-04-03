@@ -10,6 +10,7 @@ final class NewTrackerConstructor: UIInputViewController {
     private var actionsArray: [String] = ["Категория"]
     private let emojies = [ "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
     private let collectionViewSectionHeaders = ["Emoji", "Цвет"]
+    
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
         button.setTitle("Отменить", for: .normal)
@@ -22,6 +23,7 @@ final class NewTrackerConstructor: UIInputViewController {
         button.layer.masksToBounds = true
         return button
     }()
+    
     private lazy var createButton: UIButton = {
         let button = UIButton()
         button.setTitle("Создать", for: .normal)
@@ -32,6 +34,7 @@ final class NewTrackerConstructor: UIInputViewController {
         button.layer.masksToBounds = true
         return button
     }()
+    
     private lazy var buttonsStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [cancelButton, createButton])
         stackView.axis = .horizontal
@@ -39,13 +42,16 @@ final class NewTrackerConstructor: UIInputViewController {
         stackView.distribution = .fillEqually
         return stackView
     }()
+    
     private lazy var collectionView: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collection.dataSource = self
         collection.delegate = self
         collection.register(EmojiCell.self, forCellWithReuseIdentifier: "emojieCell")
+        collection.register(ColorCell.self, forCellWithReuseIdentifier: "colorCell")
         collection.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
         collection.backgroundColor = InterfaceColors.whiteDay
+        collection.isScrollEnabled = false
         return collection
     }()
     
@@ -73,6 +79,7 @@ final class NewTrackerConstructor: UIInputViewController {
             weight: .medium)
         configureTextField()
         setConstraints()
+        
     }
     
     private func setConstraints() {
@@ -87,6 +94,11 @@ final class NewTrackerConstructor: UIInputViewController {
         scrollView.addSubview(categoryAndSchedulerTable)
         scrollView.addSubview(collectionView)
         scrollView.addSubview(buttonsStackView)
+        scrollView.alwaysBounceVertical = true
+        scrollView.decelerationRate = UIScrollView.DecelerationRate.normal
+        scrollView.isScrollEnabled = true
+        scrollView.contentSize = CGSize(width: view.frame.width, height: isRegularEvent == true ? 780 : 706)
+        
         
         NSLayoutConstraint.activate([
             screenTopLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
@@ -108,15 +120,16 @@ final class NewTrackerConstructor: UIInputViewController {
             categoryAndSchedulerTable.heightAnchor.constraint(equalToConstant: configureTableHeight()),
             
             collectionView.topAnchor.constraint(equalTo: categoryAndSchedulerTable.bottomAnchor, constant: 32),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 28),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -28),
+            collectionView.heightAnchor.constraint(equalToConstant: 375),
             
-            buttonsStackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -34),
+            buttonsStackView.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 34),
             buttonsStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             buttonsStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             buttonsStackView.heightAnchor.constraint(equalToConstant: 60)
         ])
+        scrollView.layoutIfNeeded()
     }
     
     private func configureTableHeight() -> CGFloat {
@@ -189,6 +202,16 @@ extension NewTrackerConstructor: UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         75
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.row == 0 {
+            print("✅")
+        } else {
+            let scheduleViewController = ScheduleViewController()
+            scheduleViewController.modalPresentationStyle = .pageSheet
+            show(scheduleViewController, sender: self)
+        }
+    }
 }
 
 
@@ -198,14 +221,29 @@ extension NewTrackerConstructor: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        emojies.count
+        switch section {
+        case 0 :
+            return emojies.count
+        case 1:
+            return cellColors.count
+        default:
+            return 0
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "emojieCell", for: indexPath) as? EmojiCell
-        else { fatalError("Cell configure error!") }
-        cell.emojiLabel.text = emojies[indexPath.row]
-        return cell
+        if indexPath.section == 0 {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "emojieCell", for: indexPath) as? EmojiCell
+            else { fatalError("Cell configure error!") }
+            cell.emojiLabel.text = emojies[indexPath.row]
+            return cell
+        } else {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "colorCell", for: indexPath) as? ColorCell
+            else { fatalError("Cell configure error!") }
+            cell.colorLabel.backgroundColor = cellColors[indexPath.row]
+            return cell
+        }
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -220,19 +258,25 @@ extension NewTrackerConstructor: UICollectionViewDataSource {
         }
         guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? SupplementaryView
         else {fatalError("Supplementary view configuration error")}
-        view.titleLabel.text = collectionViewSectionHeaders[indexPath.row]
+        view.titleLabel.text = collectionViewSectionHeaders[indexPath.section]
         return view
     }
 }
 
 extension NewTrackerConstructor: UICollectionViewDelegateFlowLayout {
-        func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-            return CGSize(width: collectionView.bounds.width/6, height: collectionView.bounds.width/6)
-        }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: collectionView.bounds.width/6, height: collectionView.bounds.width/6)
+    }
+    
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         0
     }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        0
+    }
+    
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let indexPath = IndexPath(row: 0, section: section)
@@ -245,4 +289,5 @@ extension NewTrackerConstructor: UICollectionViewDelegateFlowLayout {
 }
 
 extension NewTrackerConstructor: UIScrollViewDelegate, UITableViewDelegate, UITextFieldDelegate, UICollectionViewDelegate {
+    
 }
