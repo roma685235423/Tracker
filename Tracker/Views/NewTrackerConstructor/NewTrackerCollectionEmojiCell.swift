@@ -1,12 +1,15 @@
 import UIKit
 
-final class EmojiCell: UICollectionViewCell {
+final class CollectionEmojiCell: UICollectionViewCell {
+    private let framelabel = UILabel()
     let emojiLabel = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.addSubview(emojiLabel)
         emojiLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.layer.cornerRadius = 52/5
+        contentView.layer.masksToBounds = true
         emojiLabel.font = UIFont.systemFont(ofSize: 32)
         NSLayoutConstraint.activate([
             emojiLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
@@ -16,5 +19,12 @@ final class EmojiCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    func cellIsSelected(state: Bool) {
+        if state == true {
+            contentView.backgroundColor = InterfaceColors.lightGray
+        } else {
+            contentView.backgroundColor = UIColor.clear
+        }
     }
 }

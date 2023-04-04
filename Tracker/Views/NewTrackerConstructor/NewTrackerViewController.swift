@@ -1,16 +1,36 @@
 import UIKit
 
-final class NewTrackerConstructor: UIInputViewController {
+protocol NewRegularTrackerConstructorProtocol {
+     
+}
+
+final class NewTrackerConstructorViewController: UIViewController {
     // MARK: - UIElements
-    private let isRegularEvent: Bool
     private let screenTopLabel = UILabel()
     private let scrollView = UIScrollView()
     private let textField = MyTextField()
     private let categoryAndSchedulerTable = UITableView()
+    
+    // MARK: - Properties
     private var actionsArray: [String] = ["Категория"]
     private let emojies = [ "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
     private let collectionViewSectionHeaders = ["Emoji", "Цвет"]
+    private var dailySchedule: [IsScheduleActiveToday] = [
+        IsScheduleActiveToday(dayOfWeek: "Понедельник"),
+        IsScheduleActiveToday(dayOfWeek: "Вторник"),
+        IsScheduleActiveToday(dayOfWeek: "Среда"),
+        IsScheduleActiveToday(dayOfWeek: "Четверг", schedulerIsActive: true),
+        IsScheduleActiveToday(dayOfWeek: "Пятница"),
+        IsScheduleActiveToday(dayOfWeek: "Суббота"),
+        IsScheduleActiveToday(dayOfWeek: "Воскресенье", schedulerIsActive: true)
+    ]
+    private var emojiSelectedItem: Int?
+    private var colorSelectedItem: Int?
+    private var selectedItem: IndexPath?
     
+    private let isRegularEvent: Bool
+    
+    // MARK: - Lazy
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
         button.setTitle("Отменить", for: .normal)
@@ -47,11 +67,12 @@ final class NewTrackerConstructor: UIInputViewController {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collection.dataSource = self
         collection.delegate = self
-        collection.register(EmojiCell.self, forCellWithReuseIdentifier: "emojieCell")
-        collection.register(ColorCell.self, forCellWithReuseIdentifier: "colorCell")
+        collection.register(CollectionEmojiCell.self, forCellWithReuseIdentifier: "emojieCell")
+        collection.register(CollectionColorCell.self, forCellWithReuseIdentifier: "colorCell")
         collection.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
         collection.backgroundColor = InterfaceColors.whiteDay
         collection.isScrollEnabled = false
+        collection.allowsMultipleSelection = false
         return collection
     }()
     
@@ -59,11 +80,13 @@ final class NewTrackerConstructor: UIInputViewController {
         isRegularEvent == true ? "Новая привычка" : "Новое нерегулярное событие"
     }()
     
+    
     // MARK: - Lifecicle
     override func viewDidLoad() {
         super.viewDidLoad()
         initialSettings()
     }
+    
     
     // MARK: - Methods
     private func initialSettings() {
@@ -79,8 +102,8 @@ final class NewTrackerConstructor: UIInputViewController {
             weight: .medium)
         configureTextField()
         setConstraints()
-        
     }
+    
     
     private func setConstraints() {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -98,7 +121,6 @@ final class NewTrackerConstructor: UIInputViewController {
         scrollView.decelerationRate = UIScrollView.DecelerationRate.normal
         scrollView.isScrollEnabled = true
         scrollView.contentSize = CGSize(width: view.frame.width, height: isRegularEvent == true ? 780 : 706)
-        
         
         NSLayoutConstraint.activate([
             screenTopLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
@@ -122,9 +144,9 @@ final class NewTrackerConstructor: UIInputViewController {
             collectionView.topAnchor.constraint(equalTo: categoryAndSchedulerTable.bottomAnchor, constant: 32),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 28),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -28),
-            collectionView.heightAnchor.constraint(equalToConstant: 375),
+            collectionView.heightAnchor.constraint(equalToConstant: 379),
             
-            buttonsStackView.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 34),
+            buttonsStackView.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 30),
             buttonsStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             buttonsStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             buttonsStackView.heightAnchor.constraint(equalToConstant: 60)
@@ -132,9 +154,11 @@ final class NewTrackerConstructor: UIInputViewController {
         scrollView.layoutIfNeeded()
     }
     
+    
     private func configureTableHeight() -> CGFloat {
         actionsArray.count == 1 ? 75 : 149
     }
+    
     
     private func configureTextField() {
         textField.backgroundColor = InterfaceColors.backgruondDay
@@ -150,6 +174,7 @@ final class NewTrackerConstructor: UIInputViewController {
         )
     }
     
+    
     private func configureCategoryAndSchedulerTable() {
         categoryAndSchedulerTable.delegate = self
         categoryAndSchedulerTable.dataSource = self
@@ -164,16 +189,19 @@ final class NewTrackerConstructor: UIInputViewController {
         }
     }
     
+    
     private func isNeedToAddSchedulerAction() {
         if isRegularEvent == true {
             actionsArray.append("Расписание")
         }
     }
     
+    
     init(isRegularEvent: Bool) {
         self.isRegularEvent = isRegularEvent
         super.init(nibName: nil, bundle: nil)
     }
+    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -183,10 +211,11 @@ final class NewTrackerConstructor: UIInputViewController {
 
 
 // MARK: - Extensions
-extension NewTrackerConstructor: UITableViewDataSource {
+extension NewTrackerConstructorViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         actionsArray.count
     }
+    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
@@ -199,15 +228,17 @@ extension NewTrackerConstructor: UITableViewDataSource {
         return cell
     }
     
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         75
     }
+    
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 0 {
             print("✅")
         } else {
-            let scheduleViewController = ScheduleViewController()
+            let scheduleViewController = ScheduleViewController(dailySchedule: dailySchedule)
             scheduleViewController.modalPresentationStyle = .pageSheet
             show(scheduleViewController, sender: self)
         }
@@ -215,7 +246,7 @@ extension NewTrackerConstructor: UITableViewDataSource {
 }
 
 
-extension NewTrackerConstructor: UICollectionViewDataSource {
+extension NewTrackerConstructorViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return collectionViewSectionHeaders.count
     }
@@ -233,14 +264,14 @@ extension NewTrackerConstructor: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.section == 0 {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "emojieCell", for: indexPath) as? EmojiCell
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "emojieCell", for: indexPath) as? CollectionEmojiCell
             else { fatalError("Cell configure error!") }
             cell.emojiLabel.text = emojies[indexPath.row]
             return cell
         } else {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "colorCell", for: indexPath) as? ColorCell
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "colorCell", for: indexPath) as? CollectionColorCell
             else { fatalError("Cell configure error!") }
-            cell.colorLabel.backgroundColor = cellColors[indexPath.row]
+            cell.setCellColor(color: cellColors[indexPath.row])
             return cell
         }
         
@@ -263,7 +294,7 @@ extension NewTrackerConstructor: UICollectionViewDataSource {
     }
 }
 
-extension NewTrackerConstructor: UICollectionViewDelegateFlowLayout {
+extension NewTrackerConstructorViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: collectionView.bounds.width/6, height: collectionView.bounds.width/6)
     }
@@ -288,6 +319,107 @@ extension NewTrackerConstructor: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension NewTrackerConstructor: UIScrollViewDelegate, UITableViewDelegate, UITextFieldDelegate, UICollectionViewDelegate {
+extension NewTrackerConstructorViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        selectedItem = indexPath
+        return true
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        switch indexPath.section {
+        case 0:
+            let cell = collectionView.cellForItem(at: indexPath) as? CollectionEmojiCell
+            cell?.cellIsSelected(state: true)
+            emojiSelectedItem = indexPath.item
+        case 1:
+            let cell = collectionView.cellForItem(at: indexPath) as? CollectionColorCell
+            cell?.cellIsSelected(state: true)
+            colorSelectedItem = indexPath.item
+        default:
+            break
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        
+        guard let section = selectedItem?.section else { return }
+        
+        switch section {
+        case 0:
+            guard let item = emojiSelectedItem,
+                  let cell = collectionView.cellForItem(at: IndexPath(item: item, section: section)) as? CollectionEmojiCell
+            else { return }
+            cell.cellIsSelected(state: false)
+            
+        case 1:
+            guard let item = colorSelectedItem,
+                  let cell = collectionView.cellForItem(at: IndexPath(item: item, section: section)) as? CollectionColorCell
+            else { return }
+            cell.cellIsSelected(state: false)
+            
+        default: break
+        }
+    }
+}
+
+extension NewTrackerConstructorViewController: UIScrollViewDelegate, UITableViewDelegate, UITextFieldDelegate {
     
 }
+
+
+//class ViewController: UIViewController {
+//
+//    var vc1 = ViewController1()
+//
+//    override func viewDidLoad() {
+//        super.viewDidLoad()
+//
+//        view.backgroundColor = .red
+//
+//        vc1.callback = { [weak self] in
+//            self?.dismiss(animated: true, completion: nil)
+//        }
+//    }
+//
+//    override func viewDidAppear(_ animated: Bool) {
+//        super.viewDidAppear(animated)
+//        present(vc1, animated: true)
+//    }
+//}
+//
+//class ViewController1: UIViewController {
+//
+//    var vc2 = ViewController2()
+//
+//    var callback: (() -> Void)?
+//
+//    override func viewDidLoad() {
+//        super.viewDidLoad()
+//        view.backgroundColor = .green
+//
+//        vc2.callback = { [weak self] in
+//            self?.callback?()
+//        }
+//    }
+//    override func viewDidAppear(_ animated: Bool) {
+//        super.viewDidAppear(animated)
+//        present(vc2, animated: true)
+//    }
+//
+//}
+//
+//class ViewController2: UIViewController {
+//
+//    var callback: (() -> Void)?
+//
+//    override func viewDidLoad() {
+//        super.viewDidLoad()
+//        view.backgroundColor = .blue
+//    }
+//
+//    override func viewDidAppear(_ animated: Bool) {
+//        super.viewDidAppear(animated)
+//        callback?()
+//    }
+//
+//}

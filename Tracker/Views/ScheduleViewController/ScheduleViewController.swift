@@ -4,16 +4,7 @@ final class ScheduleViewController: UIViewController {
     private let screenTopLabel = UILabel()
     private let schedulerTable = UITableView()
     private lazy var readyButton = UIButton()
-    var dailySchedule: [IsScheduleActiveToday] = [
-        IsScheduleActiveToday(dayOfWeek: "Понедельник"),
-        IsScheduleActiveToday(dayOfWeek: "Вторник"),
-        IsScheduleActiveToday(dayOfWeek: "Среда"),
-        IsScheduleActiveToday(dayOfWeek: "Четверг"),
-        IsScheduleActiveToday(dayOfWeek: "Пятница"),
-        IsScheduleActiveToday(dayOfWeek: "Суббота"),
-        IsScheduleActiveToday(dayOfWeek: "Воскресенье")
-    ]
-    
+    private var dailySchedule: [IsScheduleActiveToday]
     override func viewDidLoad() {
         super.viewDidLoad()
         initialSettings()
@@ -76,6 +67,15 @@ final class ScheduleViewController: UIViewController {
             readyButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50)
         ])
     }
+    
+    init(dailySchedule: [IsScheduleActiveToday]) {
+         self.dailySchedule = dailySchedule
+         super.init(nibName: nil, bundle: nil)
+     }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
 
 extension ScheduleViewController: UITableViewDelegate {
@@ -90,7 +90,7 @@ extension ScheduleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
         let switchView = UISwitch(frame: .zero)
-        switchView.setOn(false, animated: true)
+        switchView.setOn(dailySchedule[indexPath.row].schedulerIsActive, animated: true)
         switchView.tag = indexPath.row
         switchView.onTintColor = InterfaceColors.blue
         switchView.addTarget(self, action: #selector(self.switchChanged(_:)), for: .valueChanged)

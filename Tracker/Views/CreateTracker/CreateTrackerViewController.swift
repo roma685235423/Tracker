@@ -61,14 +61,14 @@ final class CreateTrackerViewController: UIViewController {
     
     @objc
     private func didTapGoToCreateHabitScreenButton() {
-        let newTrackerConstructorView = NewTrackerConstructor(isRegularEvent: true)
+        let newTrackerConstructorView = NewTrackerConstructorViewController(isRegularEvent: true)
         newTrackerConstructorView.modalPresentationStyle = .pageSheet
         present(newTrackerConstructorView, animated: true)
     }
     
     @objc
     private func didTapGoToCreateIrregularEventScreenButton() {
-        let newIrregularEventView = NewTrackerConstructor(isRegularEvent: false)
+        let newIrregularEventView = NewTrackerConstructorViewController(isRegularEvent: false)
         newIrregularEventView.modalPresentationStyle = .pageSheet
         present(newIrregularEventView, animated: true)
     }
