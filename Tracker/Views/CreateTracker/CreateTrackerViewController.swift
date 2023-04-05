@@ -1,12 +1,22 @@
 import UIKit
 
-final class CreateTrackerViewController: UIViewController {
+protocol CreateTrackerDelegate: AnyObject {
+    func didCreateNewTracker(tracker: TrackerCategory)
+    func getTrackersCategories(categories: [String])
+}
+
+final class CreateTrackerViewController: UIViewController & NewRegularTrackerConstructorDelegate {
+    func getTrackersCategories(categories: [String]) {
+        //
+    }
+    
     // MARK: - UIElements
     private let screenTopLabel = UILabel()
     private let goToCreateHabitScreenButton = UIButton()
     private let goToCreateIrregularEventScreenButton = UIButton()
     
-    
+    weak var delegate: CreateTrackerDelegate?
+    var trackersVCDismissCallbeck: (() -> Void)?
     // MARK: - Lifecicle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,6 +73,9 @@ final class CreateTrackerViewController: UIViewController {
     private func didTapGoToCreateHabitScreenButton() {
         let newTrackerConstructorView = NewTrackerConstructorViewController(isRegularEvent: true)
         newTrackerConstructorView.modalPresentationStyle = .pageSheet
+        newTrackerConstructorView.trackersViewControllerCancelCallbeck = { [ weak self ] in
+            self?.trackersVCDismissCallbeck?()
+        }
         present(newTrackerConstructorView, animated: true)
     }
     
@@ -70,6 +83,9 @@ final class CreateTrackerViewController: UIViewController {
     private func didTapGoToCreateIrregularEventScreenButton() {
         let newIrregularEventView = NewTrackerConstructorViewController(isRegularEvent: false)
         newIrregularEventView.modalPresentationStyle = .pageSheet
+        newIrregularEventView.trackersViewControllerCancelCallbeck = { [ weak self ] in
+            self?.trackersVCDismissCallbeck?()
+        }
         present(newIrregularEventView, animated: true)
     }
 }

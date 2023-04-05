@@ -1,7 +1,14 @@
 import UIKit
 
-class TrackersViewController: UIViewController {
-    
+
+class TrackersViewController: UIViewController & CreateTrackerDelegate {
+    private var currentDate: Date = Date()
+    private var visibleCategories: [TrackerCategory] = []
+    var categories: [TrackerCategory] = [
+        TrackerCategory(title: "Важное", trackers: []),
+        TrackerCategory(title: "Swift", trackers: []),
+        TrackerCategory(title: "Дом", trackers: [])
+    ]
     lazy var addTrackerButton: UIButton = {
         let button = UIButton()
         let image = UIImage(
@@ -69,6 +76,7 @@ class TrackersViewController: UIViewController {
         ])
     }
     
+    
     private func configureTrackersSearchBar() {
         trackersSearchBar.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(trackersSearchBar)
@@ -90,6 +98,8 @@ class TrackersViewController: UIViewController {
             trackersSearchBar.heightAnchor.constraint(equalToConstant: 36)
         ])
     }
+    
+    
     private func setConstraintsForElements() {
         addTrackerButton.translatesAutoresizingMaskIntoConstraints = false
         trackerLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -106,11 +116,31 @@ class TrackersViewController: UIViewController {
         ])
     }
     
+    
+    func didCreateNewTracker(tracker: TrackerCategory) {
+        //
+    }
+    
+    
+    func getTrackersCategories(categories: [String]) {
+        //
+    }
+    
+    
     @objc
     private func didTapAddTrackerButton() {
         let createTrackerViewController = CreateTrackerViewController()
         createTrackerViewController.modalPresentationStyle = .pageSheet
+        createTrackerViewController.delegate = self
+        createTrackerViewController.trackersVCDismissCallbeck = { [weak self] in
+            self?.dismiss(animated: true)
+        }
         present(createTrackerViewController, animated: true)
+    }
+    
+    
+    private func addNewTracker(category: TrackerCategory) {
+        
     }
 }
 

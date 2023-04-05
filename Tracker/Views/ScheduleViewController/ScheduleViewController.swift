@@ -10,6 +10,8 @@ final class ScheduleViewController: UIViewController {
         initialSettings()
     }
     
+    var scheduleViewControllerCallback: (([IsScheduleActiveToday], String) -> Void)?
+    
     private func initialSettings() {
         view.backgroundColor = InterfaceColors.whiteDay
         screenTopLabel.configureLabel(
@@ -41,6 +43,7 @@ final class ScheduleViewController: UIViewController {
         readyButton.titleLabel?.textColor = InterfaceColors.whiteDay
         readyButton.layer.cornerRadius = 16
         readyButton.layer.masksToBounds = true
+        readyButton.addTarget(self, action: #selector(bibTapReadyButton), for: .touchUpInside)
     }
     
     private func setConstraints() {
@@ -107,12 +110,49 @@ extension ScheduleViewController: UITableViewDataSource {
         75
     }
     
+    private func shortWeekDaysNamesCreation() -> String {
+        var shortDaysOfWeekNames: [String] = []
+        for day in dailySchedule {
+            if day.schedulerIsActive {
+                if let shortDayName = weekDaysNamesShorting(day: day.dayOfWeek) {
+                    shortDaysOfWeekNames.append(shortDayName)
+                }
+            }
+        }
+        let shortDaysOfWeekNamesString = shortDaysOfWeekNames.joined(separator: ", ")
+        return shortDaysOfWeekNamesString
+    }
+    
+    func weekDaysNamesShorting(day: String?) -> String? {
+            switch day {
+            case "Понедельник":
+                return "Пн"
+            case "Вторник":
+                return "Вт"
+            case "Среда":
+                return "Ср"
+            case "Четверг":
+                return "Чт"
+            case "Пятница":
+                return "Пт"
+            case "Суббота":
+                return "Сб"
+            case "Воскресенье":
+                return "Вс"
+            default :
+                return nil
+            }
+    }
+    
     @objc
-    func switchChanged(_ sender : UISwitch!){
+    private func switchChanged(_ sender : UISwitch!){
         let row = sender.tag
         dailySchedule[row].schedulerIsActive.toggle()
-        print("table row switch Changed \(sender.tag)")
-        print("The switch is \(sender.isOn ? "ON" : "OFF")")
-        print(dailySchedule)
+    }
+    
+    @objc
+    private func bibTapReadyButton() {
+        scheduleViewControllerCallback?(dailySchedule, shortWeekDaysNamesCreation())
+        self.dismiss(animated: true)
     }
 }

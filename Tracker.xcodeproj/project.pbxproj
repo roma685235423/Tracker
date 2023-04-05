@@ -29,6 +29,8 @@
 		BA418D6529DB5E5700080EB0 /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA418D6429DB5E5700080EB0 /* ScheduleViewController.swift */; };
 		BA418D6829DB5F1D00080EB0 /* GeometricParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA418D6729DB5F1D00080EB0 /* GeometricParams.swift */; };
 		BA418D6A29DB6BF800080EB0 /* IsScheduleActiveToday.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA418D6929DB6BF800080EB0 /* IsScheduleActiveToday.swift */; };
+		BA69EE6A29DDD28D00E65C92 /* categoryAndSchedulerTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA69EE6929DDD28D00E65C92 /* categoryAndSchedulerTableCell.swift */; };
+		BA69EE6C29DDD98C00E65C92 /* TableViewActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA69EE6B29DDD98C00E65C92 /* TableViewActions.swift */; };
 		BA8289E529D5DFEB00879101 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8289E429D5DFEB00879101 /* UIColorExtension.swift */; };
 		BA8289E729D5E29900879101 /* InterfaceColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8289E629D5E29900879101 /* InterfaceColors.swift */; };
 		BA8289E929D5FBB600879101 /* ColorSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8289E829D5FBB600879101 /* ColorSelection.swift */; };
@@ -81,6 +83,8 @@
 		BA418D6429DB5E5700080EB0 /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
 		BA418D6729DB5F1D00080EB0 /* GeometricParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometricParams.swift; sourceTree = "<group>"; };
 		BA418D6929DB6BF800080EB0 /* IsScheduleActiveToday.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IsScheduleActiveToday.swift; sourceTree = "<group>"; };
+		BA69EE6929DDD28D00E65C92 /* categoryAndSchedulerTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = categoryAndSchedulerTableCell.swift; sourceTree = "<group>"; };
+		BA69EE6B29DDD98C00E65C92 /* TableViewActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewActions.swift; sourceTree = "<group>"; };
 		BA8289E429D5DFEB00879101 /* UIColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
 		BA8289E629D5E29900879101 /* InterfaceColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceColors.swift; sourceTree = "<group>"; };
 		BA8289E829D5FBB600879101 /* ColorSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSelection.swift; sourceTree = "<group>"; };
@@ -213,6 +217,8 @@
 				BA3B5CD529D77009000C53FC /* NewTrackerTextField.swift */,
 				BA418D5E29DA0E1200080EB0 /* NewTrackerCollectionEmojiCell.swift */,
 				BA418D6229DB4A0400080EB0 /* NewTrackerCollectionColorCell.swift */,
+				BA69EE6929DDD28D00E65C92 /* categoryAndSchedulerTableCell.swift */,
+				BA69EE6B29DDD98C00E65C92 /* TableViewActions.swift */,
 			);
 			path = NewTrackerConstructor;
 			sourceTree = "<group>";
@@ -416,10 +422,12 @@
 				BA1AD35129CDF1E200DCFB4B /* AppDelegate.swift in Sources */,
 				BA8289EC29D62E6B00879101 /* StatisticViewController.swift in Sources */,
 				BA418D6529DB5E5700080EB0 /* ScheduleViewController.swift in Sources */,
+				BA69EE6A29DDD28D00E65C92 /* categoryAndSchedulerTableCell.swift in Sources */,
 				BA418D5B29DA0D2000080EB0 /* TrackerCategory.swift in Sources */,
 				BA418D6329DB4A0400080EB0 /* NewTrackerCollectionColorCell.swift in Sources */,
 				BA418D6829DB5F1D00080EB0 /* GeometricParams.swift in Sources */,
 				BA418D5D29DA0D2F00080EB0 /* TrackerRecord.swift in Sources */,
+				BA69EE6C29DDD98C00E65C92 /* TableViewActions.swift in Sources */,
 				BA1AD38A29CE2EE500DCFB4B /* TabBarViewController.swift in Sources */,
 				BA8289EF29D6347A00879101 /* SplashScreenViewController.swift in Sources */,
 				BA418D5929DA0D1300080EB0 /* Tracker.swift in Sources */,

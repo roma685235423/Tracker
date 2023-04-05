@@ -1,7 +1,7 @@
 import UIKit
 
-protocol NewRegularTrackerConstructorProtocol {
-     
+protocol NewRegularTrackerConstructorDelegate: AnyObject {
+    func getTrackersCategories(categories: [String])
 }
 
 final class NewTrackerConstructorViewController: UIViewController {
@@ -12,23 +12,27 @@ final class NewTrackerConstructorViewController: UIViewController {
     private let categoryAndSchedulerTable = UITableView()
     
     // MARK: - Properties
-    private var actionsArray: [String] = ["Категория"]
+    private var actionsArray: [TableViewActions] = [.init(titleLabelText: "Категория", subTitleLabel: "")]
     private let emojies = [ "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
     private let collectionViewSectionHeaders = ["Emoji", "Цвет"]
     private var dailySchedule: [IsScheduleActiveToday] = [
         IsScheduleActiveToday(dayOfWeek: "Понедельник"),
         IsScheduleActiveToday(dayOfWeek: "Вторник"),
         IsScheduleActiveToday(dayOfWeek: "Среда"),
-        IsScheduleActiveToday(dayOfWeek: "Четверг", schedulerIsActive: true),
+        IsScheduleActiveToday(dayOfWeek: "Четверг"),
         IsScheduleActiveToday(dayOfWeek: "Пятница"),
         IsScheduleActiveToday(dayOfWeek: "Суббота"),
-        IsScheduleActiveToday(dayOfWeek: "Воскресенье", schedulerIsActive: true)
+        IsScheduleActiveToday(dayOfWeek: "Воскресенье")
     ]
     private var emojiSelectedItem: Int?
     private var colorSelectedItem: Int?
     private var selectedItem: IndexPath?
     
     private let isRegularEvent: Bool
+    
+    weak var deleagte: NewRegularTrackerConstructorDelegate?
+    var trackersViewControllerCancelCallbeck: (() -> Void)?
+    var scheduleViewControllerCallback: (([IsScheduleActiveToday], String) -> Void)?
     
     // MARK: - Lazy
     private lazy var cancelButton: UIButton = {
@@ -41,6 +45,7 @@ final class NewTrackerConstructorViewController: UIViewController {
         button.layer.borderColor = InterfaceColors.red.cgColor
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
+        button.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
         return button
     }()
     
@@ -178,6 +183,7 @@ final class NewTrackerConstructorViewController: UIViewController {
     private func configureCategoryAndSchedulerTable() {
         categoryAndSchedulerTable.delegate = self
         categoryAndSchedulerTable.dataSource = self
+        categoryAndSchedulerTable.register(CategoryAndSchedulerTableCell.self, forCellReuseIdentifier: "tableViewCell")
         categoryAndSchedulerTable.backgroundColor = InterfaceColors.backgruondDay
         categoryAndSchedulerTable.separatorColor = InterfaceColors.gray
         categoryAndSchedulerTable.layer.cornerRadius = 16
@@ -192,8 +198,13 @@ final class NewTrackerConstructorViewController: UIViewController {
     
     private func isNeedToAddSchedulerAction() {
         if isRegularEvent == true {
-            actionsArray.append("Расписание")
+            actionsArray.append(.init(titleLabelText: "Расписание", subTitleLabel: ""))
         }
+    }
+    
+    @objc
+    private func didTapCancelButton() {
+        trackersViewControllerCancelCallbeck?()
     }
     
     
@@ -218,13 +229,9 @@ extension NewTrackerConstructorViewController: UITableViewDataSource {
     
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
-        cell.textLabel?.text = actionsArray[indexPath.row]
-        cell.textLabel?.textColor = InterfaceColors.blackDay
-        cell.textLabel?.font = UIFont.systemFont(ofSize: 17)
-        cell.selectionStyle = .none
-        cell.backgroundColor = InterfaceColors.backgruondDay
-        cell.accessoryType = .disclosureIndicator
+        guard let cell = categoryAndSchedulerTable.dequeueReusableCell(withIdentifier: "tableViewCell", for: indexPath) as?
+                CategoryAndSchedulerTableCell else {fatalError("Invalid cell configuration")}
+        cell.configure(title: actionsArray[indexPath.row].titleLabelText, subTitle: actionsArray[indexPath.row].subTitleLabel)
         return cell
     }
     
@@ -240,10 +247,18 @@ extension NewTrackerConstructorViewController: UITableViewDataSource {
         } else {
             let scheduleViewController = ScheduleViewController(dailySchedule: dailySchedule)
             scheduleViewController.modalPresentationStyle = .pageSheet
+            scheduleViewController.scheduleViewControllerCallback = { [ weak self ] data, cellSubviewText in
+                guard let self = self else { return }
+                self.scheduleViewControllerCallback?(data, cellSubviewText)
+                self.dailySchedule = data
+                self.actionsArray[1].subTitleLabel = cellSubviewText
+                self.categoryAndSchedulerTable.reloadData()
+            }
             show(scheduleViewController, sender: self)
         }
     }
 }
+
 
 
 extension NewTrackerConstructorViewController: UICollectionViewDataSource {
@@ -294,6 +309,8 @@ extension NewTrackerConstructorViewController: UICollectionViewDataSource {
     }
 }
 
+
+
 extension NewTrackerConstructorViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: collectionView.bounds.width/6, height: collectionView.bounds.width/6)
@@ -318,6 +335,8 @@ extension NewTrackerConstructorViewController: UICollectionViewDelegateFlowLayou
         )
     }
 }
+
+
 
 extension NewTrackerConstructorViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
@@ -362,64 +381,8 @@ extension NewTrackerConstructorViewController: UICollectionViewDelegate {
     }
 }
 
+
+
 extension NewTrackerConstructorViewController: UIScrollViewDelegate, UITableViewDelegate, UITextFieldDelegate {
     
 }
-
-
-//class ViewController: UIViewController {
-//
-//    var vc1 = ViewController1()
-//
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//
-//        view.backgroundColor = .red
-//
-//        vc1.callback = { [weak self] in
-//            self?.dismiss(animated: true, completion: nil)
-//        }
-//    }
-//
-//    override func viewDidAppear(_ animated: Bool) {
-//        super.viewDidAppear(animated)
-//        present(vc1, animated: true)
-//    }
-//}
-//
-//class ViewController1: UIViewController {
-//
-//    var vc2 = ViewController2()
-//
-//    var callback: (() -> Void)?
-//
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        view.backgroundColor = .green
-//
-//        vc2.callback = { [weak self] in
-//            self?.callback?()
-//        }
-//    }
-//    override func viewDidAppear(_ animated: Bool) {
-//        super.viewDidAppear(animated)
-//        present(vc2, animated: true)
-//    }
-//
-//}
-//
-//class ViewController2: UIViewController {
-//
-//    var callback: (() -> Void)?
-//
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        view.backgroundColor = .blue
-//    }
-//
-//    override func viewDidAppear(_ animated: Bool) {
-//        super.viewDidAppear(animated)
-//        callback?()
-//    }
-//
-//}
