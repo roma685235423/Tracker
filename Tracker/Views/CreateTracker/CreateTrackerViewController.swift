@@ -1,21 +1,19 @@
 import UIKit
 
 protocol CreateTrackerDelegate: AnyObject {
-    func didCreateNewTracker(tracker: TrackerCategory)
-    func getTrackersCategories(categories: [String])
+    func getTrackersCategories() -> [String]
 }
 
 final class CreateTrackerViewController: UIViewController & NewRegularTrackerConstructorDelegate {
-    func getTrackersCategories(categories: [String]) {
-        //
-    }
-    
     // MARK: - UIElements
     private let screenTopLabel = UILabel()
     private let goToCreateHabitScreenButton = UIButton()
     private let goToCreateIrregularEventScreenButton = UIButton()
-    
+    //================================
+    //========================================
     weak var delegate: CreateTrackerDelegate?
+    //========================================
+    //================================
     var trackersVCDismissCallbeck: (() -> Void)?
     // MARK: - Lifecicle
     override func viewDidLoad() {
@@ -73,7 +71,8 @@ final class CreateTrackerViewController: UIViewController & NewRegularTrackerCon
     private func didTapGoToCreateHabitScreenButton() {
         let newTrackerConstructorView = NewTrackerConstructorViewController(isRegularEvent: true)
         newTrackerConstructorView.modalPresentationStyle = .pageSheet
-        newTrackerConstructorView.trackersViewControllerCancelCallbeck = { [ weak self ] in
+        newTrackerConstructorView.deleagte = self
+        newTrackerConstructorView.trackersVCCancelCallbeck = { [ weak self ] in
             self?.trackersVCDismissCallbeck?()
         }
         present(newTrackerConstructorView, animated: true)
@@ -83,9 +82,24 @@ final class CreateTrackerViewController: UIViewController & NewRegularTrackerCon
     private func didTapGoToCreateIrregularEventScreenButton() {
         let newIrregularEventView = NewTrackerConstructorViewController(isRegularEvent: false)
         newIrregularEventView.modalPresentationStyle = .pageSheet
-        newIrregularEventView.trackersViewControllerCancelCallbeck = { [ weak self ] in
+        newIrregularEventView.deleagte = self
+        newIrregularEventView.trackersVCCancelCallbeck = { [ weak self ] in
             self?.trackersVCDismissCallbeck?()
         }
         present(newIrregularEventView, animated: true)
+    }
+    
+    
+    func didCreateNewTracker(tracker: TrackerCategory) {
+        
+    }
+    
+    
+    func getTrackersCategories() -> [String] {
+        if let categories = delegate?.getTrackersCategories() {
+            return categories
+        } else {
+            return []
+        }
     }
 }

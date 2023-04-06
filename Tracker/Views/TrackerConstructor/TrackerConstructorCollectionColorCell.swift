@@ -39,7 +39,8 @@ final class CollectionColorCell: UICollectionViewCell {
     
     func cellIsSelected(state: Bool) {
         if state == true {
-            framelabel.layer.borderColor = InterfaceColors.gray.cgColor
+            let color = colorLabel.backgroundColor
+            framelabel.layer.borderColor = color?.withAlphaComponent(0.3).cgColor
         } else {
             framelabel.layer.borderColor = UIColor.clear.cgColor
         }

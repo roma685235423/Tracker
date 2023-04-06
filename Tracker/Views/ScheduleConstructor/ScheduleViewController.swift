@@ -10,7 +10,7 @@ final class ScheduleViewController: UIViewController {
         initialSettings()
     }
     
-    var scheduleViewControllerCallback: (([IsScheduleActiveToday], String) -> Void)?
+    var scheduleVCCallback: (([IsScheduleActiveToday], String) -> Void)?
     
     private func initialSettings() {
         view.backgroundColor = InterfaceColors.whiteDay
@@ -20,13 +20,13 @@ final class ScheduleViewController: UIViewController {
             ofSize: 16,
             weight: .medium
         )
-        configureschedulerTable()
+        configureSchedulerTable()
         configureReadyButton()
         setConstraints()
     }
     
     
-    private func configureschedulerTable() {
+    private func configureSchedulerTable() {
         schedulerTable.delegate = self
         schedulerTable.dataSource = self
         schedulerTable.separatorColor = InterfaceColors.gray
@@ -36,6 +36,7 @@ final class ScheduleViewController: UIViewController {
         schedulerTable.isScrollEnabled = false
     }
     
+    
     private func configureReadyButton() {
         readyButton.backgroundColor = InterfaceColors.blackDay
         readyButton.setTitle("Готово", for: .normal)
@@ -43,8 +44,9 @@ final class ScheduleViewController: UIViewController {
         readyButton.titleLabel?.textColor = InterfaceColors.whiteDay
         readyButton.layer.cornerRadius = 16
         readyButton.layer.masksToBounds = true
-        readyButton.addTarget(self, action: #selector(bibTapReadyButton), for: .touchUpInside)
+        readyButton.addTarget(self, action: #selector(dibTapReadyButton), for: .touchUpInside)
     }
+    
     
     private func setConstraints() {
         screenTopLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -71,24 +73,31 @@ final class ScheduleViewController: UIViewController {
         ])
     }
     
+    
     init(dailySchedule: [IsScheduleActiveToday]) {
          self.dailySchedule = dailySchedule
          super.init(nibName: nil, bundle: nil)
      }
+    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
+
+
 extension ScheduleViewController: UITableViewDelegate {
     
 }
+
+
 
 extension ScheduleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dailySchedule.count
     }
+    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
@@ -106,9 +115,11 @@ extension ScheduleViewController: UITableViewDataSource {
         return cell
     }
     
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         75
     }
+    
     
     private func shortWeekDaysNamesCreation() -> String {
         var shortDaysOfWeekNames: [String] = []
@@ -123,7 +134,8 @@ extension ScheduleViewController: UITableViewDataSource {
         return shortDaysOfWeekNamesString
     }
     
-    func weekDaysNamesShorting(day: String?) -> String? {
+    
+    private func weekDaysNamesShorting(day: String?) -> String? {
             switch day {
             case "Понедельник":
                 return "Пн"
@@ -144,15 +156,17 @@ extension ScheduleViewController: UITableViewDataSource {
             }
     }
     
+    
     @objc
     private func switchChanged(_ sender : UISwitch!){
         let row = sender.tag
         dailySchedule[row].schedulerIsActive.toggle()
     }
     
+    
     @objc
-    private func bibTapReadyButton() {
-        scheduleViewControllerCallback?(dailySchedule, shortWeekDaysNamesCreation())
+    private func dibTapReadyButton() {
+        scheduleVCCallback?(dailySchedule, shortWeekDaysNamesCreation())
         self.dismiss(animated: true)
     }
 }

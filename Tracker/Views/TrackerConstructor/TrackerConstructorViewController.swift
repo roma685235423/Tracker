@@ -1,7 +1,8 @@
 import UIKit
 
 protocol NewRegularTrackerConstructorDelegate: AnyObject {
-    func getTrackersCategories(categories: [String])
+    func getTrackersCategories() -> [String]
+    func didCreateNewTracker(tracker: TrackerCategory)
 }
 
 final class NewTrackerConstructorViewController: UIViewController {
@@ -13,8 +14,8 @@ final class NewTrackerConstructorViewController: UIViewController {
     
     // MARK: - Properties
     private var actionsArray: [TableViewActions] = [.init(titleLabelText: "Категория", subTitleLabel: "")]
-    private let emojies = [ "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
-    private let collectionViewSectionHeaders = ["Emoji", "Цвет"]
+    private var currentSelectedCateory: Int?
+    
     private var dailySchedule: [IsScheduleActiveToday] = [
         IsScheduleActiveToday(dayOfWeek: "Понедельник"),
         IsScheduleActiveToday(dayOfWeek: "Вторник"),
@@ -24,6 +25,10 @@ final class NewTrackerConstructorViewController: UIViewController {
         IsScheduleActiveToday(dayOfWeek: "Суббота"),
         IsScheduleActiveToday(dayOfWeek: "Воскресенье")
     ]
+    
+    private let collectionViewSectionHeaders = ["Emoji", "Цвет"]
+    private let emojies = [ "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
+    
     private var emojiSelectedItem: Int?
     private var colorSelectedItem: Int?
     private var selectedItem: IndexPath?
@@ -31,10 +36,17 @@ final class NewTrackerConstructorViewController: UIViewController {
     private let isRegularEvent: Bool
     
     weak var deleagte: NewRegularTrackerConstructorDelegate?
-    var trackersViewControllerCancelCallbeck: (() -> Void)?
-    var scheduleViewControllerCallback: (([IsScheduleActiveToday], String) -> Void)?
+    
+    var trackersVCCancelCallbeck: (() -> Void)?
+    var scheduleVCCallback: (([IsScheduleActiveToday], String) -> Void)?
+    var trackerCategorySelectorVCCallback: ((String) -> Void)?
     
     // MARK: - Lazy
+    private lazy var trackersCategories: [String] = {
+        guard let categories = deleagte?.getTrackersCategories() else { return [] }
+        return categories
+    }()
+    
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
         button.setTitle("Отменить", for: .normal)
@@ -204,7 +216,7 @@ final class NewTrackerConstructorViewController: UIViewController {
     
     @objc
     private func didTapCancelButton() {
-        trackersViewControllerCancelCallbeck?()
+        trackersVCCancelCallbeck?()
     }
     
     
@@ -221,7 +233,7 @@ final class NewTrackerConstructorViewController: UIViewController {
 
 
 
-// MARK: - Extensions
+// MARK: - UITableViewDataSource Extension
 extension NewTrackerConstructorViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         actionsArray.count
@@ -243,13 +255,21 @@ extension NewTrackerConstructorViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 0 {
-            print("✅")
+            let trackerCategorySelectorViewController = TrackerCategorySelectorViewController(categoryes: trackersCategories, currentItem: currentSelectedCateory)
+            trackerCategorySelectorViewController.modalPresentationStyle = .pageSheet
+            trackerCategorySelectorViewController.trackerCategorySelectorVCCallback = { [ weak self ] cellSubviewText, selectedItem in
+                guard let self = self else { return }
+                self.actionsArray[0].subTitleLabel = cellSubviewText
+                self.currentSelectedCateory = selectedItem
+                self.categoryAndSchedulerTable.reloadData()
+            }
+            show(trackerCategorySelectorViewController, sender: self)
         } else {
             let scheduleViewController = ScheduleViewController(dailySchedule: dailySchedule)
             scheduleViewController.modalPresentationStyle = .pageSheet
-            scheduleViewController.scheduleViewControllerCallback = { [ weak self ] data, cellSubviewText in
+            scheduleViewController.scheduleVCCallback = { [ weak self ] data, cellSubviewText in
                 guard let self = self else { return }
-                self.scheduleViewControllerCallback?(data, cellSubviewText)
+                self.scheduleVCCallback?(data, cellSubviewText)
                 self.dailySchedule = data
                 self.actionsArray[1].subTitleLabel = cellSubviewText
                 self.categoryAndSchedulerTable.reloadData()
@@ -261,6 +281,7 @@ extension NewTrackerConstructorViewController: UITableViewDataSource {
 
 
 
+// MARK: - UICollectionViewDataSource Extension
 extension NewTrackerConstructorViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return collectionViewSectionHeaders.count
@@ -311,6 +332,7 @@ extension NewTrackerConstructorViewController: UICollectionViewDataSource {
 
 
 
+// MARK: - UICollectionViewDelegateFlowLayout Extension
 extension NewTrackerConstructorViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: collectionView.bounds.width/6, height: collectionView.bounds.width/6)
@@ -338,6 +360,7 @@ extension NewTrackerConstructorViewController: UICollectionViewDelegateFlowLayou
 
 
 
+// MARK: - UICollectionViewDelegate Extension
 extension NewTrackerConstructorViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         selectedItem = indexPath
@@ -359,10 +382,10 @@ extension NewTrackerConstructorViewController: UICollectionViewDelegate {
         }
     }
     
+    
+    
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        
         guard let section = selectedItem?.section else { return }
-        
         switch section {
         case 0:
             guard let item = emojiSelectedItem,
@@ -382,7 +405,7 @@ extension NewTrackerConstructorViewController: UICollectionViewDelegate {
 }
 
 
-
+// MARK: - Extensions
 extension NewTrackerConstructorViewController: UIScrollViewDelegate, UITableViewDelegate, UITextFieldDelegate {
     
 }

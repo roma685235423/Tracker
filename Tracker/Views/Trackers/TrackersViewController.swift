@@ -117,11 +117,6 @@ class TrackersViewController: UIViewController & CreateTrackerDelegate {
     }
     
     
-    func didCreateNewTracker(tracker: TrackerCategory) {
-        //
-    }
-    
-    
     func getTrackersCategories(categories: [String]) {
         //
     }
@@ -139,8 +134,9 @@ class TrackersViewController: UIViewController & CreateTrackerDelegate {
     }
     
     
-    private func addNewTracker(category: TrackerCategory) {
-        
+    func getTrackersCategories() -> [String] {
+        let trackersCategories = categories.map {$0.title}
+        return trackersCategories
     }
 }
 
