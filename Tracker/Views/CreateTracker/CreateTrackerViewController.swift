@@ -90,8 +90,8 @@ final class CreateTrackerViewController: UIViewController & NewRegularTrackerCon
     }
     
     
-    func didCreateNewTracker(tracker: TrackerCategory) {
-        
+    func didCreateNewTracker(tracker: Tracker, in category: String) {
+
     }
     
     

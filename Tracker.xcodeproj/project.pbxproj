@@ -208,10 +208,10 @@
 			isa = PBXGroup;
 			children = (
 				BA3B5CCF29D75B52000C53FC /* TrackerConstructorViewController.swift */,
+				BA418D6229DB4A0400080EB0 /* TrackerConstructorCollectionColorCell.swift */,
 				BA418D6029DA243900080EB0 /* TrackerConstructorSupplementaryView.swift */,
 				BA3B5CD529D77009000C53FC /* TrackerConstructorTextField.swift */,
 				BA418D5E29DA0E1200080EB0 /* TrackerConstructorCollectionEmojiCell.swift */,
-				BA418D6229DB4A0400080EB0 /* TrackerConstructorCollectionColorCell.swift */,
 				BA69EE6929DDD28D00E65C92 /* TrackerConstructorCategoryAndSchedulerTableCell.swift */,
 				BA69EE6B29DDD98C00E65C92 /* TableViewActions.swift */,
 			);

@@ -2,7 +2,7 @@ import UIKit
 
 protocol NewRegularTrackerConstructorDelegate: AnyObject {
     func getTrackersCategories() -> [String]
-    func didCreateNewTracker(tracker: TrackerCategory)
+    func didCreateNewTracker(tracker: Tracker, in category: String)
 }
 
 final class NewTrackerConstructorViewController: UIViewController {
@@ -13,6 +13,10 @@ final class NewTrackerConstructorViewController: UIViewController {
     private let categoryAndSchedulerTable = UITableView()
     
     // MARK: - Properties
+    private var trackerNameString: String = ""
+    private var trackerEmogieString: String = ""
+    private var trackerColor: UIColor?
+    
     private var actionsArray: [TableViewActions] = [.init(titleLabelText: "Категория", subTitleLabel: "")]
     private var currentSelectedCateory: Int?
     
@@ -66,9 +70,9 @@ final class NewTrackerConstructorViewController: UIViewController {
         button.setTitle("Создать", for: .normal)
         button.titleLabel?.textColor = InterfaceColors.whiteDay
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16)
-        button.backgroundColor = InterfaceColors.gray
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
+        button.addTarget(self, action: #selector(didTapCreateButton), for: .touchUpInside)
         return button
     }()
     
@@ -105,20 +109,22 @@ final class NewTrackerConstructorViewController: UIViewController {
     }
     
     
-    // MARK: - Methods
+    // MARK: - UIConfiguration methods
     private func initialSettings() {
         view.backgroundColor = InterfaceColors.whiteDay
         textField.delegate = self
         scrollView.delegate = self
         isNeedToAddSchedulerAction()
+        configureScrollView()
+        configureTextField()
         configureCategoryAndSchedulerTable()
         screenTopLabel.configureLabel(
             text: headerText,
             addToView: view,
             ofSize: 16,
             weight: .medium)
-        configureTextField()
         setConstraints()
+        checkIsCreateButtonActive()
     }
     
     
@@ -134,10 +140,6 @@ final class NewTrackerConstructorViewController: UIViewController {
         scrollView.addSubview(categoryAndSchedulerTable)
         scrollView.addSubview(collectionView)
         scrollView.addSubview(buttonsStackView)
-        scrollView.alwaysBounceVertical = true
-        scrollView.decelerationRate = UIScrollView.DecelerationRate.normal
-        scrollView.isScrollEnabled = true
-        scrollView.contentSize = CGSize(width: view.frame.width, height: isRegularEvent == true ? 780 : 706)
         
         NSLayoutConstraint.activate([
             screenTopLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
@@ -177,6 +179,18 @@ final class NewTrackerConstructorViewController: UIViewController {
     }
     
     
+    private func configureScrollView() {
+        scrollView.alwaysBounceVertical = true
+        scrollView.decelerationRate = UIScrollView.DecelerationRate.normal
+        scrollView.isScrollEnabled = true
+        scrollView.isUserInteractionEnabled = true
+        scrollView.contentSize = CGSize(width: view.frame.width, height: isRegularEvent == true ? 780 : 706)
+        let tapToHideKeyboardGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboardAndSaveTextFieldValue))
+        tapToHideKeyboardGesture.cancelsTouchesInView = false
+        scrollView.addGestureRecognizer(tapToHideKeyboardGesture)
+    }
+    
+    
     private func configureTextField() {
         textField.backgroundColor = InterfaceColors.backgruondDay
         textField.layer.cornerRadius = 16
@@ -189,6 +203,14 @@ final class NewTrackerConstructorViewController: UIViewController {
                 NSAttributedString.Key.foregroundColor: InterfaceColors.gray,
             ]
         )
+    }
+    
+    
+    // MARK: - Methods
+    private func makeCreateButtonActive(isActive: Bool) {
+        createButton.isEnabled = isActive
+        let backgroundColor = isActive ? InterfaceColors.blackDay : InterfaceColors.gray
+        createButton.backgroundColor = backgroundColor
     }
     
     
@@ -214,12 +236,53 @@ final class NewTrackerConstructorViewController: UIViewController {
         }
     }
     
+    
+    // MARK: - Actions
+    @objc
+    private func didTapCreateButton() {
+        guard let color = trackerColor else { return }
+        let tracker = Tracker(
+            id: UUID.init(),
+            label: trackerNameString,
+            color: color,
+            emoji: trackerEmogieString,
+            dailySchedule: dailySchedule
+        )
+        deleagte?.didCreateNewTracker(tracker: tracker, in: actionsArray[0].subTitleLabel)
+        trackersVCCancelCallbeck?()
+    }
+    
+    
     @objc
     private func didTapCancelButton() {
         trackersVCCancelCallbeck?()
     }
     
     
+    @objc
+    private func hideKeyboardAndSaveTextFieldValue() {
+        if textField.isFirstResponder {
+            trackerNameString = textField.text ?? ""
+            textField.resignFirstResponder()
+            checkIsCreateButtonActive()
+        }
+    }
+    
+    
+    @objc
+    private func checkIsCreateButtonActive() {
+        if trackerNameString != "",
+           trackerEmogieString != "",
+           trackerColor != nil,
+           actionsArray.allSatisfy({ $0.subTitleLabel != "" }) {
+               makeCreateButtonActive(isActive: true)
+           } else {
+               makeCreateButtonActive(isActive: false)
+           }
+    }
+    
+    
+    // MARK: - Init
     init(isRegularEvent: Bool) {
         self.isRegularEvent = isRegularEvent
         super.init(nibName: nil, bundle: nil)
@@ -261,6 +324,7 @@ extension NewTrackerConstructorViewController: UITableViewDataSource {
                 guard let self = self else { return }
                 self.actionsArray[0].subTitleLabel = cellSubviewText
                 self.currentSelectedCateory = selectedItem
+                self.checkIsCreateButtonActive()
                 self.categoryAndSchedulerTable.reloadData()
             }
             show(trackerCategorySelectorViewController, sender: self)
@@ -272,6 +336,7 @@ extension NewTrackerConstructorViewController: UITableViewDataSource {
                 self.scheduleVCCallback?(data, cellSubviewText)
                 self.dailySchedule = data
                 self.actionsArray[1].subTitleLabel = cellSubviewText
+                self.checkIsCreateButtonActive()
                 self.categoryAndSchedulerTable.reloadData()
             }
             show(scheduleViewController, sender: self)
@@ -343,6 +408,7 @@ extension NewTrackerConstructorViewController: UICollectionViewDelegateFlowLayou
         0
     }
     
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         0
     }
@@ -367,21 +433,25 @@ extension NewTrackerConstructorViewController: UICollectionViewDelegate {
         return true
     }
     
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch indexPath.section {
         case 0:
             let cell = collectionView.cellForItem(at: indexPath) as? CollectionEmojiCell
             cell?.cellIsSelected(state: true)
+            trackerEmogieString = emojies[indexPath.row]
             emojiSelectedItem = indexPath.item
+            checkIsCreateButtonActive()
         case 1:
             let cell = collectionView.cellForItem(at: indexPath) as? CollectionColorCell
             cell?.cellIsSelected(state: true)
+            trackerColor = cellColors[indexPath.row]
             colorSelectedItem = indexPath.item
+            checkIsCreateButtonActive()
         default:
             break
         }
     }
-    
     
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
@@ -405,7 +475,30 @@ extension NewTrackerConstructorViewController: UICollectionViewDelegate {
 }
 
 
+// MARK: - UITextFieldDelegate Extension
+extension NewTrackerConstructorViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        trackerNameString = textField.text ?? ""
+        textField.resignFirstResponder()
+        checkIsCreateButtonActive()
+        return true
+    }
+    
+    func textFieldShouldClear(_ textField: UITextField) -> Bool {
+        trackerNameString = textField.text ?? ""
+        checkIsCreateButtonActive()
+        return true
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        trackerNameString = textField.text ?? ""
+        checkIsCreateButtonActive()
+        return true
+    }
+}
+
+
 // MARK: - Extensions
-extension NewTrackerConstructorViewController: UIScrollViewDelegate, UITableViewDelegate, UITextFieldDelegate {
+extension NewTrackerConstructorViewController: UIScrollViewDelegate, UITableViewDelegate {
     
 }

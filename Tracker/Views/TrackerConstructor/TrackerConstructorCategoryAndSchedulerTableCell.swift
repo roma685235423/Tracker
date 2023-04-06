@@ -2,29 +2,25 @@ import UIKit
 
 final class CategoryAndSchedulerTableCell: UITableViewCell {
     
-    let titleLabel = UILabel()
-    let subTitleLabel = UILabel()
-    let verticalStack = UIStackView()
+    private let titleLabel = UILabel()
+    private let subTitleLabel = UILabel()
+    private let verticalStack = UIStackView()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.accessoryType = .disclosureIndicator
         self.selectionStyle = .none
-        contentView.backgroundColor = InterfaceColors.backgruondDay
-        
-        // Установка конфигурации стека
+        self.backgroundColor = InterfaceColors.backgruondDay
+
         verticalStack.axis = .vertical
         verticalStack.spacing = 2.0
         verticalStack.alignment = .leading
-        
-        // Добавление titleLabel и subTitleLabel в стек
+
         verticalStack.addArrangedSubview(titleLabel)
         verticalStack.addArrangedSubview(subTitleLabel)
-        
-        // Добавление стека на contentView ячейки
+
         contentView.addSubview(verticalStack)
-        
-        // Установка констрейнтов
+
         verticalStack.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             verticalStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
@@ -48,15 +44,8 @@ final class CategoryAndSchedulerTableCell: UITableViewCell {
         
         titleLabel.textColor = InterfaceColors.blackDay
         subTitleLabel.textColor = InterfaceColors.gray
+        titleLabel.textAlignment = .left
         
-        if subTitle.isEmpty {
-            // Если subTitleLabel пустой, то установка настройки по центру titleLabel
-            titleLabel.textAlignment = .center
-            subTitleLabel.isHidden = true
-        } else {
-            // Если subTitleLabel не пустой, то установка настройки для размещения titleLabel и subTitleLabel с отступом
-            titleLabel.textAlignment = .left
-            subTitleLabel.isHidden = false
-        }
+        subTitleLabel.isHidden = subTitle.isEmpty ? true : false
     }
 }
