@@ -2,7 +2,7 @@ import UIKit
 
 final class CollectionEmojiCell: UICollectionViewCell {
     private let framelabel = UILabel()
-    let emojiLabel = UILabel()
+    private let emojiLabel = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -26,5 +26,9 @@ final class CollectionEmojiCell: UICollectionViewCell {
         } else {
             contentView.backgroundColor = UIColor.clear
         }
+    }
+    
+    func setEmojieLabel(emojie: String) {
+        emojiLabel.text = emojie
     }
 }

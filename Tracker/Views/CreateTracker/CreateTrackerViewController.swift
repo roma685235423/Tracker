@@ -9,11 +9,7 @@ final class CreateTrackerViewController: UIViewController & NewRegularTrackerCon
     private let screenTopLabel = UILabel()
     private let goToCreateHabitScreenButton = UIButton()
     private let goToCreateIrregularEventScreenButton = UIButton()
-    //================================
-    //========================================
     weak var delegate: CreateTrackerDelegate?
-    //========================================
-    //================================
     var trackersVCDismissCallbeck: (() -> Void)?
     // MARK: - Lifecicle
     override func viewDidLoad() {
@@ -34,7 +30,7 @@ final class CreateTrackerViewController: UIViewController & NewRegularTrackerCon
             text: "Нерегулярные событие",
             action: #selector(didTapGoToCreateIrregularEventScreenButton)
         )
-        setConstraints()
+        configureLayout()
     }
     
     // MARK: - Methods
@@ -50,12 +46,13 @@ final class CreateTrackerViewController: UIViewController & NewRegularTrackerCon
         button.addTarget(self, action: action, for: .touchUpInside)
     }
     
-    private func setConstraints() {
+    
+    private func configureLayout() {
         NSLayoutConstraint.activate([
             screenTopLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
             screenTopLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
-            goToCreateHabitScreenButton.topAnchor.constraint(equalTo: screenTopLabel.bottomAnchor, constant: 295),
+            goToCreateHabitScreenButton.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.431),
             goToCreateHabitScreenButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20),
             goToCreateHabitScreenButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20),
             goToCreateHabitScreenButton.heightAnchor.constraint(equalToConstant: 60),

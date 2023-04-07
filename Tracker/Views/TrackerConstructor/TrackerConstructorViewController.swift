@@ -113,7 +113,6 @@ final class NewTrackerConstructorViewController: UIViewController {
     private func initialSettings() {
         view.backgroundColor = InterfaceColors.whiteDay
         textField.delegate = self
-        scrollView.delegate = self
         isNeedToAddSchedulerAction()
         configureScrollView()
         configureTextField()
@@ -123,12 +122,12 @@ final class NewTrackerConstructorViewController: UIViewController {
             addToView: view,
             ofSize: 16,
             weight: .medium)
-        setConstraints()
+        layoutConfigure()
         checkIsCreateButtonActive()
     }
     
     
-    private func setConstraints() {
+    private func layoutConfigure() {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         textField.translatesAutoresizingMaskIntoConstraints = false
         categoryAndSchedulerTable.translatesAutoresizingMaskIntoConstraints = false
@@ -142,15 +141,15 @@ final class NewTrackerConstructorViewController: UIViewController {
         scrollView.addSubview(buttonsStackView)
         
         NSLayoutConstraint.activate([
-            screenTopLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
+            screenTopLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.0515),
             screenTopLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
-            scrollView.topAnchor.constraint(equalTo: screenTopLabel.bottomAnchor, constant: 14),
+            scrollView.topAnchor.constraint(equalTo: screenTopLabel.bottomAnchor, constant: view.frame.height * 0.0744),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
-            textField.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 24),
+            textField.topAnchor.constraint(equalTo: scrollView.topAnchor),
             textField.heightAnchor.constraint(equalToConstant: 75),
             textField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
@@ -160,12 +159,12 @@ final class NewTrackerConstructorViewController: UIViewController {
             categoryAndSchedulerTable.trailingAnchor.constraint(equalTo: textField.trailingAnchor),
             categoryAndSchedulerTable.heightAnchor.constraint(equalToConstant: configureTableHeight()),
             
-            collectionView.topAnchor.constraint(equalTo: categoryAndSchedulerTable.bottomAnchor, constant: 32),
+            collectionView.topAnchor.constraint(equalTo: categoryAndSchedulerTable.bottomAnchor, constant: view.frame.height * 0.061),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 28),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -28),
             collectionView.heightAnchor.constraint(equalToConstant: 379),
             
-            buttonsStackView.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 30),
+            buttonsStackView.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: view.frame.height * 0.04),
             buttonsStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             buttonsStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             buttonsStackView.heightAnchor.constraint(equalToConstant: 60)
@@ -367,7 +366,7 @@ extension NewTrackerConstructorViewController: UICollectionViewDataSource {
         if indexPath.section == 0 {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "emojieCell", for: indexPath) as? CollectionEmojiCell
             else { fatalError("Cell configure error!") }
-            cell.emojiLabel.text = emojies[indexPath.row]
+            cell.setEmojieLabel(emojie: emojies[indexPath.row])
             return cell
         } else {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "colorCell", for: indexPath) as? CollectionColorCell
@@ -499,6 +498,6 @@ extension NewTrackerConstructorViewController: UITextFieldDelegate {
 
 
 // MARK: - Extensions
-extension NewTrackerConstructorViewController: UIScrollViewDelegate, UITableViewDelegate {
+extension NewTrackerConstructorViewController: UITableViewDelegate {
     
 }

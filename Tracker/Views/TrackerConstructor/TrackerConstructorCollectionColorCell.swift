@@ -6,6 +6,14 @@ final class CollectionColorCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        configureLayout()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func configureLayout() {
         contentView.addSubview(framelabel)
         contentView.addSubview(colorLabel)
         colorLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -27,10 +35,6 @@ final class CollectionColorCell: UICollectionViewCell {
             colorLabel.heightAnchor.constraint(equalToConstant: 40),
             colorLabel.widthAnchor.constraint(equalToConstant: 40)
         ])
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     func setCellColor(color: UIColor) {

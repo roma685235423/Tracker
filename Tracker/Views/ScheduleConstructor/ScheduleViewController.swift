@@ -1,28 +1,49 @@
 import UIKit
 
 final class ScheduleViewController: UIViewController {
+    // MARK: - Properties
+    private let scrollView = UIScrollView()
     private let screenTopLabel = UILabel()
     private let schedulerTable = UITableView()
     private lazy var readyButton = UIButton()
     private var dailySchedule: [IsScheduleActiveToday]
+    var scheduleVCCallback: (([IsScheduleActiveToday], String) -> Void)?
+    
+    
+    private let tableHeight = CGFloat(524)
+    private let buttonHeight = CGFloat(60)
+    private var spacing = CGFloat()
+    
+    // MARK: - Lifi cicle
     override func viewDidLoad() {
         super.viewDidLoad()
         initialSettings()
     }
     
-    var scheduleVCCallback: (([IsScheduleActiveToday], String) -> Void)?
     
+    // MARK: - Methods
     private func initialSettings() {
         view.backgroundColor = InterfaceColors.whiteDay
+        spacing = self.view.frame.height * 0.0458
         screenTopLabel.configureLabel(
             text: "Расписание",
             addToView: view,
             ofSize: 16,
             weight: .medium
         )
+        configureScrollView()
         configureSchedulerTable()
         configureReadyButton()
-        setConstraints()
+        configureLayout()
+    }
+    
+    
+    private func configureScrollView() {
+        scrollView.alwaysBounceVertical = true
+        scrollView.decelerationRate = UIScrollView.DecelerationRate.normal
+        scrollView.isScrollEnabled = true
+        scrollView.isUserInteractionEnabled = true
+        scrollView.contentSize = CGSize(width: view.frame.width, height: tableHeight + buttonHeight + (spacing * 2))
     }
     
     
@@ -44,33 +65,40 @@ final class ScheduleViewController: UIViewController {
         readyButton.titleLabel?.textColor = InterfaceColors.whiteDay
         readyButton.layer.cornerRadius = 16
         readyButton.layer.masksToBounds = true
-        readyButton.addTarget(self, action: #selector(dibTapReadyButton), for: .touchUpInside)
+        readyButton.addTarget(self, action: #selector(didTapReadyButton), for: .touchUpInside)
     }
     
     
-    private func setConstraints() {
-        screenTopLabel.translatesAutoresizingMaskIntoConstraints = false
+    private func configureLayout() {
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
         schedulerTable.translatesAutoresizingMaskIntoConstraints = false
         readyButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(screenTopLabel)
-        view.addSubview(schedulerTable)
-        view.addSubview(readyButton)
+                
+        view.addSubview(scrollView)
+        scrollView.addSubview(schedulerTable)
+        scrollView.addSubview(readyButton)
         
         NSLayoutConstraint.activate([
-            screenTopLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
+            screenTopLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.0515),
             screenTopLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
-            schedulerTable.topAnchor.constraint(equalTo: screenTopLabel.bottomAnchor, constant: 38),
-            schedulerTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            schedulerTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            schedulerTable.heightAnchor.constraint(equalToConstant: 524),
+            scrollView.topAnchor.constraint(equalTo: screenTopLabel.bottomAnchor, constant: view.frame.height * 0.0744),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
-            readyButton.heightAnchor.constraint(equalToConstant: 60),
+            schedulerTable.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            schedulerTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            schedulerTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            schedulerTable.heightAnchor.constraint(equalToConstant: tableHeight),
+
+            
+            readyButton.heightAnchor.constraint(equalToConstant: buttonHeight),
             readyButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             readyButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            readyButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50)
+            readyButton.topAnchor.constraint(equalTo: schedulerTable.bottomAnchor, constant: spacing)
         ])
+        scrollView.layoutIfNeeded()
     }
     
     
@@ -101,7 +129,7 @@ extension ScheduleViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
-        let switchView = UISwitch(frame: .zero)
+        let switchView = UISwitch(frame: CGRect(x: 0, y: 0, width: 51, height: 31))
         switchView.setOn(dailySchedule[indexPath.row].schedulerIsActive, animated: true)
         switchView.tag = indexPath.row
         switchView.onTintColor = InterfaceColors.blue
@@ -165,7 +193,7 @@ extension ScheduleViewController: UITableViewDataSource {
     
     
     @objc
-    private func dibTapReadyButton() {
+    private func didTapReadyButton() {
         scheduleVCCallback?(dailySchedule, shortWeekDaysNamesCreation())
         self.dismiss(animated: true)
     }

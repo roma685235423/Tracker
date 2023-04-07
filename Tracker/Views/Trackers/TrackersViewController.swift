@@ -2,22 +2,26 @@ import UIKit
 
 
 class TrackersViewController: UIViewController & CreateTrackerDelegate {
+    // MARK: - Properties
     private var currentDate: Date = Date()
+    private let trackerLabel = UILabel()
+    private let trackersSearchBar = UISearchTextField()
+    private let mainSpacePlaceholderStack = UIStackView()
+    
     private var visibleCategories: [TrackerCategory] = []
     var categories: [TrackerCategory] = [
         TrackerCategory(title: "Важное", trackers: []),
-        TrackerCategory(title: "Swift", trackers: []),
+        TrackerCategory(title: "Swift", trackers: [
+            Tracker(id: UUID.init(), label: "Учить Swift", color: .green, emoji: "🗿", dailySchedule: []),
+            Tracker(id: UUID.init(), label: "жедневно учить Swift", color: .magenta, emoji: "🐺", dailySchedule: [])]
+                        ),
         TrackerCategory(title: "Дом", trackers: [])
     ]
+    
+    
     lazy var addTrackerButton: UIButton = {
         let button = UIButton()
-        let image = UIImage(
-            systemName: "plus",
-            withConfiguration: UIImage.SymbolConfiguration(
-                pointSize: 19,
-                weight: .bold
-            )
-        )
+        let image = UIImage(named: "plus")
         button.setImage(image, for: .normal)
         button.imageView?.tintColor = InterfaceColors.blackDay
         button.imageView?.contentMode = .scaleAspectFit
@@ -26,9 +30,35 @@ class TrackersViewController: UIViewController & CreateTrackerDelegate {
         return button
     }()
     
-    private let trackerLabel = UILabel()
-    private let trackersSearchBar = UISearchTextField()
-    private let mainSpacePlaceholderStack = UIStackView()
+    
+    private lazy var collectionView: UICollectionView = {
+        let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        //collection.dataSource = self
+        collection.delegate = self
+        collection.register(TrackersCollectinCell.self, forCellWithReuseIdentifier: "trackersCollectionCell")
+        collection.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
+        collection.backgroundColor = InterfaceColors.whiteDay
+        collection.isScrollEnabled = false
+        collection.allowsMultipleSelection = false
+        return collection
+    }()
+
+    
+    private lazy var datePicker: UIDatePicker = {
+        let picker = UIDatePicker()
+        picker.preferredDatePickerStyle = .compact
+        picker.datePickerMode = .date
+        picker.locale = Locale(identifier: "ru_RU")
+        
+        picker.tintColor = InterfaceColors.blue
+        picker.layer.cornerRadius = 8
+        picker.layer.masksToBounds = true
+        
+        picker.addTarget(self, action: #selector(datePickerValueChanged), for: .valueChanged)
+        
+        return picker
+    }()
+    
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .darkContent
@@ -45,16 +75,21 @@ class TrackersViewController: UIViewController & CreateTrackerDelegate {
             ofSize: 34,
             weight: .bold
         )
-        setConstraintsForElements()
+        configureLayout()
         configureTrackersSearchBar()
         configureMainSpacePlaceholderStack()
     }
     
     
     // MARK: - Methods
+    
+    @objc func datePickerValueChanged(_ sender: UIDatePicker) {
+            currentDate = Date.from(date: sender.date)!
+            collectionView.reloadData()
+    }
+    
+    
     private func configureMainSpacePlaceholderStack() {
-        mainSpacePlaceholderStack.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(mainSpacePlaceholderStack)
         mainSpacePlaceholderStack.contentMode = .scaleAspectFit
         mainSpacePlaceholderStack.layer.masksToBounds = true
         let imageView = UIImageView(image: UIImage(named: "starPlaceholder"))
@@ -69,17 +104,10 @@ class TrackersViewController: UIViewController & CreateTrackerDelegate {
         mainSpacePlaceholderStack.axis = .vertical
         mainSpacePlaceholderStack.alignment = .center
         mainSpacePlaceholderStack.spacing = 8
-        
-        NSLayoutConstraint.activate([
-            mainSpacePlaceholderStack.topAnchor.constraint(equalTo: trackersSearchBar.bottomAnchor, constant: 230),
-            mainSpacePlaceholderStack.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-        ])
     }
     
     
     private func configureTrackersSearchBar() {
-        trackersSearchBar.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(trackersSearchBar)
         trackersSearchBar.contentMode = .scaleAspectFit
         trackersSearchBar.layer.masksToBounds = true
         trackersSearchBar.clearButtonMode = .whileEditing
@@ -90,29 +118,40 @@ class TrackersViewController: UIViewController & CreateTrackerDelegate {
                 NSAttributedString.Key.foregroundColor: InterfaceColors.gray,
             ]
         )
-        
-        NSLayoutConstraint.activate([
-            trackersSearchBar.topAnchor.constraint(equalTo: trackerLabel.bottomAnchor, constant: 7),
-            trackersSearchBar.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10),
-            trackersSearchBar.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10),
-            trackersSearchBar.heightAnchor.constraint(equalToConstant: 36)
-        ])
     }
     
     
-    private func setConstraintsForElements() {
+    private func configureLayout() {
         addTrackerButton.translatesAutoresizingMaskIntoConstraints = false
         trackerLabel.translatesAutoresizingMaskIntoConstraints = false
+        trackersSearchBar.translatesAutoresizingMaskIntoConstraints = false
+        mainSpacePlaceholderStack.translatesAutoresizingMaskIntoConstraints = false
+        datePicker.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(trackerLabel)
         view.addSubview(addTrackerButton)
+        view.addSubview(trackersSearchBar)
+        view.addSubview(mainSpacePlaceholderStack)
+        view.addSubview(datePicker)
         
         NSLayoutConstraint.activate([
-            trackerLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 88),
+            trackerLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.1083),
             trackerLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 18),
             
+            datePicker.widthAnchor.constraint(equalToConstant: 120),
+            datePicker.centerYAnchor.constraint(equalTo: trackerLabel.centerYAnchor),
+            datePicker.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            
             addTrackerButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 18),
-            addTrackerButton.bottomAnchor.constraint(equalTo: trackerLabel.topAnchor, constant: -5),
+            addTrackerButton.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.07019),
+            
+            trackersSearchBar.topAnchor.constraint(equalTo: trackerLabel.bottomAnchor, constant: 7),
+            trackersSearchBar.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 16),
+            trackersSearchBar.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16),
+            trackersSearchBar.heightAnchor.constraint(equalToConstant: 36),
+            
+            mainSpacePlaceholderStack.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.495),
+            mainSpacePlaceholderStack.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
     
@@ -143,3 +182,13 @@ class TrackersViewController: UIViewController & CreateTrackerDelegate {
 extension TrackersViewController: UISearchBarDelegate {
     
 }
+
+extension TrackersViewController: UICollectionViewDelegate {
+    
+}
+
+//extension TrackersViewController: UICollectionViewDataSource {
+//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//        <#code#>
+//    }
+//}

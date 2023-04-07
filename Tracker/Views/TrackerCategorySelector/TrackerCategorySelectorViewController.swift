@@ -25,7 +25,7 @@ final class TrackerCategorySelectorViewController: UIViewController {
         )
         configureTrackerCategoryTable()
         configureReadyButton()
-        setConstraints()
+        configureLayout()
     }
     
     
@@ -50,7 +50,7 @@ final class TrackerCategorySelectorViewController: UIViewController {
     }
     
     
-    private func setConstraints() {
+    private func configureLayout() {
         screenTopLabel.translatesAutoresizingMaskIntoConstraints = false
         trackerCategoryTable.translatesAutoresizingMaskIntoConstraints = false
         readyButton.translatesAutoresizingMaskIntoConstraints = false

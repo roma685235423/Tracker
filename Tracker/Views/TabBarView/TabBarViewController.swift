@@ -3,20 +3,29 @@ import UIKit
 final class TabBarViewController: UITabBarController {
     
     private let border = UIView()
+    private var tabBarHeight: CGFloat = 0
+    
     private func configureBorder() {
         border.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(border)
         border.backgroundColor = InterfaceColors.gray
         
         NSLayoutConstraint.activate([
-            border.topAnchor.constraint(equalTo: view.bottomAnchor, constant: -84),
+            border.topAnchor.constraint(equalTo: view.bottomAnchor, constant: -tabBarHeight),
             border.widthAnchor.constraint(equalTo: view.widthAnchor),
             border.heightAnchor.constraint(equalToConstant: 1)
         ])
     }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tabBarHeight = tabBar.frame.height
+        configureBorder()
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureBorder()
+        
         let trackerViewController = TrackersViewController()
         let statisticViewController = StatisticViewController()
         
@@ -29,6 +38,8 @@ final class TabBarViewController: UITabBarController {
             image: UIImage(named: "hare"),
             selectedImage: nil)
         
+        self.tabBar.itemPositioning = .centered
+        self.tabBar.itemSpacing = .greatestFiniteMagnitude
         self.viewControllers = [trackerViewController, statisticViewController]
     }
 }
