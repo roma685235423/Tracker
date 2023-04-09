@@ -5,7 +5,6 @@ class TrackersViewController: UIViewController & CreateTrackerDelegate {
     // MARK: - Properties
     private var currentDate: Date = Date()
     private let trackerLabel = UILabel()
-    private let trackersSearchBar = UISearchTextField()
     private let mainSpacePlaceholderStack = UIStackView()
     
     private var visibleCategories: [TrackerCategory] = []
@@ -28,6 +27,16 @@ class TrackersViewController: UIViewController & CreateTrackerDelegate {
         button.layer.masksToBounds = true
         button.addTarget(self, action: #selector(didTapAddTrackerButton), for: .touchUpInside)
         return button
+    }()
+    
+    
+    private lazy var trackersSearchBar: UISearchBar = {
+        let bar = UISearchBar()
+        bar.layer.masksToBounds = true
+        bar.searchBarStyle = .minimal
+        bar.placeholder = "Поиск"
+        bar.delegate = self
+        return bar
     }()
     
     
@@ -76,13 +85,11 @@ class TrackersViewController: UIViewController & CreateTrackerDelegate {
             weight: .bold
         )
         configureLayout()
-        configureTrackersSearchBar()
         configureMainSpacePlaceholderStack()
     }
     
     
     // MARK: - Methods
-    
     @objc func datePickerValueChanged(_ sender: UIDatePicker) {
             currentDate = Date.from(date: sender.date)!
             collectionView.reloadData()
@@ -104,20 +111,6 @@ class TrackersViewController: UIViewController & CreateTrackerDelegate {
         mainSpacePlaceholderStack.axis = .vertical
         mainSpacePlaceholderStack.alignment = .center
         mainSpacePlaceholderStack.spacing = 8
-    }
-    
-    
-    private func configureTrackersSearchBar() {
-        trackersSearchBar.contentMode = .scaleAspectFit
-        trackersSearchBar.layer.masksToBounds = true
-        trackersSearchBar.clearButtonMode = .whileEditing
-        trackersSearchBar.keyboardType = .default
-        trackersSearchBar.attributedPlaceholder = NSAttributedString(
-            string: "Поиск",
-            attributes: [
-                NSAttributedString.Key.foregroundColor: InterfaceColors.gray,
-            ]
-        )
     }
     
     
@@ -156,11 +149,6 @@ class TrackersViewController: UIViewController & CreateTrackerDelegate {
     }
     
     
-    func getTrackersCategories(categories: [String]) {
-        //
-    }
-    
-    
     @objc
     private func didTapAddTrackerButton() {
         let createTrackerViewController = CreateTrackerViewController()
@@ -180,7 +168,25 @@ class TrackersViewController: UIViewController & CreateTrackerDelegate {
 }
 
 extension TrackersViewController: UISearchBarDelegate {
+    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
+        searchBar.setShowsCancelButton(true, animated: true)
+        return true
+    }
     
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        //self.searchText = searchText
+        collectionView.reloadData()
+    }
+    
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchBar.endEditing(true)
+        searchBar.setShowsCancelButton(false, animated: true)
+        //self.searchText = ""
+        collectionView.reloadData()
+    }
 }
 
 extension TrackersViewController: UICollectionViewDelegate {

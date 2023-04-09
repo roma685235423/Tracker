@@ -40,6 +40,7 @@
 		BA8289EF29D6347A00879101 /* SplashScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8289EE29D6347A00879101 /* SplashScreenViewController.swift */; };
 		BA8289F229D740DA00879101 /* CreateTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8289F129D740DA00879101 /* CreateTrackerViewController.swift */; };
 		BAC3C2F929E0673D00B3159A /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC3C2F829E0673D00B3159A /* DateFormatter.swift */; };
+		BAC3C2FB29E09D3200B3159A /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC3C2FA29E09D3200B3159A /* MockData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -97,6 +98,7 @@
 		BA8289EE29D6347A00879101 /* SplashScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenViewController.swift; sourceTree = "<group>"; };
 		BA8289F129D740DA00879101 /* CreateTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTrackerViewController.swift; sourceTree = "<group>"; };
 		BAC3C2F829E0673D00B3159A /* DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatter.swift; sourceTree = "<group>"; };
+		BAC3C2FA29E09D3200B3159A /* MockData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -228,6 +230,7 @@
 				BA418D5829DA0D1300080EB0 /* Tracker.swift */,
 				BA418D5A29DA0D2000080EB0 /* TrackerCategory.swift */,
 				BA418D5C29DA0D2F00080EB0 /* TrackerRecord.swift */,
+				BAC3C2FA29E09D3200B3159A /* MockData.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -425,6 +428,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BAC3C2FB29E09D3200B3159A /* MockData.swift in Sources */,
 				BA418D5F29DA0E1200080EB0 /* TrackerConstructorCollectionEmojiCell.swift in Sources */,
 				BA1AD35B29CDF1E200DCFB4B /* Tracker.xcdatamodeld in Sources */,
 				BA69EE6F29DE23BA00E65C92 /* TrackerCategorySelectorViewController.swift in Sources */,
