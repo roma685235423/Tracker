@@ -3,7 +3,7 @@ import UIKit
 final class StatisticViewController: UIViewController {
     private let statisticLabel = UILabel()
     private let mainSpacePlaceholderStack = UIStackView()
-    private var currentDate = Date.from(date: Date())!
+    private var currentDate = Date.getDate(Date())
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .darkContent
@@ -20,7 +20,6 @@ final class StatisticViewController: UIViewController {
         )
         configureLayout()
         configureMainSpacePlaceholderStack()
-        print("\n\n✅\n\(Calendar.current.component(.weekday, from: currentDate))")
     }
     
     private func configureMainSpacePlaceholderStack() {

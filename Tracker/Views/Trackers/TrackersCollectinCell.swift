@@ -1,5 +1,10 @@
 import UIKit
 
+protocol TrackersCollectinCellDelegate {
+    func didTaptaskIsDoneButton()
+}
+
+
 final class TrackersCollectinCell: UICollectionViewCell {
     private let trackerBackgroundLabel = UILabel()
     private let emojieLabel = UILabel()
@@ -23,12 +28,32 @@ final class TrackersCollectinCell: UICollectionViewCell {
     func configureCellContent(prototype: Tracker) {
         trackerBackgroundLabel.backgroundColor = prototype.color
         trackerBackgroundLabel.layer.borderColor = prototype.color.withAlphaComponent(0.3).cgColor
-    
-        emojieLabel.backgroundColor = prototype.color.withAlphaComponent(0.3)
-        emojieLabel.font = UIFont.systemFont(ofSize: 16)
+        
+        emojieLabel.backgroundColor = InterfaceColors.whiteDay.withAlphaComponent(0.3)
+        emojieLabel.font = UIFont.systemFont(ofSize: 13)
         emojieLabel.text = prototype.emoji
+        emojieLabel.textAlignment = .center
+        
+        trackerTextLabel.configureLabel(
+            text: prototype.label,
+            addToView: trackerBackgroundLabel,
+            ofSize: 12,
+            weight: .medium
+        )
+        trackerTextLabel.textAlignment = .left
+        trackerTextLabel.numberOfLines = 0
+        trackerTextLabel.layer.borderColor = UIColor.clear.cgColor
+        
+        trackerTextLabel.textColor = InterfaceColors.whiteDay
         
         taskIsDoneButton.backgroundColor = prototype.color
+        taskIsDoneButton.setImage(UIImage(systemName: "plus"), for: .normal)
+        taskIsDoneButton.tintColor = InterfaceColors.whiteDay
+        
+        daysCounterTextLabel.textAlignment = .left
+        daysCounterTextLabel.font = UIFont.systemFont(ofSize: 12)
+        daysCounterTextLabel.textColor = InterfaceColors.blackDay
+        daysCounterTextLabel.text = getCorrectDaysRussianWord(days: 13)
     }
     
     
@@ -66,18 +91,35 @@ final class TrackersCollectinCell: UICollectionViewCell {
             
             emojieLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: spaceFromEdge),
             emojieLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: spaceFromEdge),
+            emojieLabel.heightAnchor.constraint(equalToConstant: 24),
+            emojieLabel.widthAnchor.constraint(equalToConstant: 24),
             
-            trackerTextLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: spaceFromEdge),
-            trackerTextLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: spaceFromEdge),
-            trackerTextLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -spaceFromEdge),
+            trackerTextLabel.bottomAnchor.constraint(equalTo: trackerBackgroundLabel.bottomAnchor, constant: -spaceFromEdge),
+            trackerTextLabel.leadingAnchor.constraint(equalTo: trackerBackgroundLabel.leadingAnchor, constant: spaceFromEdge),
+            trackerTextLabel.trailingAnchor.constraint(equalTo: trackerBackgroundLabel.trailingAnchor, constant: -spaceFromEdge),
             
             taskIsDoneButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -spaceFromEdge),
-            taskIsDoneButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: spaceFromEdge),
             taskIsDoneButton.topAnchor.constraint(equalTo: trackerBackgroundLabel.bottomAnchor, constant: 8),
+            taskIsDoneButton.heightAnchor.constraint(equalToConstant: 34),
+            taskIsDoneButton.widthAnchor.constraint(equalToConstant: 34),
             
             daysCounterTextLabel.centerYAnchor.constraint(equalTo: taskIsDoneButton.centerYAnchor),
             daysCounterTextLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: spaceFromEdge),
             daysCounterTextLabel.trailingAnchor.constraint(equalTo: taskIsDoneButton.leadingAnchor, constant: -8)
         ])
+    }
+    
+    private func getCorrectDaysRussianWord(days: Int) -> String {
+        let mod10 = days % 10
+        let mod100 = days % 100
+        
+        switch mod10 {
+        case 1 where mod100 != 11:
+            return "\(days) день"
+        case 2...4 where mod100 < 12 || mod100 > 14:
+            return "\(days) дня"
+        default:
+            return "\(days) дней"
+        }
     }
 }

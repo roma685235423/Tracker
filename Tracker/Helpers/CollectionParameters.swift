@@ -1,6 +1,6 @@
 import UIKit
 
-struct GeometricParams {
+struct CollectionParameters {
     let cellCount: Int
     let leftInset: CGFloat
     let rightInset: CGFloat
