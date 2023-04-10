@@ -19,41 +19,22 @@ final class StatisticViewController: UIViewController {
             weight: .bold
         )
         configureLayout()
-        configureMainSpacePlaceholderStack()
-    }
-    
-    private func configureMainSpacePlaceholderStack() {
-        mainSpacePlaceholderStack.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(mainSpacePlaceholderStack)
-        mainSpacePlaceholderStack.contentMode = .scaleAspectFit
-        mainSpacePlaceholderStack.layer.masksToBounds = true
-        let imageView = UIImageView(image: UIImage(named: "statisticPlaceholder"))
-        imageView.layer.frame = CGRect(origin: .zero, size: CGSize(width: 80, height: 80))
-        let label = UILabel()
-        label.textColor = InterfaceColors.blackDay
-        label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        label.text = "Анализировать пока нечего"
-        label.textAlignment = .center
-        mainSpacePlaceholderStack.addArrangedSubview(imageView)
-        mainSpacePlaceholderStack.addArrangedSubview(label)
-        mainSpacePlaceholderStack.axis = .vertical
-        mainSpacePlaceholderStack.alignment = .center
-        mainSpacePlaceholderStack.spacing = 8
-        
-        NSLayoutConstraint.activate([
-            mainSpacePlaceholderStack.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.495),
-            mainSpacePlaceholderStack.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-        ])
+        mainSpacePlaceholderStack.configurePlaceholderStack(imageName: "statisticPlaceholder", text: "Анализировать пока нечего")
     }
     
     private func configureLayout() {
         statisticLabel.translatesAutoresizingMaskIntoConstraints = false
+        mainSpacePlaceholderStack.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(statisticLabel)
+        view.addSubview(mainSpacePlaceholderStack)
         
         NSLayoutConstraint.activate([
             statisticLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 16),
-            statisticLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.1083)
+            statisticLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.1083),
+            
+            mainSpacePlaceholderStack.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.495),
+            mainSpacePlaceholderStack.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
 }

@@ -4,15 +4,18 @@ protocol CreateTrackerDelegate: AnyObject {
     func getTrackersCategories() -> [String]
 }
 
-final class CreateTrackerViewController: UIViewController & NewRegularTrackerConstructorDelegate {
+final class CreateTrackerViewController: UIViewController, NewRegularTrackerConstructorDelegate {
     // MARK: - UIElements
     private let screenTopLabel = UILabel()
     private let goToCreateHabitScreenButton = UIButton()
     private let goToCreateIrregularEventScreenButton = UIButton()
     weak var delegate: CreateTrackerDelegate?
+    
     var trackersVCDismissCallbeck: (() -> Void)?
+    var trackersVCCreateCallbeck: ((String, Tracker) -> Void)?
     // MARK: - Lifecicle
     override func viewDidLoad() {
+
         super.viewDidLoad()
         view.backgroundColor = InterfaceColors.whiteDay
         screenTopLabel.configureLabel(
@@ -69,6 +72,9 @@ final class CreateTrackerViewController: UIViewController & NewRegularTrackerCon
         let newTrackerConstructorView = NewTrackerConstructorViewController(isRegularEvent: true)
         newTrackerConstructorView.modalPresentationStyle = .pageSheet
         newTrackerConstructorView.deleagte = self
+        newTrackerConstructorView.trackersVCCreateCallbeck = { [ weak self ] categoryLabel, tracker in
+            self?.trackersVCCreateCallbeck?(categoryLabel, tracker)
+        }
         newTrackerConstructorView.trackersVCCancelCallbeck = { [ weak self ] in
             self?.trackersVCDismissCallbeck?()
         }
@@ -80,6 +86,9 @@ final class CreateTrackerViewController: UIViewController & NewRegularTrackerCon
         let newIrregularEventView = NewTrackerConstructorViewController(isRegularEvent: false)
         newIrregularEventView.modalPresentationStyle = .pageSheet
         newIrregularEventView.deleagte = self
+        newIrregularEventView.trackersVCCreateCallbeck = { [ weak self ] categoryLabel, tracker in
+            self?.trackersVCCreateCallbeck?(categoryLabel, tracker)
+        }
         newIrregularEventView.trackersVCCancelCallbeck = { [ weak self ] in
             self?.trackersVCDismissCallbeck?()
         }
@@ -87,9 +96,9 @@ final class CreateTrackerViewController: UIViewController & NewRegularTrackerCon
     }
     
     
-    func didCreateNewTracker(tracker: Tracker, in category: String) {
-
-    }
+//    func didCreateNewTracker(tracker: Tracker, in category: String) {
+//
+//    }
     
     
     func getTrackersCategories() -> [String] {

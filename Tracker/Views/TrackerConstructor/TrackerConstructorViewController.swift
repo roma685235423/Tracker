@@ -2,7 +2,7 @@ import UIKit
 
 protocol NewRegularTrackerConstructorDelegate: AnyObject {
     func getTrackersCategories() -> [String]
-    func didCreateNewTracker(tracker: Tracker, in category: String)
+    //func didCreateNewTracker(tracker: Tracker, in category: String)
 }
 
 final class NewTrackerConstructorViewController: UIViewController {
@@ -15,6 +15,7 @@ final class NewTrackerConstructorViewController: UIViewController {
     // MARK: - Properties
     private var trackerNameString: String = ""
     private var trackerEmogieString: String = ""
+    private var trackerCategoryString: String = ""
     private var trackerColor: UIColor?
     
     private var actionsArray: [TableViewActions] = [.init(titleLabelText: "Категория", subTitleLabel: "")]
@@ -42,6 +43,8 @@ final class NewTrackerConstructorViewController: UIViewController {
     weak var deleagte: NewRegularTrackerConstructorDelegate?
     
     var trackersVCCancelCallbeck: (() -> Void)?
+    var trackersVCCreateCallbeck: ((String, Tracker) -> Void)?
+    
     var scheduleVCCallback: (([IsScheduleActiveToday], String) -> Void)?
     var trackerCategorySelectorVCCallback: ((String) -> Void)?
     
@@ -245,10 +248,9 @@ final class NewTrackerConstructorViewController: UIViewController {
             label: trackerNameString,
             color: color,
             emoji: trackerEmogieString,
-            dailySchedule: dailySchedule
+            dailySchedule: isRegularEvent ? dailySchedule : nil
         )
-        deleagte?.didCreateNewTracker(tracker: tracker, in: actionsArray[0].subTitleLabel)
-        trackersVCCancelCallbeck?()
+            trackersVCCreateCallbeck?(trackerCategoryString, tracker)
     }
     
     
@@ -274,10 +276,10 @@ final class NewTrackerConstructorViewController: UIViewController {
            trackerEmogieString != "",
            trackerColor != nil,
            actionsArray.allSatisfy({ $0.subTitleLabel != "" }) {
-               makeCreateButtonActive(isActive: true)
-           } else {
-               makeCreateButtonActive(isActive: false)
-           }
+            makeCreateButtonActive(isActive: true)
+        } else {
+            makeCreateButtonActive(isActive: false)
+        }
     }
     
     
@@ -322,6 +324,7 @@ extension NewTrackerConstructorViewController: UITableViewDataSource {
             trackerCategorySelectorViewController.trackerCategorySelectorVCCallback = { [ weak self ] cellSubviewText, selectedItem in
                 guard let self = self else { return }
                 self.actionsArray[0].subTitleLabel = cellSubviewText
+                self.trackerCategoryString = cellSubviewText
                 self.currentSelectedCateory = selectedItem
                 self.checkIsCreateButtonActive()
                 self.categoryAndSchedulerTable.reloadData()

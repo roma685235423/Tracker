@@ -1,21 +1,38 @@
 import UIKit
 
-protocol TrackersCollectinCellDelegate {
-    func didTaptaskIsDoneButton()
+
+// MARK: - TrackersCollectinCellDelegate
+protocol TrackersCollectinCellDelegate: AnyObject {
+    func didTaptaskIsDoneButton(cell: TrackersCollectinCell, tracker: Tracker)
 }
 
 
+// MARK: - TrackersCollectinCell
 final class TrackersCollectinCell: UICollectionViewCell {
+    
+    // MARK: - UI
     private let trackerBackgroundLabel = UILabel()
     private let emojieLabel = UILabel()
     private let trackerTextLabel = UILabel()
     private let daysCounterTextLabel = UILabel()
     private let taskIsDoneButton = UIButton()
+    private var tracker: Tracker?
     
+    
+    // MARK: - Properties
+    weak var delegate: TrackersCollectinCellDelegate?
     private let spaceFromEdge: CGFloat = 12
+    private var daysCounter = 0 {
+        willSet {
+            daysCounterTextLabel.text = "\(getCorrectRussianWordDay(days: newValue))"
+        }
+    }
     
+    
+    // MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: frame)
+        tracker = nil
         configureLayout()
     }
     
@@ -25,7 +42,22 @@ final class TrackersCollectinCell: UICollectionViewCell {
     }
     
     
-    func configureCellContent(prototype: Tracker) {
+    // MARK: - Life cicle
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        tracker = nil
+        daysCounter = 0
+        changeTaskIsDoneButtonUI(state: false)
+    }
+    
+    
+    // MARK: - Methods
+    
+    func configureCell(tracker: Tracker, daysCounter: Int, isDone: Bool){
+        self.daysCounter = daysCounter
+        self.tracker = tracker
+    }
+    func configureCellContent(prototype: Tracker, daysCounter: Int, isDone: Bool) {
         trackerBackgroundLabel.backgroundColor = prototype.color
         trackerBackgroundLabel.layer.borderColor = prototype.color.withAlphaComponent(0.3).cgColor
         
@@ -53,7 +85,8 @@ final class TrackersCollectinCell: UICollectionViewCell {
         daysCounterTextLabel.textAlignment = .left
         daysCounterTextLabel.font = UIFont.systemFont(ofSize: 12)
         daysCounterTextLabel.textColor = InterfaceColors.blackDay
-        daysCounterTextLabel.text = getCorrectDaysRussianWord(days: 13)
+        daysCounterTextLabel.text = getCorrectRussianWordDay(days: daysCounter)
+        changeTaskIsDoneButtonUI(state: isDone)
     }
     
     
@@ -109,7 +142,20 @@ final class TrackersCollectinCell: UICollectionViewCell {
         ])
     }
     
-    private func getCorrectDaysRussianWord(days: Int) -> String {
+    private func changeTaskIsDoneButtonUI(state: Bool) {
+        if state {
+            taskIsDoneButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
+            taskIsDoneButton.layer.opacity = 0.3
+            daysCounter += 1
+        } else {
+            taskIsDoneButton.setImage(UIImage(systemName: "plus"), for: .normal)
+            taskIsDoneButton.layer.opacity = 1
+            daysCounter -= 1
+        }
+    }
+    
+    
+    private func getCorrectRussianWordDay(days: Int) -> String {
         let mod10 = days % 10
         let mod100 = days % 100
         

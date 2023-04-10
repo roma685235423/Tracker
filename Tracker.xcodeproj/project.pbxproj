@@ -40,6 +40,7 @@
 		BA8289EC29D62E6B00879101 /* StatisticViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8289EB29D62E6B00879101 /* StatisticViewController.swift */; };
 		BA8289EF29D6347A00879101 /* SplashScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8289EE29D6347A00879101 /* SplashScreenViewController.swift */; };
 		BA8289F229D740DA00879101 /* CreateTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8289F129D740DA00879101 /* CreateTrackerViewController.swift */; };
+		BABB692C29E4A42F005DBCBA /* UIStack+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BABB692B29E4A42F005DBCBA /* UIStack+Extension.swift */; };
 		BAC3C2F929E0673D00B3159A /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC3C2F829E0673D00B3159A /* Date+Extension.swift */; };
 		BAC3C2FB29E09D3200B3159A /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC3C2FA29E09D3200B3159A /* MockData.swift */; };
 /* End PBXBuildFile section */
@@ -99,6 +100,7 @@
 		BA8289EB29D62E6B00879101 /* StatisticViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticViewController.swift; sourceTree = "<group>"; };
 		BA8289EE29D6347A00879101 /* SplashScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenViewController.swift; sourceTree = "<group>"; };
 		BA8289F129D740DA00879101 /* CreateTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTrackerViewController.swift; sourceTree = "<group>"; };
+		BABB692B29E4A42F005DBCBA /* UIStack+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStack+Extension.swift"; sourceTree = "<group>"; };
 		BAC3C2F829E0673D00B3159A /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		BAC3C2FA29E09D3200B3159A /* MockData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -221,6 +223,7 @@
 				BA3B5CD129D75BBD000C53FC /* UILabel+Extension.swift */,
 				BA1F3A9F29E33CCB00AAA9C6 /* UICollectionView+Extension.swift */,
 				BAC3C2F829E0673D00B3159A /* Date+Extension.swift */,
+				BABB692B29E4A42F005DBCBA /* UIStack+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -450,6 +453,7 @@
 				BA418D6129DA243900080EB0 /* CollectionViewSupplementaryView.swift in Sources */,
 				BA1AD35529CDF1E200DCFB4B /* TrackersViewController.swift in Sources */,
 				BA8289E929D5FBB600879101 /* ColorSelection.swift in Sources */,
+				BABB692C29E4A42F005DBCBA /* UIStack+Extension.swift in Sources */,
 				BA8289F229D740DA00879101 /* CreateTrackerViewController.swift in Sources */,
 				BA418D6A29DB6BF800080EB0 /* IsScheduleActiveToday.swift in Sources */,
 				BA1AD35129CDF1E200DCFB4B /* AppDelegate.swift in Sources */,
