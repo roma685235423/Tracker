@@ -22,13 +22,13 @@ final class NewTrackerConstructorViewController: UIViewController {
     private var currentSelectedCateory: Int?
     
     private var dailySchedule: [IsScheduleActiveToday] = [
-        IsScheduleActiveToday(dayOfWeek: "Понедельник"),
-        IsScheduleActiveToday(dayOfWeek: "Вторник"),
-        IsScheduleActiveToday(dayOfWeek: "Среда"),
-        IsScheduleActiveToday(dayOfWeek: "Четверг"),
-        IsScheduleActiveToday(dayOfWeek: "Пятница"),
-        IsScheduleActiveToday(dayOfWeek: "Суббота"),
-        IsScheduleActiveToday(dayOfWeek: "Воскресенье")
+        IsScheduleActiveToday(dayOfWeek: "Понедельник", dayOfWeekNumber: 2),
+        IsScheduleActiveToday(dayOfWeek: "Вторник", dayOfWeekNumber: 3),
+        IsScheduleActiveToday(dayOfWeek: "Среда", dayOfWeekNumber: 4),
+        IsScheduleActiveToday(dayOfWeek: "Четверг", dayOfWeekNumber: 5),
+        IsScheduleActiveToday(dayOfWeek: "Пятница", dayOfWeekNumber: 6),
+        IsScheduleActiveToday(dayOfWeek: "Суббота", dayOfWeekNumber: 7),
+        IsScheduleActiveToday(dayOfWeek: "Воскресенье", dayOfWeekNumber: 1)
     ]
     
     private let collectionViewSectionHeaders = ["Emoji", "Цвет"]
@@ -243,12 +243,13 @@ final class NewTrackerConstructorViewController: UIViewController {
     @objc
     private func didTapCreateButton() {
         guard let color = trackerColor else { return }
+        let scheduler = dailySchedule.filter { $0.schedulerIsActive }
         let tracker = Tracker(
             id: UUID.init(),
             label: trackerNameString,
             color: color,
             emoji: trackerEmogieString,
-            dailySchedule: isRegularEvent ? dailySchedule : nil
+            dailySchedule: isRegularEvent ? scheduler : nil
         )
             trackersVCCreateCallbeck?(trackerCategoryString, tracker)
     }

@@ -3,7 +3,7 @@ import UIKit
 
 // MARK: - TrackersCollectinCellDelegate
 protocol TrackersCollectinCellDelegate: AnyObject {
-    func didTaptaskIsDoneButton(cell: TrackersCollectinCell, tracker: Tracker)
+    func didTapTaskIsDoneButton(cell: TrackersCollectinCell, tracker: Tracker)
 }
 
 
@@ -46,18 +46,16 @@ final class TrackersCollectinCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         tracker = nil
-        daysCounter = 0
         changeTaskIsDoneButtonUI(state: false)
+        daysCounter = 0
     }
     
     
     // MARK: - Methods
     
-    func configureCell(tracker: Tracker, daysCounter: Int, isDone: Bool){
-        self.daysCounter = daysCounter
-        self.tracker = tracker
-    }
     func configureCellContent(prototype: Tracker, daysCounter: Int, isDone: Bool) {
+        self.tracker = prototype
+        self.daysCounter = daysCounter
         trackerBackgroundLabel.backgroundColor = prototype.color
         trackerBackgroundLabel.layer.borderColor = prototype.color.withAlphaComponent(0.3).cgColor
         
@@ -81,6 +79,7 @@ final class TrackersCollectinCell: UICollectionViewCell {
         taskIsDoneButton.backgroundColor = prototype.color
         taskIsDoneButton.setImage(UIImage(systemName: "plus"), for: .normal)
         taskIsDoneButton.tintColor = InterfaceColors.whiteDay
+        taskIsDoneButton.addTarget(self, action: #selector(didTapTaskIsDoneButton), for: .touchUpInside)
         
         daysCounterTextLabel.textAlignment = .left
         daysCounterTextLabel.font = UIFont.systemFont(ofSize: 12)
@@ -142,16 +141,30 @@ final class TrackersCollectinCell: UICollectionViewCell {
         ])
     }
     
-    private func changeTaskIsDoneButtonUI(state: Bool) {
+    
+    @objc
+    private func didTapTaskIsDoneButton() {
+        guard let tracker else { return }
+        delegate?.didTapTaskIsDoneButton(cell: self, tracker: tracker)
+    }
+    
+    
+    func changeTaskIsDoneButtonUI(state: Bool) {
         if state {
             taskIsDoneButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
             taskIsDoneButton.layer.opacity = 0.3
-            daysCounter += 1
         } else {
             taskIsDoneButton.setImage(UIImage(systemName: "plus"), for: .normal)
             taskIsDoneButton.layer.opacity = 1
-            daysCounter -= 1
         }
+    }
+    
+    func counterAdd() {
+        daysCounter += 1
+    }
+    
+    func counterSub() {
+        daysCounter -= 1
     }
     
     
