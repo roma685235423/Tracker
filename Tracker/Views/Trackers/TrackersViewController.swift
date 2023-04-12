@@ -146,12 +146,12 @@ class TrackersViewController: UIViewController, CreateTrackerDelegate {
     
     // MARK: - Methods
     private func checkMainPlaceholderVisability() {
-        let isHidden = categories.isEmpty
+        let isHidden = visibleCategories.isEmpty && searchSpacePlaceholderStack.isHidden
         mainSpacePlaceholderStack.isHidden = !isHidden
     }
     
     private func checkPlaceholderVisabilityAfterSearch() {
-        let isHidden = visibleCategories.isEmpty && mainSpacePlaceholderStack.isHidden
+        let isHidden = visibleCategories.isEmpty && searchedText != ""
         searchSpacePlaceholderStack.isHidden = !isHidden
     }
     
@@ -195,6 +195,7 @@ class TrackersViewController: UIViewController, CreateTrackerDelegate {
             }
         }
         visibleCategories = newVisibleCategories
+        checkMainPlaceholderVisability()
     }
     
     
@@ -288,7 +289,9 @@ extension TrackersViewController: UICollectionViewDelegate {
 //MARK: - UICollectionViewDataSource
 extension TrackersViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        visibleCategories.count
+        updateVisibleTrackers()
+        checkMainPlaceholderVisability()
+        return visibleCategories.filter{$0.trackers.count > 0}.count
     }
     
     
