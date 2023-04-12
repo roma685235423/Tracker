@@ -24,11 +24,11 @@ final class TabBarViewController: UITabBarController {
         
         trackerViewController.tabBarItem = UITabBarItem(
             title: "Трекеры",
-            image: UIImage(named: "circle"),
+            image: UIImage(named: "Circle"),
             selectedImage: nil)
         statisticViewController.tabBarItem = UITabBarItem(
             title: "Статистика",
-            image: UIImage(named: "hare"),
+            image: UIImage(named: "Hare"),
             selectedImage: nil)
         
         self.tabBar.itemPositioning = .centered

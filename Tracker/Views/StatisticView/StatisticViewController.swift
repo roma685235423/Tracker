@@ -22,7 +22,7 @@ final class StatisticViewController: UIViewController {
             weight: .bold
         )
         configureLayout()
-        mainSpacePlaceholderStack.configurePlaceholderStack(imageName: "statisticPlaceholder", text: "Анализировать пока нечего")
+        mainSpacePlaceholderStack.configurePlaceholderStack(imageName: "StatisticPlaceholder", text: "Анализировать пока нечего")
     }
     
     

@@ -23,7 +23,7 @@ class TrackersViewController: UIViewController, CreateTrackerDelegate {
     // MARK: - UI Lazy
     lazy var addTrackerButton: UIButton = {
         let button = UIButton()
-        let image = UIImage(named: "plus")
+        let image = UIImage(named: "Plus")
         button.setImage(image, for: .normal)
         button.imageView?.tintColor = InterfaceColors.blackDay
         button.imageView?.contentMode = .scaleAspectFit
@@ -89,8 +89,8 @@ class TrackersViewController: UIViewController, CreateTrackerDelegate {
             weight: .bold
         )
         configureLayout()
-        mainSpacePlaceholderStack.configurePlaceholderStack(imageName: "starPlaceholder", text: "Что будем отслеживать?")
-        searchSpacePlaceholderStack.configurePlaceholderStack(imageName: "searchPlaceholder", text: "Ничего не найдено")
+        mainSpacePlaceholderStack.configurePlaceholderStack(imageName: "StarPlaceholder", text: "Что будем отслеживать?")
+        searchSpacePlaceholderStack.configurePlaceholderStack(imageName: "SearchPlaceholder", text: "Ничего не найдено")
         checkMainPlaceholderVisability()
         checkPlaceholderVisabilityAfterSearch()
     }
