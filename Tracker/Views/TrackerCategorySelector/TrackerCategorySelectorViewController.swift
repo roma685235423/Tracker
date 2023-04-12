@@ -1,20 +1,25 @@
 import UIKit
 
 final class TrackerCategorySelectorViewController: UIViewController {
+    // MARK: - UI
     private let screenTopLabel = UILabel()
     private let trackerCategoryTable = UITableView()
     private lazy var readyButton = UIButton()
+    
+    // MARK: - Properties
     private var categories: [String]
     private var selectedItem: Int?
-    
     var trackerCategorySelectorVCCallback: ((String, Int?) -> Void)?
     
+    
+    // MARK: - Life cicle
     override func viewDidLoad() {
         super.viewDidLoad()
         initialSettings()
     }
     
     
+    // MARK: - UIConfiguration methods
     private func initialSettings() {
         view.backgroundColor = InterfaceColors.whiteDay
         screenTopLabel.configureLabel(
@@ -50,6 +55,7 @@ final class TrackerCategorySelectorViewController: UIViewController {
     }
     
     
+    // MARK: - Layout configuraion
     private func configureLayout() {
         screenTopLabel.translatesAutoresizingMaskIntoConstraints = false
         trackerCategoryTable.translatesAutoresizingMaskIntoConstraints = false
@@ -75,6 +81,8 @@ final class TrackerCategorySelectorViewController: UIViewController {
         ])
     }
     
+    
+    // MARK: - Methods
     private func calculateTableSize() -> CGFloat {
         if categories.count > 1 {
             return CGFloat((categories.count * 75) - 1)
@@ -85,6 +93,8 @@ final class TrackerCategorySelectorViewController: UIViewController {
         }
     }
     
+    
+    // MARK: - init
     init(categoryes: [String], currentItem: Int?) {
         self.categories = categoryes
         self.selectedItem = currentItem
@@ -99,6 +109,7 @@ final class TrackerCategorySelectorViewController: UIViewController {
 
 
 
+// MARK: - UITableViewDelegate Extension
 extension TrackerCategorySelectorViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath)
@@ -119,6 +130,7 @@ extension TrackerCategorySelectorViewController: UITableViewDelegate {
 
 
 
+// MARK: - UITableViewDataSource Extension
 extension TrackerCategorySelectorViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         categories.count

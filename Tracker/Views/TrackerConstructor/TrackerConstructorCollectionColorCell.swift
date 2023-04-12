@@ -1,18 +1,12 @@
 import UIKit
 
 final class CollectionColorCell: UICollectionViewCell {
+    // MARK: - UI
     private let framelabel = UILabel()
     private let colorLabel = UILabel()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        configureLayout()
-    }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
+    // MARK: - Layout configuraion
     private func configureLayout() {
         contentView.addSubview(framelabel)
         contentView.addSubview(colorLabel)
@@ -37,9 +31,12 @@ final class CollectionColorCell: UICollectionViewCell {
         ])
     }
     
+    
+    // MARK: - Methods
     func setCellColor(color: UIColor) {
         self.colorLabel.backgroundColor = color
     }
+    
     
     func cellIsSelected(state: Bool) {
         if state == true {
@@ -48,5 +45,16 @@ final class CollectionColorCell: UICollectionViewCell {
         } else {
             framelabel.layer.borderColor = UIColor.clear.cgColor
         }
+    }
+    
+    
+    // MARK: - init
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        configureLayout()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

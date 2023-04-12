@@ -1,10 +1,13 @@
 import UIKit
 
 final class StatisticViewController: UIViewController {
+    // MARK: - UI
     private let statisticLabel = UILabel()
     private let mainSpacePlaceholderStack = UIStackView()
     private var currentDate = Date.getDate(Date())
     
+    
+    // MARK: - Life cicle
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .darkContent
     }
@@ -22,6 +25,8 @@ final class StatisticViewController: UIViewController {
         mainSpacePlaceholderStack.configurePlaceholderStack(imageName: "statisticPlaceholder", text: "Анализировать пока нечего")
     }
     
+    
+    // MARK: - Layout configuraion
     private func configureLayout() {
         statisticLabel.translatesAutoresizingMaskIntoConstraints = false
         mainSpacePlaceholderStack.translatesAutoresizingMaskIntoConstraints = false

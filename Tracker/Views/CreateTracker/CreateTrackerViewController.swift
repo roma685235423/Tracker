@@ -9,13 +9,16 @@ final class CreateTrackerViewController: UIViewController, NewRegularTrackerCons
     private let screenTopLabel = UILabel()
     private let goToCreateHabitScreenButton = UIButton()
     private let goToCreateIrregularEventScreenButton = UIButton()
+    
+    
     weak var delegate: CreateTrackerDelegate?
     
     var trackersVCDismissCallbeck: (() -> Void)?
     var trackersVCCreateCallbeck: ((String, Tracker) -> Void)?
+    
+    
     // MARK: - Lifecicle
     override func viewDidLoad() {
-
         super.viewDidLoad()
         view.backgroundColor = InterfaceColors.whiteDay
         screenTopLabel.configureLabel(
@@ -36,20 +39,8 @@ final class CreateTrackerViewController: UIViewController, NewRegularTrackerCons
         configureLayout()
     }
     
-    // MARK: - Methods
-    private func configureButton(button: UIButton, text: String, action: Selector) {
-        button.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(button)
-        button.backgroundColor = InterfaceColors.blackDay
-        button.setTitle(text, for: .normal)
-        button.titleLabel?.textColor = InterfaceColors.whiteDay
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.layer.cornerRadius = 16
-        button.layer.masksToBounds = true
-        button.addTarget(self, action: action, for: .touchUpInside)
-    }
     
-    
+    // MARK: - Layout configuraion
     private func configureLayout() {
         NSLayoutConstraint.activate([
             screenTopLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
@@ -67,6 +58,32 @@ final class CreateTrackerViewController: UIViewController, NewRegularTrackerCons
         ])
     }
     
+    
+    // MARK: - UIConfiguration methods
+    private func configureButton(button: UIButton, text: String, action: Selector) {
+        button.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(button)
+        button.backgroundColor = InterfaceColors.blackDay
+        button.setTitle(text, for: .normal)
+        button.titleLabel?.textColor = InterfaceColors.whiteDay
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        button.layer.cornerRadius = 16
+        button.layer.masksToBounds = true
+        button.addTarget(self, action: action, for: .touchUpInside)
+    }
+    
+    
+    // MARK: - Methods
+    func getTrackersCategories() -> [String] {
+        if let categories = delegate?.getTrackersCategories() {
+            return categories
+        } else {
+            return []
+        }
+    }
+    
+    
+    // MARK: - Actions
     @objc
     private func didTapGoToCreateHabitScreenButton() {
         let newTrackerConstructorView = NewTrackerConstructorViewController(isRegularEvent: true)
@@ -81,6 +98,7 @@ final class CreateTrackerViewController: UIViewController, NewRegularTrackerCons
         present(newTrackerConstructorView, animated: true)
     }
     
+    
     @objc
     private func didTapGoToCreateIrregularEventScreenButton() {
         let newIrregularEventView = NewTrackerConstructorViewController(isRegularEvent: false)
@@ -93,19 +111,5 @@ final class CreateTrackerViewController: UIViewController, NewRegularTrackerCons
             self?.trackersVCDismissCallbeck?()
         }
         present(newIrregularEventView, animated: true)
-    }
-    
-    
-//    func didCreateNewTracker(tracker: Tracker, in category: String) {
-//
-//    }
-    
-    
-    func getTrackersCategories() -> [String] {
-        if let categories = delegate?.getTrackersCategories() {
-            return categories
-        } else {
-            return []
-        }
     }
 }

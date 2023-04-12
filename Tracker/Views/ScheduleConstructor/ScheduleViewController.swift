@@ -1,27 +1,64 @@
 import UIKit
 
 final class ScheduleViewController: UIViewController {
-    // MARK: - Properties
+    // MARK: - UIElements
     private let scrollView = UIScrollView()
     private let screenTopLabel = UILabel()
     private let schedulerTable = UITableView()
     private lazy var readyButton = UIButton()
+    
+    // MARK: - Properties
     private var dailySchedule: [IsScheduleActiveToday]
     var scheduleVCCallback: (([IsScheduleActiveToday], String) -> Void)?
-    
     
     private let tableHeight = CGFloat(524)
     private let buttonHeight = CGFloat(60)
     private var spacing = CGFloat()
     
-    // MARK: - Lifi cicle
+    
+    
+    // MARK: - Life cicle
     override func viewDidLoad() {
         super.viewDidLoad()
         initialSettings()
     }
     
     
-    // MARK: - Methods
+    // MARK: - Layout configuraion
+    private func configureLayout() {
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        schedulerTable.translatesAutoresizingMaskIntoConstraints = false
+        readyButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(scrollView)
+        scrollView.addSubview(schedulerTable)
+        scrollView.addSubview(readyButton)
+        
+        NSLayoutConstraint.activate([
+            screenTopLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.0515),
+            screenTopLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
+            scrollView.topAnchor.constraint(equalTo: screenTopLabel.bottomAnchor, constant: view.frame.height * 0.0744),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            schedulerTable.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            schedulerTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            schedulerTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            schedulerTable.heightAnchor.constraint(equalToConstant: tableHeight),
+            
+            
+            readyButton.heightAnchor.constraint(equalToConstant: buttonHeight),
+            readyButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            readyButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            readyButton.topAnchor.constraint(equalTo: schedulerTable.bottomAnchor, constant: spacing)
+        ])
+        scrollView.layoutIfNeeded()
+    }
+    
+    
+    // MARK: - UIConfiguration methods
     private func initialSettings() {
         view.backgroundColor = InterfaceColors.whiteDay
         spacing = self.view.frame.height * 0.0458
@@ -69,43 +106,63 @@ final class ScheduleViewController: UIViewController {
     }
     
     
-    private func configureLayout() {
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        schedulerTable.translatesAutoresizingMaskIntoConstraints = false
-        readyButton.translatesAutoresizingMaskIntoConstraints = false
-                
-        view.addSubview(scrollView)
-        scrollView.addSubview(schedulerTable)
-        scrollView.addSubview(readyButton)
-        
-        NSLayoutConstraint.activate([
-            screenTopLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.0515),
-            screenTopLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            
-            scrollView.topAnchor.constraint(equalTo: screenTopLabel.bottomAnchor, constant: view.frame.height * 0.0744),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            
-            schedulerTable.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            schedulerTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            schedulerTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            schedulerTable.heightAnchor.constraint(equalToConstant: tableHeight),
-
-            
-            readyButton.heightAnchor.constraint(equalToConstant: buttonHeight),
-            readyButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            readyButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            readyButton.topAnchor.constraint(equalTo: schedulerTable.bottomAnchor, constant: spacing)
-        ])
-        scrollView.layoutIfNeeded()
+    // MARK: - Methods
+    private func shortWeekDaysNamesCreation() -> String {
+        var shortDaysOfWeekNames: [String] = []
+        for day in dailySchedule {
+            if day.schedulerIsActive {
+                if let shortDayName = weekDaysNamesShorting(day: day.dayOfWeek) {
+                    shortDaysOfWeekNames.append(shortDayName)
+                }
+            }
+        }
+        let shortDaysOfWeekNamesString = shortDaysOfWeekNames.joined(separator: ", ")
+        return shortDaysOfWeekNamesString
     }
     
     
+    private func weekDaysNamesShorting(day: String?) -> String? {
+        switch day {
+        case "Понедельник":
+            return "Пн"
+        case "Вторник":
+            return "Вт"
+        case "Среда":
+            return "Ср"
+        case "Четверг":
+            return "Чт"
+        case "Пятница":
+            return "Пт"
+        case "Суббота":
+            return "Сб"
+        case "Воскресенье":
+            return "Вс"
+        default :
+            return nil
+        }
+    }
+    
+    
+    // MARK: - Actions
+    @objc
+    private func switchChanged(_ sender : UISwitch!){
+        let row = sender.tag
+        dailySchedule[row].schedulerIsActive.toggle()
+    }
+    
+    
+    @objc
+    private func didTapReadyButton() {
+        scheduleVCCallback?(dailySchedule, shortWeekDaysNamesCreation())
+        self.dismiss(animated: true)
+    }
+    
+    
+    // MARK: - init
     init(dailySchedule: [IsScheduleActiveToday]) {
-         self.dailySchedule = dailySchedule
-         super.init(nibName: nil, bundle: nil)
-     }
+        self.dailySchedule = dailySchedule
+        super.init(nibName: nil, bundle: nil)
+    }
     
     
     required init?(coder: NSCoder) {
@@ -115,12 +172,14 @@ final class ScheduleViewController: UIViewController {
 
 
 
+// MARK: - UITableViewDelegate Extension
 extension ScheduleViewController: UITableViewDelegate {
     
 }
 
 
 
+// MARK: - UITableViewDataSource Extension
 extension ScheduleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dailySchedule.count
@@ -146,55 +205,5 @@ extension ScheduleViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         75
-    }
-    
-    
-    private func shortWeekDaysNamesCreation() -> String {
-        var shortDaysOfWeekNames: [String] = []
-        for day in dailySchedule {
-            if day.schedulerIsActive {
-                if let shortDayName = weekDaysNamesShorting(day: day.dayOfWeek) {
-                    shortDaysOfWeekNames.append(shortDayName)
-                }
-            }
-        }
-        let shortDaysOfWeekNamesString = shortDaysOfWeekNames.joined(separator: ", ")
-        return shortDaysOfWeekNamesString
-    }
-    
-    
-    private func weekDaysNamesShorting(day: String?) -> String? {
-            switch day {
-            case "Понедельник":
-                return "Пн"
-            case "Вторник":
-                return "Вт"
-            case "Среда":
-                return "Ср"
-            case "Четверг":
-                return "Чт"
-            case "Пятница":
-                return "Пт"
-            case "Суббота":
-                return "Сб"
-            case "Воскресенье":
-                return "Вс"
-            default :
-                return nil
-            }
-    }
-    
-    
-    @objc
-    private func switchChanged(_ sender : UISwitch!){
-        let row = sender.tag
-        dailySchedule[row].schedulerIsActive.toggle()
-    }
-    
-    
-    @objc
-    private func didTapReadyButton() {
-        scheduleVCCallback?(dailySchedule, shortWeekDaysNamesCreation())
-        self.dismiss(animated: true)
     }
 }

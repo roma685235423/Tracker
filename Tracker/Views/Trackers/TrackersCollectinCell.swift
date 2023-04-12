@@ -9,7 +9,6 @@ protocol TrackersCollectinCellDelegate: AnyObject {
 
 // MARK: - TrackersCollectinCell
 final class TrackersCollectinCell: UICollectionViewCell {
-    
     // MARK: - UI
     private let trackerBackgroundLabel = UILabel()
     private let emojieLabel = UILabel()
@@ -29,19 +28,6 @@ final class TrackersCollectinCell: UICollectionViewCell {
     }
     
     
-    // MARK: - Init
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        tracker = nil
-        configureLayout()
-    }
-    
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    
     // MARK: - Life cicle
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -51,44 +37,7 @@ final class TrackersCollectinCell: UICollectionViewCell {
     }
     
     
-    // MARK: - Methods
-    
-    func configureCellContent(prototype: Tracker, daysCounter: Int, isDone: Bool) {
-        self.tracker = prototype
-        self.daysCounter = daysCounter
-        trackerBackgroundLabel.backgroundColor = prototype.color
-        trackerBackgroundLabel.layer.borderColor = prototype.color.withAlphaComponent(0.3).cgColor
-        
-        emojieLabel.backgroundColor = InterfaceColors.whiteDay.withAlphaComponent(0.3)
-        emojieLabel.font = UIFont.systemFont(ofSize: 13)
-        emojieLabel.text = prototype.emoji
-        emojieLabel.textAlignment = .center
-        
-        trackerTextLabel.configureLabel(
-            text: prototype.label,
-            addToView: trackerBackgroundLabel,
-            ofSize: 12,
-            weight: .medium
-        )
-        trackerTextLabel.textAlignment = .left
-        trackerTextLabel.numberOfLines = 0
-        trackerTextLabel.layer.borderColor = UIColor.clear.cgColor
-        
-        trackerTextLabel.textColor = InterfaceColors.whiteDay
-        
-        taskIsDoneButton.backgroundColor = prototype.color
-        taskIsDoneButton.setImage(UIImage(systemName: "plus"), for: .normal)
-        taskIsDoneButton.tintColor = InterfaceColors.whiteDay
-        taskIsDoneButton.addTarget(self, action: #selector(didTapTaskIsDoneButton), for: .touchUpInside)
-        
-        daysCounterTextLabel.textAlignment = .left
-        daysCounterTextLabel.font = UIFont.systemFont(ofSize: 12)
-        daysCounterTextLabel.textColor = InterfaceColors.blackDay
-        daysCounterTextLabel.text = getCorrectRussianWordDay(days: daysCounter)
-        changeTaskIsDoneButtonUI(state: isDone)
-    }
-    
-    
+    // MARK: - Layout configuraion
     private func configureLayout() {
         contentView.addSubview(trackerBackgroundLabel)
         contentView.addSubview(emojieLabel)
@@ -142,10 +91,40 @@ final class TrackersCollectinCell: UICollectionViewCell {
     }
     
     
-    @objc
-    private func didTapTaskIsDoneButton() {
-        guard let tracker else { return }
-        delegate?.didTapTaskIsDoneButton(cell: self, tracker: tracker)
+    // MARK: - Methods
+    func configureCellContent(prototype: Tracker, daysCounter: Int, isDone: Bool) {
+        self.tracker = prototype
+        self.daysCounter = daysCounter
+        trackerBackgroundLabel.backgroundColor = prototype.color
+        trackerBackgroundLabel.layer.borderColor = prototype.color.withAlphaComponent(0.3).cgColor
+        
+        emojieLabel.backgroundColor = InterfaceColors.whiteDay.withAlphaComponent(0.3)
+        emojieLabel.font = UIFont.systemFont(ofSize: 13)
+        emojieLabel.text = prototype.emoji
+        emojieLabel.textAlignment = .center
+        
+        trackerTextLabel.configureLabel(
+            text: prototype.label,
+            addToView: trackerBackgroundLabel,
+            ofSize: 12,
+            weight: .medium
+        )
+        trackerTextLabel.textAlignment = .left
+        trackerTextLabel.numberOfLines = 0
+        trackerTextLabel.layer.borderColor = UIColor.clear.cgColor
+        
+        trackerTextLabel.textColor = InterfaceColors.whiteDay
+        
+        taskIsDoneButton.backgroundColor = prototype.color
+        taskIsDoneButton.setImage(UIImage(systemName: "plus"), for: .normal)
+        taskIsDoneButton.tintColor = InterfaceColors.whiteDay
+        taskIsDoneButton.addTarget(self, action: #selector(didTapTaskIsDoneButton), for: .touchUpInside)
+        
+        daysCounterTextLabel.textAlignment = .left
+        daysCounterTextLabel.font = UIFont.systemFont(ofSize: 12)
+        daysCounterTextLabel.textColor = InterfaceColors.blackDay
+        daysCounterTextLabel.text = getCorrectRussianWordDay(days: daysCounter)
+        changeTaskIsDoneButtonUI(state: isDone)
     }
     
     
@@ -159,9 +138,11 @@ final class TrackersCollectinCell: UICollectionViewCell {
         }
     }
     
+    
     func counterAdd() {
         daysCounter += 1
     }
+    
     
     func counterSub() {
         daysCounter -= 1
@@ -181,4 +162,27 @@ final class TrackersCollectinCell: UICollectionViewCell {
             return "\(days) дней"
         }
     }
+    
+    
+    // MARK: - Actions
+    @objc
+    private func didTapTaskIsDoneButton() {
+        guard let tracker else { return }
+        delegate?.didTapTaskIsDoneButton(cell: self, tracker: tracker)
+    }
+    
+    
+    // MARK: - Init
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        tracker = nil
+        configureLayout()
+    }
+    
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
 }

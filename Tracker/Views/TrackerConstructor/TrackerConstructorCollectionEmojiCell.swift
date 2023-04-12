@@ -1,9 +1,27 @@
 import UIKit
 
 final class CollectionEmojiCell: UICollectionViewCell {
+    // MARK: - UI
     private let framelabel = UILabel()
     private let emojiLabel = UILabel()
     
+    
+    // MARK: - Methods
+    func cellIsSelected(state: Bool) {
+        if state == true {
+            contentView.backgroundColor = InterfaceColors.lightGray
+        } else {
+            contentView.backgroundColor = UIColor.clear
+        }
+    }
+    
+    
+    func setEmojieLabel(emojie: String) {
+        emojiLabel.text = emojie
+    }
+    
+    
+    // MARK: - init
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.addSubview(emojiLabel)
@@ -19,16 +37,5 @@ final class CollectionEmojiCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    func cellIsSelected(state: Bool) {
-        if state == true {
-            contentView.backgroundColor = InterfaceColors.lightGray
-        } else {
-            contentView.backgroundColor = UIColor.clear
-        }
-    }
-    
-    func setEmojieLabel(emojie: String) {
-        emojiLabel.text = emojie
     }
 }

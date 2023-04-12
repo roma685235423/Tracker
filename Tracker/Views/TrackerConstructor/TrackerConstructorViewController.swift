@@ -2,7 +2,6 @@ import UIKit
 
 protocol NewRegularTrackerConstructorDelegate: AnyObject {
     func getTrackersCategories() -> [String]
-    //func didCreateNewTracker(tracker: Tracker, in category: String)
 }
 
 final class NewTrackerConstructorViewController: UIViewController {
@@ -112,24 +111,7 @@ final class NewTrackerConstructorViewController: UIViewController {
     }
     
     
-    // MARK: - UIConfiguration methods
-    private func initialSettings() {
-        view.backgroundColor = InterfaceColors.whiteDay
-        textField.delegate = self
-        isNeedToAddSchedulerAction()
-        configureScrollView()
-        configureTextField()
-        configureCategoryAndSchedulerTable()
-        screenTopLabel.configureLabel(
-            text: headerText,
-            addToView: view,
-            ofSize: 16,
-            weight: .medium)
-        layoutConfigure()
-        checkIsCreateButtonActive()
-    }
-    
-    
+    // MARK: - Layout configuraion
     private func layoutConfigure() {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -173,6 +155,24 @@ final class NewTrackerConstructorViewController: UIViewController {
             buttonsStackView.heightAnchor.constraint(equalToConstant: 60)
         ])
         scrollView.layoutIfNeeded()
+    }
+    
+    
+    // MARK: - UIConfiguration methods
+    private func initialSettings() {
+        view.backgroundColor = InterfaceColors.whiteDay
+        textField.delegate = self
+        isNeedToAddSchedulerAction()
+        configureScrollView()
+        configureTextField()
+        configureCategoryAndSchedulerTable()
+        screenTopLabel.configureLabel(
+            text: headerText,
+            addToView: view,
+            ofSize: 16,
+            weight: .medium)
+        layoutConfigure()
+        checkIsCreateButtonActive()
     }
     
     
@@ -251,7 +251,7 @@ final class NewTrackerConstructorViewController: UIViewController {
             emoji: trackerEmogieString,
             dailySchedule: isRegularEvent ? scheduler : nil
         )
-            trackersVCCreateCallbeck?(trackerCategoryString, tracker)
+        trackersVCCreateCallbeck?(trackerCategoryString, tracker)
     }
     
     

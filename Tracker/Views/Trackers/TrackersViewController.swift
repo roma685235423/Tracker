@@ -2,52 +2,25 @@ import UIKit
 
 
 class TrackersViewController: UIViewController, CreateTrackerDelegate {
-    
-    // MARK: - Properties
-    private var currentDate: Date = Date().getDate()!
+    // MARK: - UI
     private let trackerLabel = UILabel()
     private let mainSpacePlaceholderStack = UIStackView()
     private let searchSpacePlaceholderStack = UIStackView()
+    
+    // MARK: - Properties
+    private var currentDate: Date = Date().getDate()!
     private var searchedText = ""
     private var complitedTrackers: Set<TrackerRecord> = []
-    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    private var visibleCategories: [TrackerCategory] = [] {
-        didSet {
-            let dayOfWeek = Calendar.current.component(.weekday, from: currentDate)
-            var newVisibleCategories = [TrackerCategory]()
-            for category in categories {
-                let visibleTrackers = category.trackers.filter { tracker in
-                    guard let schedule = tracker.dailySchedule else { return true }
-                    return schedule.contains((tracker.dailySchedule?.first {$0.dayOfWeekNumber == dayOfWeek})!)
-                }
-                if searchedText.isEmpty && !visibleTrackers.isEmpty {
-                    newVisibleCategories.append(TrackerCategory(title: category.title, trackers: visibleTrackers))
-                } else {
-                    let filteredTrackers = visibleTrackers.filter { tracker in
-                        tracker.label.lowercased().contains(searchedText.lowercased())
-                    }
-                    
-                    if !filteredTrackers.isEmpty {
-                        newVisibleCategories.append(TrackerCategory(title: category.title, trackers: filteredTrackers))
-                    }
-                }
-            }
-            checkPlaceholderVisabilityAfterSearch()
-            visibleCategories = newVisibleCategories
-        }
-    }
-    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    
+    private var visibleCategories: [TrackerCategory] = []
     
     private var categories: [TrackerCategory] = mockData {
         didSet {
             checkMainPlaceholderVisability()
         }
     }
-    
     private var trackerCollectionViewParaneters = CollectionParameters(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 9)
     
-    
+    // MARK: - UI Lazy
     lazy var addTrackerButton: UIButton = {
         let button = UIButton()
         let image = UIImage(named: "plus")
@@ -59,7 +32,6 @@ class TrackersViewController: UIViewController, CreateTrackerDelegate {
         return button
     }()
     
-    
     private lazy var trackersSearchBar: UISearchBar = {
         let bar = UISearchBar()
         bar.layer.masksToBounds = true
@@ -68,7 +40,6 @@ class TrackersViewController: UIViewController, CreateTrackerDelegate {
         bar.delegate = self
         return bar
     }()
-    
     
     private lazy var collectionView: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
@@ -79,11 +50,10 @@ class TrackersViewController: UIViewController, CreateTrackerDelegate {
         collection.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
         
         collection.backgroundColor = InterfaceColors.whiteDay
-        collection.isScrollEnabled = false
+        collection.isScrollEnabled = true
         collection.allowsMultipleSelection = false
         return collection
     }()
-    
     
     private lazy var datePicker: UIDatePicker = {
         let picker = UIDatePicker()
@@ -102,11 +72,11 @@ class TrackersViewController: UIViewController, CreateTrackerDelegate {
     }()
     
     
+    // MARK: - Life cicle
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .darkContent
     }
     
-    // MARK: - Life cicle
     override func viewDidLoad() {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate()
@@ -122,17 +92,11 @@ class TrackersViewController: UIViewController, CreateTrackerDelegate {
         mainSpacePlaceholderStack.configurePlaceholderStack(imageName: "starPlaceholder", text: "Что будем отслеживать?")
         searchSpacePlaceholderStack.configurePlaceholderStack(imageName: "searchPlaceholder", text: "Ничего не найдено")
         checkMainPlaceholderVisability()
+        checkPlaceholderVisabilityAfterSearch()
     }
     
     
-    // MARK: - Methods
-    @objc
-    private func didChangedDatePickerValue(_ sender: UIDatePicker) {
-        currentDate = sender.date.getDate()!
-        collectionView.reloadData()
-    }
-    
-    
+    // MARK: - Layout configuraion
     private func configureLayout() {
         addTrackerButton.translatesAutoresizingMaskIntoConstraints = false
         trackerLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -180,6 +144,7 @@ class TrackersViewController: UIViewController, CreateTrackerDelegate {
     }
     
     
+    // MARK: - Methods
     private func checkMainPlaceholderVisability() {
         let isHidden = categories.isEmpty
         mainSpacePlaceholderStack.isHidden = !isHidden
@@ -188,6 +153,57 @@ class TrackersViewController: UIViewController, CreateTrackerDelegate {
     private func checkPlaceholderVisabilityAfterSearch() {
         let isHidden = visibleCategories.isEmpty && mainSpacePlaceholderStack.isHidden
         searchSpacePlaceholderStack.isHidden = !isHidden
+    }
+    
+    
+    func getTrackersCategories() -> [String] {
+        let trackersCategories = categories.map {$0.title}
+        return trackersCategories
+    }
+    
+    
+    private func updateCategory(categoryLabel: String, tracker: Tracker) {
+        guard let categoryIndex = categories.firstIndex(where: { $0.title == categoryLabel }) else { return }
+        let updatedCategory = TrackerCategory(
+            title: categoryLabel,
+            trackers: categories[categoryIndex].trackers + [tracker]
+        )
+        categories[categoryIndex] = updatedCategory
+        collectionView.reloadData()
+    }
+    
+    
+    private func updateVisibleTrackers() {
+        let dayOfWeek = Calendar.current.component(.weekday, from: currentDate)
+        var newVisibleCategories = [TrackerCategory]()
+        for category in categories {
+            let visibleTrackers = category.trackers.filter { tracker in
+                guard let schedule = tracker.dailySchedule else { return true }
+                guard let trackerActive = tracker.dailySchedule?.first(where: {$0.dayOfWeekNumber == dayOfWeek})
+                else { return false }
+                return schedule.contains(trackerActive)
+            }
+            if searchedText.isEmpty && !visibleTrackers.isEmpty {
+                newVisibleCategories.append(TrackerCategory(title: category.title, trackers: visibleTrackers))
+            } else {
+                let filteredTrackers = visibleTrackers.filter { tracker in
+                    tracker.label.lowercased().contains(searchedText.lowercased())
+                }
+                if !filteredTrackers.isEmpty {
+                    newVisibleCategories.append(TrackerCategory(title: category.title, trackers: filteredTrackers))
+                }
+            }
+        }
+        visibleCategories = newVisibleCategories
+    }
+    
+    
+    // MARK: - Actions
+    @objc
+    private func didChangedDatePickerValue(_ sender: UIDatePicker) {
+        currentDate = sender.date.getDate()!
+        updateVisibleTrackers()
+        collectionView.reloadData()
     }
     
     
@@ -201,25 +217,12 @@ class TrackersViewController: UIViewController, CreateTrackerDelegate {
         }
         createTrackerViewController.trackersVCCreateCallbeck = { [weak self] categoryLabel, tracker in
             self?.dismiss(animated: true)
-            self?.updateCategory(categoryLabel: categoryLabel, tracker: tracker)
+            DispatchQueue.main.async {
+                self?.updateCategory(categoryLabel: categoryLabel, tracker: tracker)
+                self?.updateVisibleTrackers()
+            }
         }
         present(createTrackerViewController, animated: true)
-    }
-    
-    
-    func getTrackersCategories() -> [String] {
-        let trackersCategories = categories.map {$0.title}
-        return trackersCategories
-    }
-    
-    private func updateCategory(categoryLabel: String, tracker: Tracker) {
-        guard let categoryIndex = categories.firstIndex(where: { $0.title == categoryLabel }) else { return }
-        let updatedCategory = TrackerCategory(
-            title: categoryLabel,
-            trackers: categories[categoryIndex].trackers + [tracker]
-        )
-        categories[categoryIndex] = updatedCategory
-        collectionView.reloadData()
     }
 }
 
@@ -228,6 +231,7 @@ class TrackersViewController: UIViewController, CreateTrackerDelegate {
 //MARK: - UISearchBarDelegate
 extension TrackersViewController: UISearchBarDelegate {
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
+        checkPlaceholderVisabilityAfterSearch()
         searchBar.setShowsCancelButton(true, animated: true)
         return true
     }
@@ -237,11 +241,12 @@ extension TrackersViewController: UISearchBarDelegate {
         searchBar.endEditing(true)
         searchBar.setShowsCancelButton(false, animated: true)
         searchBar.resignFirstResponder()
+        checkPlaceholderVisabilityAfterSearch()
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.isEmpty {
-            visibleCategories = categories
+            updateVisibleTrackers()
         } else {
             visibleCategories = categories.compactMap { category in
                 let visibleTrackers = category.trackers.filter { tracker in
@@ -255,9 +260,8 @@ extension TrackersViewController: UISearchBarDelegate {
         }
         searchedText = searchText
         collectionView.reloadData()
+        checkPlaceholderVisabilityAfterSearch()
     }
-    
-    
     
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
@@ -268,6 +272,7 @@ extension TrackersViewController: UISearchBarDelegate {
         searchBar.setShowsCancelButton(false, animated: true)
         searchBar.resignFirstResponder()
         collectionView.reloadData()
+        checkPlaceholderVisabilityAfterSearch()
     }
 }
 
