@@ -20,14 +20,14 @@ final class NewTrackerConstructorViewController: UIViewController {
     private var actionsArray: [TableViewActions] = [.init(titleLabelText: "Категория", subTitleLabel: "")]
     private var currentSelectedCateory: Int?
     
-    private var dailySchedule: [IsScheduleActiveToday] = [
-        IsScheduleActiveToday(dayOfWeek: "Понедельник", dayOfWeekNumber: 2),
-        IsScheduleActiveToday(dayOfWeek: "Вторник", dayOfWeekNumber: 3),
-        IsScheduleActiveToday(dayOfWeek: "Среда", dayOfWeekNumber: 4),
-        IsScheduleActiveToday(dayOfWeek: "Четверг", dayOfWeekNumber: 5),
-        IsScheduleActiveToday(dayOfWeek: "Пятница", dayOfWeekNumber: 6),
-        IsScheduleActiveToday(dayOfWeek: "Суббота", dayOfWeekNumber: 7),
-        IsScheduleActiveToday(dayOfWeek: "Воскресенье", dayOfWeekNumber: 1)
+    private var dailySchedule: [DailySchedule] = [
+        DailySchedule(dayOfWeek: "Понедельник", dayOfWeekNumber: 2),
+        DailySchedule(dayOfWeek: "Вторник", dayOfWeekNumber: 3),
+        DailySchedule(dayOfWeek: "Среда", dayOfWeekNumber: 4),
+        DailySchedule(dayOfWeek: "Четверг", dayOfWeekNumber: 5),
+        DailySchedule(dayOfWeek: "Пятница", dayOfWeekNumber: 6),
+        DailySchedule(dayOfWeek: "Суббота", dayOfWeekNumber: 7),
+        DailySchedule(dayOfWeek: "Воскресенье", dayOfWeekNumber: 1)
     ]
     
     private let collectionViewSectionHeaders = ["Emoji", "Цвет"]
@@ -38,13 +38,12 @@ final class NewTrackerConstructorViewController: UIViewController {
     private var selectedItem: IndexPath?
     
     private let isRegularEvent: Bool
-    
     weak var deleagte: NewRegularTrackerConstructorDelegate?
     
-    var trackersVCCancelCallbeck: (() -> Void)?
-    var trackersVCCreateCallbeck: ((String, Tracker) -> Void)?
+    var trackersVCCancelCallback: (() -> Void)?
+    var trackersVCCreateCallback: ((String, Tracker) -> Void)?
     
-    var scheduleVCCallback: (([IsScheduleActiveToday], String) -> Void)?
+    var scheduleVCCallback: (([DailySchedule], String) -> Void)?
     var trackerCategorySelectorVCCallback: ((String) -> Void)?
     
     // MARK: - Lazy
@@ -251,13 +250,13 @@ final class NewTrackerConstructorViewController: UIViewController {
             emoji: trackerEmogieString,
             dailySchedule: isRegularEvent ? scheduler : nil
         )
-        trackersVCCreateCallbeck?(trackerCategoryString, tracker)
+        trackersVCCreateCallback?(trackerCategoryString, tracker)
     }
     
     
     @objc
     private func didTapCancelButton() {
-        trackersVCCancelCallbeck?()
+        trackersVCCancelCallback?()
     }
     
     
@@ -393,6 +392,7 @@ extension NewTrackerConstructorViewController: UICollectionViewDataSource {
         }
         guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? SupplementaryView
         else {fatalError("Supplementary view configuration error")}
+        view.configoreLayout(leftOffset: 1)
         view.titleLabel.text = collectionViewSectionHeaders[indexPath.section]
         return view
     }

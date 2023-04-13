@@ -5,6 +5,17 @@ final class SupplementaryView: UICollectionReusableView {
     var titleLabel = UILabel()
     
     
+    // MARK: - Methods
+    func configoreLayout(leftOffset: CGFloat) {
+        NSLayoutConstraint.activate([
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: leftOffset),
+            titleLabel.topAnchor.constraint(equalTo: topAnchor),
+            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
+        ])
+    }
+    
+    
+    
     // MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -12,13 +23,6 @@ final class SupplementaryView: UICollectionReusableView {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.textColor = .black
         titleLabel.font = UIFont.systemFont(ofSize: 19, weight: .bold)
-        
-        NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-            titleLabel.topAnchor.constraint(equalTo: topAnchor),
-            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
-        ])
-        
     }
     
     

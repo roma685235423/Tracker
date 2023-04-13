@@ -18,7 +18,7 @@ class TrackersViewController: UIViewController, CreateTrackerDelegate {
             checkMainPlaceholderVisability()
         }
     }
-    private var trackerCollectionViewParaneters = CollectionParameters(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 9)
+    private var trackerCollectionViewParameters = CollectionParameters(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 9)
     
     // MARK: - UI Lazy
     lazy var addTrackerButton: UIButton = {
@@ -126,13 +126,13 @@ class TrackersViewController: UIViewController, CreateTrackerDelegate {
             addTrackerButton.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.07019),
             
             trackersSearchBar.topAnchor.constraint(equalTo: trackerLabel.bottomAnchor, constant: 7),
-            trackersSearchBar.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 16),
-            trackersSearchBar.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16),
+            trackersSearchBar.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 8),
+            trackersSearchBar.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -8),
             trackersSearchBar.heightAnchor.constraint(equalToConstant: 36),
             
             collectionView.topAnchor.constraint(equalTo: trackersSearchBar.bottomAnchor, constant: 34),
-            collectionView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 16),
-            collectionView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16),
+            collectionView.leftAnchor.constraint(equalTo: view.leftAnchor),
+            collectionView.rightAnchor.constraint(equalTo: view.rightAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
             mainSpacePlaceholderStack.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.495),
@@ -213,10 +213,10 @@ class TrackersViewController: UIViewController, CreateTrackerDelegate {
         let createTrackerViewController = CreateTrackerViewController()
         createTrackerViewController.modalPresentationStyle = .pageSheet
         createTrackerViewController.delegate = self
-        createTrackerViewController.trackersVCDismissCallbeck = { [weak self] in
+        createTrackerViewController.trackersVCDismissCallback = { [weak self] in
             self?.dismiss(animated: true)
         }
-        createTrackerViewController.trackersVCCreateCallbeck = { [weak self] categoryLabel, tracker in
+        createTrackerViewController.trackersVCCreateCallback = { [weak self] categoryLabel, tracker in
             self?.dismiss(animated: true)
             DispatchQueue.main.async {
                 self?.updateCategory(categoryLabel: categoryLabel, tracker: tracker)
@@ -322,7 +322,7 @@ extension TrackersViewController: UICollectionViewDataSource {
                 for: indexPath
             ) as? SupplementaryView
         else { return UICollectionReusableView() }
-        
+        view.configoreLayout(leftOffset: 28)
         view.titleLabel.text = visibleCategories[indexPath.section].title
         return view
     }
@@ -352,8 +352,8 @@ extension TrackersViewController: TrackersCollectinCellDelegate {
 //MARK: - UICollectionViewDelegateFlowLayout
 extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let availableSize = collectionView.frame.width - trackerCollectionViewParaneters.paddingWidth
-        let cellWidth = availableSize / CGFloat(trackerCollectionViewParaneters.cellCount)
+        let availableSize = collectionView.frame.width - trackerCollectionViewParameters.paddingWidth
+        let cellWidth = availableSize / CGFloat(trackerCollectionViewParameters.cellCount)
         return CGSize(width: cellWidth, height: 150)
     }
     
@@ -368,8 +368,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     }
     
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize
-    {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let indexPath = IndexPath(row: 0, section: section)
         let headerView = self.collectionView(
             collectionView,
@@ -384,7 +383,8 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
         )
     }
     
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        UIEdgeInsets(top: 8, left: trackerCollectionViewParaneters.leftInset, bottom: 16, right: trackerCollectionViewParaneters.rightInset)
+        return UIEdgeInsets(top: 8, left: trackerCollectionViewParameters.leftInset, bottom: 16, right: trackerCollectionViewParameters.rightInset)
     }
 }

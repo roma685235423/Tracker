@@ -1,13 +1,13 @@
 import UIKit
 
-struct IsScheduleActiveToday {
+struct DailySchedule {
     let dayOfWeek: String
     var schedulerIsActive: Bool = false
     let dayOfWeekNumber: Int
 }
 
-extension IsScheduleActiveToday: Equatable {
-    static func == (lhs: IsScheduleActiveToday, rhs: IsScheduleActiveToday) -> Bool {
+extension DailySchedule: Equatable {
+    static func == (lhs: DailySchedule, rhs: DailySchedule) -> Bool {
         return lhs.dayOfWeekNumber == rhs.dayOfWeekNumber
     }
 }

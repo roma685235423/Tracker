@@ -8,8 +8,8 @@ final class ScheduleViewController: UIViewController {
     private lazy var readyButton = UIButton()
     
     // MARK: - Properties
-    private var dailySchedule: [IsScheduleActiveToday]
-    var scheduleVCCallback: (([IsScheduleActiveToday], String) -> Void)?
+    private var dailySchedule: [DailySchedule]
+    var scheduleVCCallback: (([DailySchedule], String) -> Void)?
     
     private let tableHeight = CGFloat(524)
     private let buttonHeight = CGFloat(60)
@@ -159,7 +159,7 @@ final class ScheduleViewController: UIViewController {
     
     
     // MARK: - init
-    init(dailySchedule: [IsScheduleActiveToday]) {
+    init(dailySchedule: [DailySchedule]) {
         self.dailySchedule = dailySchedule
         super.init(nibName: nil, bundle: nil)
     }

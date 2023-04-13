@@ -13,8 +13,8 @@ final class CreateTrackerViewController: UIViewController, NewRegularTrackerCons
     
     weak var delegate: CreateTrackerDelegate?
     
-    var trackersVCDismissCallbeck: (() -> Void)?
-    var trackersVCCreateCallbeck: ((String, Tracker) -> Void)?
+    var trackersVCDismissCallback: (() -> Void)?
+    var trackersVCCreateCallback: ((String, Tracker) -> Void)?
     
     
     // MARK: - Lifecicle
@@ -89,11 +89,11 @@ final class CreateTrackerViewController: UIViewController, NewRegularTrackerCons
         let newTrackerConstructorView = NewTrackerConstructorViewController(isRegularEvent: true)
         newTrackerConstructorView.modalPresentationStyle = .pageSheet
         newTrackerConstructorView.deleagte = self
-        newTrackerConstructorView.trackersVCCreateCallbeck = { [ weak self ] categoryLabel, tracker in
-            self?.trackersVCCreateCallbeck?(categoryLabel, tracker)
+        newTrackerConstructorView.trackersVCCreateCallback = { [ weak self ] categoryLabel, tracker in
+            self?.trackersVCCreateCallback?(categoryLabel, tracker)
         }
-        newTrackerConstructorView.trackersVCCancelCallbeck = { [ weak self ] in
-            self?.trackersVCDismissCallbeck?()
+        newTrackerConstructorView.trackersVCCancelCallback = { [ weak self ] in
+            self?.trackersVCDismissCallback?()
         }
         present(newTrackerConstructorView, animated: true)
     }
@@ -104,11 +104,11 @@ final class CreateTrackerViewController: UIViewController, NewRegularTrackerCons
         let newIrregularEventView = NewTrackerConstructorViewController(isRegularEvent: false)
         newIrregularEventView.modalPresentationStyle = .pageSheet
         newIrregularEventView.deleagte = self
-        newIrregularEventView.trackersVCCreateCallbeck = { [ weak self ] categoryLabel, tracker in
-            self?.trackersVCCreateCallbeck?(categoryLabel, tracker)
+        newIrregularEventView.trackersVCCreateCallback = { [ weak self ] categoryLabel, tracker in
+            self?.trackersVCCreateCallback?(categoryLabel, tracker)
         }
-        newIrregularEventView.trackersVCCancelCallbeck = { [ weak self ] in
-            self?.trackersVCDismissCallbeck?()
+        newIrregularEventView.trackersVCCancelCallback = { [ weak self ] in
+            self?.trackersVCDismissCallback?()
         }
         present(newIrregularEventView, animated: true)
     }

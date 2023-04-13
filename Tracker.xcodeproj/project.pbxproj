@@ -29,7 +29,7 @@
 		BA418D6329DB4A0400080EB0 /* TrackerConstructorCollectionColorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA418D6229DB4A0400080EB0 /* TrackerConstructorCollectionColorCell.swift */; };
 		BA418D6529DB5E5700080EB0 /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA418D6429DB5E5700080EB0 /* ScheduleViewController.swift */; };
 		BA418D6829DB5F1D00080EB0 /* CollectionParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA418D6729DB5F1D00080EB0 /* CollectionParameters.swift */; };
-		BA418D6A29DB6BF800080EB0 /* IsScheduleActiveToday.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA418D6929DB6BF800080EB0 /* IsScheduleActiveToday.swift */; };
+		BA418D6A29DB6BF800080EB0 /* DailySchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA418D6929DB6BF800080EB0 /* DailySchedule.swift */; };
 		BA44D7B029E013B60084E8D8 /* TrackersCollectinCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA44D7AF29E013B60084E8D8 /* TrackersCollectinCell.swift */; };
 		BA69EE6A29DDD28D00E65C92 /* TrackerConstructorCategoryAndSchedulerTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA69EE6929DDD28D00E65C92 /* TrackerConstructorCategoryAndSchedulerTableCell.swift */; };
 		BA69EE6C29DDD98C00E65C92 /* TableViewActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA69EE6B29DDD98C00E65C92 /* TableViewActions.swift */; };
@@ -89,7 +89,7 @@
 		BA418D6229DB4A0400080EB0 /* TrackerConstructorCollectionColorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerConstructorCollectionColorCell.swift; sourceTree = "<group>"; };
 		BA418D6429DB5E5700080EB0 /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
 		BA418D6729DB5F1D00080EB0 /* CollectionParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionParameters.swift; sourceTree = "<group>"; };
-		BA418D6929DB6BF800080EB0 /* IsScheduleActiveToday.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IsScheduleActiveToday.swift; sourceTree = "<group>"; };
+		BA418D6929DB6BF800080EB0 /* DailySchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailySchedule.swift; sourceTree = "<group>"; };
 		BA44D7AF29E013B60084E8D8 /* TrackersCollectinCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersCollectinCell.swift; sourceTree = "<group>"; };
 		BA69EE6929DDD28D00E65C92 /* TrackerConstructorCategoryAndSchedulerTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerConstructorCategoryAndSchedulerTableCell.swift; sourceTree = "<group>"; };
 		BA69EE6B29DDD98C00E65C92 /* TableViewActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewActions.swift; sourceTree = "<group>"; };
@@ -283,7 +283,7 @@
 				BA8289E629D5E29900879101 /* InterfaceColors.swift */,
 				BA8289E829D5FBB600879101 /* ColorSelection.swift */,
 				BA418D6729DB5F1D00080EB0 /* CollectionParameters.swift */,
-				BA418D6929DB6BF800080EB0 /* IsScheduleActiveToday.swift */,
+				BA418D6929DB6BF800080EB0 /* DailySchedule.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -455,7 +455,7 @@
 				BA8289E929D5FBB600879101 /* ColorSelection.swift in Sources */,
 				BABB692C29E4A42F005DBCBA /* UIStack+Extension.swift in Sources */,
 				BA8289F229D740DA00879101 /* CreateTrackerViewController.swift in Sources */,
-				BA418D6A29DB6BF800080EB0 /* IsScheduleActiveToday.swift in Sources */,
+				BA418D6A29DB6BF800080EB0 /* DailySchedule.swift in Sources */,
 				BA1AD35129CDF1E200DCFB4B /* AppDelegate.swift in Sources */,
 				BA8289EC29D62E6B00879101 /* StatisticViewController.swift in Sources */,
 				BA418D6529DB5E5700080EB0 /* ScheduleViewController.swift in Sources */,
