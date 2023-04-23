@@ -157,7 +157,7 @@ final class NewTrackerConstructorViewController: UIViewController {
     }
     
     
-    // MARK: - UIConfiguration methods
+    // MARK: - Layout methods
     private func initialSettings() {
         view.backgroundColor = InterfaceColors.whiteDay
         textField.delegate = self
@@ -350,9 +350,11 @@ extension NewTrackerConstructorViewController: UITableViewDataSource {
 
 // MARK: - UICollectionViewDataSource Extension
 extension NewTrackerConstructorViewController: UICollectionViewDataSource {
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return collectionViewSectionHeaders.count
     }
+    
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
@@ -364,6 +366,7 @@ extension NewTrackerConstructorViewController: UICollectionViewDataSource {
             return 0
         }
     }
+    
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.section == 0 {
@@ -379,6 +382,7 @@ extension NewTrackerConstructorViewController: UICollectionViewDataSource {
         }
         
     }
+    
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         var id: String

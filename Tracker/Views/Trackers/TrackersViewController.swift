@@ -1,6 +1,7 @@
 import UIKit
 
 
+
 class TrackersViewController: UIViewController, CreateTrackerDelegate {
     // MARK: - UI
     private let trackerLabel = UILabel()
@@ -18,7 +19,12 @@ class TrackersViewController: UIViewController, CreateTrackerDelegate {
             checkMainPlaceholderVisability()
         }
     }
-    private var trackerCollectionViewParameters = CollectionParameters(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 9)
+    private var trackerCollectionViewParameters = CollectionParameters(
+        cellCount: 2,
+        leftInset: 16,
+        rightInset: 16,
+        cellSpacing: 9
+    )
     
     // MARK: - UI Lazy
     lazy var addTrackerButton: UIButton = {

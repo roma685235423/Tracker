@@ -6,6 +6,7 @@ struct Tracker {
     let color: UIColor
     let emoji: String
     let dailySchedule: [DailySchedule]?
+    var daysComplitedCount: Int = 0
     
     init(id: UUID = UUID(), label: String, color: UIColor, emoji: String, dailySchedule: [DailySchedule]?) {
         self.id = id
