@@ -328,7 +328,7 @@ extension TrackersViewController: UICollectionViewDataSource {
                 for: indexPath
             ) as? SupplementaryView
         else { return UICollectionReusableView() }
-        view.configoreLayout(leftOffset: 28)
+        view.configoreLayout(leftOffset: 28, topOffset: 15, bottomOffset: 15)
         view.titleLabel.text = visibleCategories[indexPath.section].title
         return view
     }

@@ -1,8 +1,17 @@
 import UIKit
 
+struct Offsets {
+    let textToTable: CGFloat = 24
+    let tableToCollection: CGFloat = 32
+    let collectionToButton: CGFloat = 21
+    let buttonsToBottom: CGFloat = 24
+}
+
 protocol NewRegularTrackerConstructorDelegate: AnyObject {
     func getTrackersCategories() -> [String]
 }
+
+
 
 final class NewTrackerConstructorViewController: UIViewController {
     // MARK: - UIElements
@@ -45,6 +54,8 @@ final class NewTrackerConstructorViewController: UIViewController {
     
     var scheduleVCCallback: (([DailySchedule], String) -> Void)?
     var trackerCategorySelectorVCCallback: ((String) -> Void)?
+    
+    let scrollViewInterElementOffsets: Offsets
     
     // MARK: - Lazy
     private lazy var trackersCategories: [String] = {
@@ -104,10 +115,18 @@ final class NewTrackerConstructorViewController: UIViewController {
     
     
     // MARK: - Lifecicle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        isNeedToAddSchedulerAction()
+    }
+    
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         initialSettings()
     }
+    
     
     
     // MARK: - Layout configuraion
@@ -138,17 +157,17 @@ final class NewTrackerConstructorViewController: UIViewController {
             textField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
-            categoryAndSchedulerTable.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 24),
+            categoryAndSchedulerTable.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: scrollViewInterElementOffsets.textToTable),
             categoryAndSchedulerTable.leadingAnchor.constraint(equalTo: textField.leadingAnchor),
             categoryAndSchedulerTable.trailingAnchor.constraint(equalTo: textField.trailingAnchor),
             categoryAndSchedulerTable.heightAnchor.constraint(equalToConstant: configureTableHeight()),
             
-            collectionView.topAnchor.constraint(equalTo: categoryAndSchedulerTable.bottomAnchor, constant: view.frame.height * 0.061),
+            collectionView.topAnchor.constraint(equalTo: categoryAndSchedulerTable.bottomAnchor, constant: scrollViewInterElementOffsets.tableToCollection),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 28),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -28),
-            collectionView.heightAnchor.constraint(equalToConstant: 379),
+            collectionView.heightAnchor.constraint(equalToConstant: 470),
             
-            buttonsStackView.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: view.frame.height * 0.04),
+            buttonsStackView.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: scrollViewInterElementOffsets.collectionToButton),
             buttonsStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             buttonsStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             buttonsStackView.heightAnchor.constraint(equalToConstant: 60)
@@ -161,8 +180,6 @@ final class NewTrackerConstructorViewController: UIViewController {
     private func initialSettings() {
         view.backgroundColor = InterfaceColors.whiteDay
         textField.delegate = self
-        isNeedToAddSchedulerAction()
-        configureScrollView()
         configureTextField()
         configureCategoryAndSchedulerTable()
         screenTopLabel.configureLabel(
@@ -171,6 +188,7 @@ final class NewTrackerConstructorViewController: UIViewController {
             ofSize: 16,
             weight: .medium)
         layoutConfigure()
+        configureScrollView()
         checkIsCreateButtonActive()
     }
     
@@ -185,10 +203,17 @@ final class NewTrackerConstructorViewController: UIViewController {
         scrollView.decelerationRate = UIScrollView.DecelerationRate.normal
         scrollView.isScrollEnabled = true
         scrollView.isUserInteractionEnabled = true
-        scrollView.contentSize = CGSize(width: view.frame.width, height: isRegularEvent == true ? 780 : 706)
+        scrollView.contentSize = CGSize(width: view.frame.width, height: scrollViewHeightCalculation())
         let tapToHideKeyboardGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboardAndSaveTextFieldValue))
         tapToHideKeyboardGesture.cancelsTouchesInView = false
         scrollView.addGestureRecognizer(tapToHideKeyboardGesture)
+    }
+    
+    private func scrollViewHeightCalculation() -> CGFloat{
+        return textField.frame.height + scrollViewInterElementOffsets.textToTable +
+        categoryAndSchedulerTable.frame.height + scrollViewInterElementOffsets.tableToCollection +
+        collectionView.frame.height + scrollViewInterElementOffsets.collectionToButton +
+        buttonsStackView.frame.height + scrollViewInterElementOffsets.buttonsToBottom
     }
     
     
@@ -272,10 +297,10 @@ final class NewTrackerConstructorViewController: UIViewController {
     
     @objc
     private func checkIsCreateButtonActive() {
-        if trackerNameString != "",
-           trackerEmogieString != "",
-           trackerColor != nil,
-           actionsArray.allSatisfy({ $0.subTitleLabel != "" }) {
+        if self.trackerNameString != "",
+           self.trackerEmogieString != "",
+           self.trackerColor != nil,
+           self.actionsArray.allSatisfy({ $0.subTitleLabel != "" }) {
             makeCreateButtonActive(isActive: true)
         } else {
             makeCreateButtonActive(isActive: false)
@@ -286,6 +311,7 @@ final class NewTrackerConstructorViewController: UIViewController {
     // MARK: - Init
     init(isRegularEvent: Bool) {
         self.isRegularEvent = isRegularEvent
+        self.scrollViewInterElementOffsets = .init()
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -396,7 +422,8 @@ extension NewTrackerConstructorViewController: UICollectionViewDataSource {
         }
         guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? SupplementaryView
         else {fatalError("Supplementary view configuration error")}
-        view.configoreLayout(leftOffset: 1)
+        let topOffset: CGFloat = indexPath.section == 0 ? 0 : 40
+        view.configoreLayout(leftOffset: 1, topOffset: topOffset, bottomOffset: 24)
         view.titleLabel.text = collectionViewSectionHeaders[indexPath.section]
         return view
     }
