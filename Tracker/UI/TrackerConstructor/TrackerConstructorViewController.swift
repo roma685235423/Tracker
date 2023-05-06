@@ -273,7 +273,8 @@ final class NewTrackerConstructorViewController: UIViewController {
             label: trackerNameString,
             color: color,
             emoji: trackerEmogieString,
-            dailySchedule: isRegularEvent ? scheduler : nil
+            dailySchedule: isRegularEvent ? scheduler : nil,
+            daysComplitedCount: 0
         )
         trackersVCCreateCallback?(trackerCategoryString, tracker)
     }

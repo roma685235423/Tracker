@@ -11,10 +11,10 @@ class TrackersViewController: UIViewController, CreateTrackerDelegate {
     // MARK: - Properties
     private var currentDate: Date = Date().getDate()!
     private var searchedText = ""
-    private var complitedTrackers: Set<TrackerRecord> = []
-    private var visibleCategories: [TrackerCategory] = []
+    private var complitedTrackers: Set<OldTrackerRecord> = []
+    private var visibleCategories: [OldTrackerCategory] = []
     
-    private var categories: [TrackerCategory] = mockData {
+    private var categories: [OldTrackerCategory] = mockData {
         didSet {
             checkMainPlaceholderVisability()
         }
@@ -170,7 +170,7 @@ class TrackersViewController: UIViewController, CreateTrackerDelegate {
     
     private func updateCategory(categoryLabel: String, tracker: Tracker) {
         guard let categoryIndex = categories.firstIndex(where: { $0.title == categoryLabel }) else { return }
-        let updatedCategory = TrackerCategory(
+        let updatedCategory = OldTrackerCategory(
             title: categoryLabel,
             trackers: categories[categoryIndex].trackers + [tracker]
         )
@@ -181,7 +181,7 @@ class TrackersViewController: UIViewController, CreateTrackerDelegate {
     
     private func updateVisibleTrackers() {
         let dayOfWeek = Calendar.current.component(.weekday, from: currentDate)
-        var newVisibleCategories = [TrackerCategory]()
+        var newVisibleCategories = [OldTrackerCategory]()
         for category in categories {
             let visibleTrackers = category.trackers.filter { tracker in
                 guard let schedule = tracker.dailySchedule else { return true }
@@ -190,13 +190,13 @@ class TrackersViewController: UIViewController, CreateTrackerDelegate {
                 return schedule.contains(trackerActive)
             }
             if searchedText.isEmpty && !visibleTrackers.isEmpty {
-                newVisibleCategories.append(TrackerCategory(title: category.title, trackers: visibleTrackers))
+                newVisibleCategories.append(OldTrackerCategory(title: category.title, trackers: visibleTrackers))
             } else {
                 let filteredTrackers = visibleTrackers.filter { tracker in
                     tracker.label.lowercased().contains(searchedText.lowercased())
                 }
                 if !filteredTrackers.isEmpty {
-                    newVisibleCategories.append(TrackerCategory(title: category.title, trackers: filteredTrackers))
+                    newVisibleCategories.append(OldTrackerCategory(title: category.title, trackers: filteredTrackers))
                 }
             }
         }
@@ -262,7 +262,7 @@ extension TrackersViewController: UISearchBarDelegate {
                         word.lowercased().hasPrefix(searchText.lowercased())
                     }
                 }
-                return visibleTrackers.isEmpty ? nil : TrackerCategory(title: category.title, trackers: visibleTrackers)
+                return visibleTrackers.isEmpty ? nil : OldTrackerCategory(title: category.title, trackers: visibleTrackers)
             }
         }
         searchedText = searchText
@@ -285,10 +285,10 @@ extension TrackersViewController: UISearchBarDelegate {
 
 
 
-//MARK: - UICollectionViewDelegate
-extension TrackersViewController: UICollectionViewDelegate {
-    
-}
+////MARK: - UICollectionViewDelegate
+//extension TrackersViewController: UICollectionViewDelegate {
+//
+//}
 
 
 
@@ -339,7 +339,7 @@ extension TrackersViewController: UICollectionViewDataSource {
 // MARK: - TrackerCellDelegate
 extension TrackersViewController: TrackersCollectinCellDelegate {
     func didTapTaskIsDoneButton(cell: TrackersCollectinCell, tracker: Tracker) {
-        let trackerRecord = TrackerRecord(trackerID: tracker.id, date: currentDate)
+        let trackerRecord = OldTrackerRecord(trackerID: tracker.id, date: currentDate)
         
         if complitedTrackers.contains(where: { $0.date == currentDate && $0.trackerID == tracker.id }) {
             complitedTrackers.remove(trackerRecord)
