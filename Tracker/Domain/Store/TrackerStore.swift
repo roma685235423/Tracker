@@ -2,15 +2,32 @@ import UIKit
 import CoreData
 
 
+protocol TrackerStoreDelegate: AnyObject {
+    func updateTracker()
+}
+
+
 final class TrackerStore: NSObject {
     enum CategoryStoreError: Error {
         case decodeError
     }
     
     // MARK: - Properties
-    private let context: NSManagedObjectContext
+    weak var delegate: TrackerStoreDelegate?
     
+    private let trackerStore = TrackerStore()
+    private let categoryStore = TrackerCategoryStore()
+    private let trackerRecordStore = TrackerRecordStore()
+    
+    private let context: NSManagedObjectContext
     private let colorMarshalling = UIColorMarshalling()
+    
+    var numberOfTrackers: Int {
+        fetchedResultsController.fetchedObjects?.count ?? 0
+    }
+    var numberOfSections: Int {
+        fetchedResultsController.sections?.count ?? 0
+    }
     
     private lazy var fetchedResultsController: NSFetchedResultsController<TrackerCoreData> = {
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
@@ -50,6 +67,17 @@ final class TrackerStore: NSObject {
         )
     }
     
+    
+    func getTrackerFromCoreData(id: UUID) throws -> TrackerCoreData? {
+        fetchedResultsController.fetchRequest.predicate = NSPredicate(
+            format: "%K == %@",
+            #keyPath(TrackerCoreData.trackerId), id.uuidString
+        )
+        try fetchedResultsController.performFetch()
+        return fetchedResultsController.fetchedObjects?.first
+    }
+    
+    
     // MARK: - Init
     convenience override init() {
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -69,6 +97,6 @@ final class TrackerStore: NSObject {
 
 extension TrackerStore: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-//        delegate?.didUpdate()
+        delegate?.updateTracker()
     }
 }
