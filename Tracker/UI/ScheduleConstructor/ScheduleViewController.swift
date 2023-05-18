@@ -8,8 +8,11 @@ final class ScheduleViewController: UIViewController {
     private lazy var readyButton = UIButton()
     
     // MARK: - Properties
+    private let weekDaysStringForTable = DayOfWeek.allCases.map { $0.rawValue }
+    private var daysOfWeekForSceduler: [DayOfWeek]
+    
     private var dailySchedule: [DailySchedule]
-    var scheduleVCCallback: (([DailySchedule], String) -> Void)?
+    var scheduleVCCallback: (([DailySchedule], [DayOfWeek], String) -> Void)?
     
     private let tableHeight = CGFloat(524)
     private let buttonHeight = CGFloat(60)
@@ -109,15 +112,13 @@ final class ScheduleViewController: UIViewController {
     // MARK: - Methods
     private func shortWeekDaysNamesCreation() -> String {
         var shortDaysOfWeekNames: [String] = []
-        for day in dailySchedule {
-            if day.schedulerIsActive {
-                if let shortDayName = weekDaysNamesShorting(day: day.dayOfWeek) {
-                    shortDaysOfWeekNames.append(shortDayName)
-                }
+        for day in daysOfWeekForSceduler {
+            if let shortDayName = weekDaysNamesShorting(day: day.rawValue) {
+                shortDaysOfWeekNames.append(shortDayName)
             }
         }
-        let shortDaysOfWeekNamesString = shortDaysOfWeekNames.joined(separator: ", ")
-        return shortDaysOfWeekNamesString
+        let result = daysOfWeekForSceduler.isEmpty ? "" : shortDaysOfWeekNames.joined(separator: ", ")
+        return result
     }
     
     
@@ -142,25 +143,62 @@ final class ScheduleViewController: UIViewController {
         }
     }
     
+    private func getDayOfWeek(at row: Int) -> DayOfWeek? {
+        guard let dayOfWeek = DayOfWeek.allCases[safe: row] else {
+            return nil
+        }
+        let changedDayOfWeek = dayOfWeek
+        return changedDayOfWeek
+    }
+    
+    
+    
+    private func changeSceduler(day: DayOfWeek?) {
+        guard let changedDay = day else { return }
+        if daysOfWeekForSceduler.contains(changedDay) {
+            guard let index = daysOfWeekForSceduler.firstIndex(of: changedDay) else { return }
+            daysOfWeekForSceduler.remove(at: index)
+        } else {
+            daysOfWeekForSceduler.append(changedDay)
+            sortDaysOfWeekForSceduler()
+        }
+    }
+    
+    
+    private func sortDaysOfWeekForSceduler() {
+        if daysOfWeekForSceduler.count > 1 {
+            daysOfWeekForSceduler.sort { (day1, day2) -> Bool in
+                guard let index1 = DayOfWeek.allCases.firstIndex(of: day1),
+                      let index2 = DayOfWeek.allCases.firstIndex(of: day2) else {
+                    return false
+                }
+                return index1 < index2
+            }
+        }
+    }
+    
     
     // MARK: - Actions
     @objc
     private func switchChanged(_ sender : UISwitch!){
         let row = sender.tag
         dailySchedule[row].schedulerIsActive.toggle()
+        let changedDay = getDayOfWeek(at: row)
+        changeSceduler(day: changedDay)
     }
     
     
     @objc
     private func didTapReadyButton() {
-        scheduleVCCallback?(dailySchedule, shortWeekDaysNamesCreation())
+        scheduleVCCallback?(dailySchedule, daysOfWeekForSceduler, shortWeekDaysNamesCreation())
         self.dismiss(animated: true)
     }
     
     
     // MARK: - init
-    init(dailySchedule: [DailySchedule]) {
+    init(dailySchedule: [DailySchedule], daysOfWeekForSceduler: [DayOfWeek]) {
         self.dailySchedule = dailySchedule
+        self.daysOfWeekForSceduler = daysOfWeekForSceduler
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -182,18 +220,22 @@ extension ScheduleViewController: UITableViewDelegate {
 // MARK: - UITableViewDataSource Extension
 extension ScheduleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dailySchedule.count
+        return weekDaysStringForTable.count
     }
     
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
         let switchView = UISwitch(frame: CGRect(x: 0, y: 0, width: 51, height: 31))
-        switchView.setOn(dailySchedule[indexPath.row].schedulerIsActive, animated: true)
+        let currentDay = weekDaysStringForTable[indexPath.row]
+        let isSwitchOn = daysOfWeekForSceduler.first{$0.rawValue == currentDay} != nil
+        
+        switchView.setOn(isSwitchOn, animated: true)
         switchView.tag = indexPath.row
         switchView.onTintColor = InterfaceColors.blue
         switchView.addTarget(self, action: #selector(self.switchChanged(_:)), for: .valueChanged)
-        cell.textLabel?.text = dailySchedule[indexPath.row].dayOfWeek
+        
+        cell.textLabel?.text = currentDay
         cell.textLabel?.textColor = InterfaceColors.blackDay
         cell.textLabel?.font = UIFont.systemFont(ofSize: 17)
         cell.accessoryView = switchView

@@ -63,6 +63,7 @@ final class TrackerStore: NSObject {
             color: color,
             emoji: emoji,
             dailySchedule: [],
+            scheduler: nil,
             daysComplitedCount: 0
         )
     }

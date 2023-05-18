@@ -38,6 +38,7 @@ final class NewTrackerConstructorViewController: UIViewController {
         DailySchedule(dayOfWeek: "Суббота", dayOfWeekNumber: 7),
         DailySchedule(dayOfWeek: "Воскресенье", dayOfWeekNumber: 1)
     ]
+    private var daysOfWeekForSceduler: [DayOfWeek] = []
     
     private let collectionViewSectionHeaders = ["Emoji", "Цвет"]
     private let emojies = [ "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
@@ -52,7 +53,7 @@ final class NewTrackerConstructorViewController: UIViewController {
     var trackersVCCancelCallback: (() -> Void)?
     var trackersVCCreateCallback: ((String, Tracker) -> Void)?
     
-    var scheduleVCCallback: (([DailySchedule], String) -> Void)?
+    var scheduleVCCallback: (([DailySchedule], [DayOfWeek], String) -> Void)?
     var trackerCategorySelectorVCCallback: ((String) -> Void)?
     
     let scrollViewInterElementOffsets: Offsets
@@ -274,6 +275,7 @@ final class NewTrackerConstructorViewController: UIViewController {
             color: color,
             emoji: trackerEmogieString,
             dailySchedule: isRegularEvent ? scheduler : nil,
+            scheduler: daysOfWeekForSceduler,
             daysComplitedCount: 0
         )
         trackersVCCreateCallback?(trackerCategoryString, tracker)
@@ -358,12 +360,16 @@ extension NewTrackerConstructorViewController: UITableViewDataSource {
             }
             show(trackerCategorySelectorViewController, sender: self)
         } else {
-            let scheduleViewController = ScheduleViewController(dailySchedule: dailySchedule)
+            let scheduleViewController = ScheduleViewController(
+                dailySchedule: dailySchedule,
+                daysOfWeekForSceduler: daysOfWeekForSceduler
+            )
             scheduleViewController.modalPresentationStyle = .pageSheet
-            scheduleViewController.scheduleVCCallback = { [ weak self ] data, cellSubviewText in
+            scheduleViewController.scheduleVCCallback = { [ weak self ] data, schedule, cellSubviewText in
                 guard let self = self else { return }
-                self.scheduleVCCallback?(data, cellSubviewText)
+                self.scheduleVCCallback?(data, schedule, cellSubviewText)
                 self.dailySchedule = data
+                self.daysOfWeekForSceduler = schedule
                 self.actionsArray[1].subTitleLabel = cellSubviewText
                 self.checkIsCreateButtonActive()
                 self.categoryAndSchedulerTable.reloadData()

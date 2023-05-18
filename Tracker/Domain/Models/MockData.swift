@@ -9,6 +9,7 @@ var mockData: [OldTrackerCategory] = [
                 color: cellColors[4],
                 emoji: "❤️",
                 dailySchedule: nil,
+                scheduler: nil,
                 daysComplitedCount: 0)
         ]),
     
@@ -20,6 +21,7 @@ var mockData: [OldTrackerCategory] = [
                 color: cellColors[1],
                 emoji: "😻",
                 dailySchedule: nil,
+                scheduler: nil,
                 daysComplitedCount: 0
             ),
             Tracker(
@@ -27,6 +29,7 @@ var mockData: [OldTrackerCategory] = [
                 color: cellColors[0],
                 emoji: "🌺",
                 dailySchedule: nil,
+                scheduler: nil,
                 daysComplitedCount: 0
             ),
             Tracker(
@@ -34,6 +37,7 @@ var mockData: [OldTrackerCategory] = [
                 color: cellColors[13],
                 emoji: "❤️",
                 dailySchedule: nil,
+                scheduler: nil,
                 daysComplitedCount: 0
             )
         ])
