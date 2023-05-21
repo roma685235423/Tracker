@@ -26,3 +26,31 @@ enum DayOfWeek: String, CaseIterable, Comparable {
         return lhs.rawValue < rhs.rawValue
     }
 }
+
+
+extension DayOfWeek {
+    static func code(_ weekdays: [DayOfWeek]?) -> String? {
+        guard let weekdays else { return nil }
+        let indexes = weekdays.map { Self.allCases.firstIndex(of: $0) }
+        var result = ""
+        for i in 0..<7 {
+            if indexes.contains(i) {
+                result += "1"
+            } else {
+                result += "0"
+            }
+        }
+        return result
+    }
+    
+    static func decode(from string: String?) -> [DayOfWeek]? {
+        guard let string else { return nil }
+        var weekdays = [DayOfWeek]()
+        for (index, value) in string.enumerated() {
+            guard value == "1" else { continue }
+            let weekday = Self.allCases[index]
+            weekdays.append(weekday)
+        }
+        return weekdays
+    }
+}

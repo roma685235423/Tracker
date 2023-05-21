@@ -143,6 +143,7 @@ final class ScheduleViewController: UIViewController {
         }
     }
     
+    
     private func getDayOfWeek(at row: Int) -> DayOfWeek? {
         guard let dayOfWeek = DayOfWeek.allCases[safe: row] else {
             return nil

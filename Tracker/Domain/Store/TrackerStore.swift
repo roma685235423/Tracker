@@ -8,6 +8,7 @@ protocol TrackerStoreDelegate: AnyObject {
 
 
 final class TrackerStore: NSObject {
+    // MARK: - Errors
     enum CategoryStoreError: Error {
         case decodeError
     }
@@ -25,6 +26,7 @@ final class TrackerStore: NSObject {
     var numberOfTrackers: Int {
         fetchedResultsController.fetchedObjects?.count ?? 0
     }
+    
     var numberOfSections: Int {
         fetchedResultsController.sections?.count ?? 0
     }
@@ -48,7 +50,7 @@ final class TrackerStore: NSObject {
     
     
     // MARK: - Methods
-    func makeTracker(from coreData: TrackerCoreData) throws -> Tracker {
+    func createTracker(from coreData: TrackerCoreData) throws -> Tracker {
         guard
             let idString = coreData.trackerId,
             let id = UUID(uuidString: idString),
@@ -63,19 +65,80 @@ final class TrackerStore: NSObject {
             color: color,
             emoji: emoji,
             dailySchedule: [],
-            scheduler: nil,
+            schedule: nil,
             daysComplitedCount: 0
         )
     }
     
     
     func getTrackerFromCoreData(id: UUID) throws -> TrackerCoreData? {
-        fetchedResultsController.fetchRequest.predicate = NSPredicate(
+        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+        fetchRequest.predicate = NSPredicate(
             format: "%K == %@",
             #keyPath(TrackerCoreData.trackerId), id.uuidString
         )
-        try fetchedResultsController.performFetch()
-        return fetchedResultsController.fetchedObjects?.first
+        let results = try context.fetch(fetchRequest)
+        return results.first
+    }
+    
+    
+    func getNumberOfRowsInSection(section: Int) -> Int {
+        fetchedResultsController.sections?[section].numberOfObjects ?? 0
+    }
+    
+    
+    func getHeaderLabelFor(section: Int) -> String? {
+        guard
+            let trackerCoreData = fetchedResultsController.sections?[section].objects?.first as? TrackerCoreData
+        else { return nil }
+        return trackerCoreData.category?.label ?? nil
+    }
+    
+    
+//    func getTrackerAt(indexPath: IndexPath) -> Tracker? {
+//        let trackerFromCoreData = fetchedResultsController.object(at: indexPath)
+//        do {
+//            let tracker = try createTracker(from: trackerFromCoreData)
+//            return tracker
+//        } catch {
+//            return nil
+//        }
+//    }
+    
+    
+    func getTrackerAt(indexPath: IndexPath) -> Tracker? {
+        let trackerFromCoreData = fetchedResultsController.object(at: indexPath)
+        guard let idString = trackerFromCoreData.trackerId,
+              let id = UUID(uuidString: idString),
+              let label = trackerFromCoreData.label,
+              let emoji = trackerFromCoreData.emoji,
+              let colorHEX = trackerFromCoreData.colorHEX else {
+                  return nil
+              }
+        let color = colorMarshalling.color(from: colorHEX)
+        return Tracker(
+            id: id,
+            label: label,
+            color: color,
+            emoji: emoji,
+            dailySchedule: [],
+            schedule: nil,
+            daysComplitedCount: 0
+        )
+    }
+    
+    
+    func addTracker(tracker: Tracker, with category: TrackerCategory) throws {
+        let categoryCoreData = try categoryStore.getCategoryFromCoreData(id: category.id)
+        let trackerCoreData = TrackerCoreData(context: context)
+        trackerCoreData.createdAt = Date()
+        trackerCoreData.colorHEX = colorMarshalling.hexString(from: tracker.color)
+        trackerCoreData.schedule = DayOfWeek.code(tracker.schedule)
+        trackerCoreData.category = categoryCoreData
+        trackerCoreData.trackerId = tracker.id.uuidString
+        trackerCoreData.label = tracker.label
+        trackerCoreData.emoji = tracker.emoji
+        try context.save()
     }
     
     

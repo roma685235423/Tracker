@@ -5,10 +5,10 @@ struct Tracker {
     let label: String
     let color: UIColor
     let emoji: String
+    /// УДАЛИТЬ==================================================================
     let dailySchedule: [DailySchedule]?
     /// УДАЛИТЬ==================================================================
-    let scheduler: [DayOfWeek]?
-    /// УДАЛИТЬ==================================================================
+    let schedule: [DayOfWeek]?
     let daysComplitedCount: Int
     
     init(id: UUID = UUID(),
@@ -18,7 +18,7 @@ struct Tracker {
          /// УДАЛИТЬ==================================================================
          dailySchedule: [DailySchedule]?,
          /// УДАЛИТЬ==================================================================
-         scheduler: [DayOfWeek]?,
+         schedule: [DayOfWeek]?,
          daysComplitedCount: Int) {
         self.id = id
         self.label = label
@@ -27,7 +27,7 @@ struct Tracker {
         /// УДАЛИТЬ==================================================================
         self.dailySchedule = dailySchedule
         /// УДАЛИТЬ==================================================================
-        self.scheduler = scheduler
+        self.schedule = schedule
         self.daysComplitedCount = daysComplitedCount
     }
 }
