@@ -38,7 +38,6 @@
 		BA8289E729D5E29900879101 /* InterfaceColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8289E629D5E29900879101 /* InterfaceColors.swift */; };
 		BA8289E929D5FBB600879101 /* ColorSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8289E829D5FBB600879101 /* ColorSelection.swift */; };
 		BA8289EC29D62E6B00879101 /* StatisticViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8289EB29D62E6B00879101 /* StatisticViewController.swift */; };
-		BA8289EF29D6347A00879101 /* SplashScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8289EE29D6347A00879101 /* SplashScreenViewController.swift */; };
 		BA8289F229D740DA00879101 /* CreateTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8289F129D740DA00879101 /* CreateTrackerViewController.swift */; };
 		BABB692C29E4A42F005DBCBA /* UIStack+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BABB692B29E4A42F005DBCBA /* UIStack+Extension.swift */; };
 		BAC0FFF42A16B220000E83E0 /* Collection+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC0FFF32A16B220000E83E0 /* Collection+Extension.swift */; };
@@ -103,7 +102,6 @@
 		BA8289E629D5E29900879101 /* InterfaceColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceColors.swift; sourceTree = "<group>"; };
 		BA8289E829D5FBB600879101 /* ColorSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSelection.swift; sourceTree = "<group>"; };
 		BA8289EB29D62E6B00879101 /* StatisticViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticViewController.swift; sourceTree = "<group>"; };
-		BA8289EE29D6347A00879101 /* SplashScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenViewController.swift; sourceTree = "<group>"; };
 		BA8289F129D740DA00879101 /* CreateTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTrackerViewController.swift; sourceTree = "<group>"; };
 		BABB692B29E4A42F005DBCBA /* UIStack+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStack+Extension.swift"; sourceTree = "<group>"; };
 		BAC0FFF32A16B220000E83E0 /* Collection+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Extension.swift"; sourceTree = "<group>"; };
@@ -237,7 +235,6 @@
 				BA69EE6D29DE238100E65C92 /* TrackerCategorySelector */,
 				BA418D6629DB5E5E00080EB0 /* ScheduleConstructor */,
 				BA8289F029D740B500879101 /* CreateTracker */,
-				BA8289ED29D6344800879101 /* SplashScreen */,
 				BA8289EA29D62E3E00879101 /* StatisticView */,
 			);
 			path = UI;
@@ -325,14 +322,6 @@
 				BA8289EB29D62E6B00879101 /* StatisticViewController.swift */,
 			);
 			path = StatisticView;
-			sourceTree = "<group>";
-		};
-		BA8289ED29D6344800879101 /* SplashScreen */ = {
-			isa = PBXGroup;
-			children = (
-				BA8289EE29D6347A00879101 /* SplashScreenViewController.swift */,
-			);
-			path = SplashScreen;
 			sourceTree = "<group>";
 		};
 		BA8289F029D740B500879101 /* CreateTracker */ = {
@@ -502,7 +491,6 @@
 				BA418D6829DB5F1D00080EB0 /* CollectionParameters.swift in Sources */,
 				BA418D5D29DA0D2F00080EB0 /* TrackerRecord.swift in Sources */,
 				BA69EE6C29DDD98C00E65C92 /* TableViewActions.swift in Sources */,
-				BA8289EF29D6347A00879101 /* SplashScreenViewController.swift in Sources */,
 				BAC3C2F929E0673D00B3159A /* Date+Extension.swift in Sources */,
 				BA418D5929DA0D1300080EB0 /* Tracker.swift in Sources */,
 				BA3B5CD229D75BBD000C53FC /* UILabel+Extension.swift in Sources */,

@@ -15,10 +15,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowsScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowsScene)
-//        let trackersViewController = TrackersViewController()
-//        window?.rootViewController = trackersViewController
-        let splashViewController = SplashScreenViewController()
-        window?.rootViewController = splashViewController
+//        let splashViewController = SplashScreenViewController()
+//        window?.rootViewController = splashViewController
+        let tabBarViewController = TabBarViewController()
+        tabBarViewController.awakeFromNib()
+        window?.rootViewController = tabBarViewController
         window?.makeKeyAndVisible()
     }
 

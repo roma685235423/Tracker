@@ -38,21 +38,22 @@ final class NewTrackerConstructorViewController: UIViewController {
         DailySchedule(dayOfWeek: "Суббота", dayOfWeekNumber: 7),
         DailySchedule(dayOfWeek: "Воскресенье", dayOfWeekNumber: 1)
     ]
-    private var daysOfWeekForSceduler: [DayOfWeek] = []
-    
     private let collectionViewSectionHeaders = ["Emoji", "Цвет"]
     private let emojies = [ "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
     
     private var emojiSelectedItem: Int?
     private var colorSelectedItem: Int?
     private var selectedItem: IndexPath?
-    
     private let isRegularEvent: Bool
     weak var deleagte: NewRegularTrackerConstructorDelegate?
     
+    private var daysOfWeekForSceduler: [DayOfWeek] = []
+    private let trackerStore = TrackerStore()
+    private let trackerCategoryStore = TrackerCategoryStore()
+    private let trackerRecordStore = TrackerRecordStore()
+    
     var trackersVCCancelCallback: (() -> Void)?
     var trackersVCCreateCallback: ((String, Tracker) -> Void)?
-    
     var scheduleVCCallback: (([DailySchedule], [DayOfWeek], String) -> Void)?
     var trackerCategorySelectorVCCallback: ((String) -> Void)?
     

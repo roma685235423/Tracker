@@ -63,5 +63,6 @@ final class TrackerCategoryStore: NSObject {
     init(context: NSManagedObjectContext) throws {
         self.context = context
         super.init()
+        try setupCategories(with: context)
     }
 }

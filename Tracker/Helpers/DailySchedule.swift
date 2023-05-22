@@ -27,30 +27,28 @@ enum DayOfWeek: String, CaseIterable, Comparable {
     }
 }
 
-
 extension DayOfWeek {
-    static func code(_ weekdays: [DayOfWeek]?) -> String? {
-        guard let weekdays else { return nil }
-        let indexes = weekdays.map { Self.allCases.firstIndex(of: $0) }
-        var result = ""
-        for i in 0..<7 {
-            if indexes.contains(i) {
-                result += "1"
+    static func dayCodeString(from selectedDays: [DayOfWeek]?) -> String? {
+        guard let selectedDays = selectedDays else { return nil }
+        var binaryRepresentation = ""
+        for day in Self.allCases {
+            if selectedDays.contains(day) {
+                binaryRepresentation.append("1")
             } else {
-                result += "0"
+                binaryRepresentation.append("0")
             }
         }
-        return result
+        return binaryRepresentation
     }
     
-    static func decode(from string: String?) -> [DayOfWeek]? {
-        guard let string else { return nil }
-        var weekdays = [DayOfWeek]()
-        for (index, value) in string.enumerated() {
-            guard value == "1" else { continue }
-            let weekday = Self.allCases[index]
-            weekdays.append(weekday)
+    static func decodeFrom(dayCodeString: String?) -> [DayOfWeek]? {
+        guard let binaryString = dayCodeString else { return nil }
+        var selectedWeekdays = [DayOfWeek]()
+        for (index, char) in binaryString.enumerated() {
+            guard char == "1" else { continue }
+            guard let weekday = Self.allCases[safe: index] else { continue }
+            selectedWeekdays.append(weekday)
         }
-        return weekdays
+        return selectedWeekdays
     }
 }
