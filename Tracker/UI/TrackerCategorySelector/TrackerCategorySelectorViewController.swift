@@ -23,7 +23,7 @@ final class TrackerCategorySelectorViewController: UIViewController {
     private func initialSettings() {
         view.backgroundColor = InterfaceColors.whiteDay
         screenTopLabel.configureLabel(
-            text: "Расписание",
+            text: "Категория",
             addToView: view,
             ofSize: 16,
             weight: .medium
@@ -89,7 +89,7 @@ final class TrackerCategorySelectorViewController: UIViewController {
         } else if categories.count == 0 {
             return 0
         } else {
-            return 75
+            return 74
         }
     }
     

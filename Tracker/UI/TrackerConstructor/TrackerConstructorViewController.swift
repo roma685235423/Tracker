@@ -29,15 +29,6 @@ final class NewTrackerConstructorViewController: UIViewController {
     private var actionsArray: [TableViewActions] = [.init(titleLabelText: "Категория", subTitleLabel: "")]
     private var currentSelectedCateory: Int?
     
-    private var dailySchedule: [DailySchedule] = [
-        DailySchedule(dayOfWeek: "Понедельник", dayOfWeekNumber: 2),
-        DailySchedule(dayOfWeek: "Вторник", dayOfWeekNumber: 3),
-        DailySchedule(dayOfWeek: "Среда", dayOfWeekNumber: 4),
-        DailySchedule(dayOfWeek: "Четверг", dayOfWeekNumber: 5),
-        DailySchedule(dayOfWeek: "Пятница", dayOfWeekNumber: 6),
-        DailySchedule(dayOfWeek: "Суббота", dayOfWeekNumber: 7),
-        DailySchedule(dayOfWeek: "Воскресенье", dayOfWeekNumber: 1)
-    ]
     private let collectionViewSectionHeaders = ["Emoji", "Цвет"]
     private let emojies = [ "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
     
@@ -54,16 +45,13 @@ final class NewTrackerConstructorViewController: UIViewController {
     
     var trackersVCCancelCallback: (() -> Void)?
     var trackersVCCreateCallback: ((String, Tracker) -> Void)?
-    var scheduleVCCallback: (([DailySchedule], [DayOfWeek], String) -> Void)?
+    var scheduleVCCallback: (([DayOfWeek], String) -> Void)?
     var trackerCategorySelectorVCCallback: ((String) -> Void)?
     
     let scrollViewInterElementOffsets: Offsets
     
     // MARK: - Lazy
-    private lazy var trackersCategories: [String] = {
-        guard let categories = deleagte?.getTrackersCategories() else { return [] }
-        return categories
-    }()
+    private lazy var trackersCategories: [String] = ["Важное","Радостные мелочи"]
     
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
@@ -269,13 +257,12 @@ final class NewTrackerConstructorViewController: UIViewController {
     @objc
     private func didTapCreateButton() {
         guard let color = trackerColor else { return }
-        let scheduler = dailySchedule.filter { $0.schedulerIsActive }
         let tracker = Tracker(
             id: UUID.init(),
             label: trackerNameString,
             color: color,
             emoji: trackerEmogieString,
-            dailySchedule: isRegularEvent ? scheduler : nil,
+            //dailySchedule: nil,
             schedule: daysOfWeekForSceduler,
             daysComplitedCount: 0
         )
@@ -362,14 +349,12 @@ extension NewTrackerConstructorViewController: UITableViewDataSource {
             show(trackerCategorySelectorViewController, sender: self)
         } else {
             let scheduleViewController = ScheduleViewController(
-                dailySchedule: dailySchedule,
                 daysOfWeekForSceduler: daysOfWeekForSceduler
             )
             scheduleViewController.modalPresentationStyle = .pageSheet
-            scheduleViewController.scheduleVCCallback = { [ weak self ] data, schedule, cellSubviewText in
+            scheduleViewController.scheduleVCCallback = { [ weak self ] schedule, cellSubviewText in
                 guard let self = self else { return }
-                self.scheduleVCCallback?(data, schedule, cellSubviewText)
-                self.dailySchedule = data
+                self.scheduleVCCallback?(schedule, cellSubviewText)
                 self.daysOfWeekForSceduler = schedule
                 self.actionsArray[1].subTitleLabel = cellSubviewText
                 self.checkIsCreateButtonActive()

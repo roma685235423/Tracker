@@ -11,8 +11,7 @@ final class ScheduleViewController: UIViewController {
     private let weekDaysStringForTable = DayOfWeek.allCases.map { $0.rawValue }
     private var daysOfWeekForSceduler: [DayOfWeek]
     
-    private var dailySchedule: [DailySchedule]
-    var scheduleVCCallback: (([DailySchedule], [DayOfWeek], String) -> Void)?
+    var scheduleVCCallback: (([DayOfWeek], String) -> Void)?
     
     private let tableHeight = CGFloat(524)
     private let buttonHeight = CGFloat(60)
@@ -183,7 +182,6 @@ final class ScheduleViewController: UIViewController {
     @objc
     private func switchChanged(_ sender : UISwitch!){
         let row = sender.tag
-        dailySchedule[row].schedulerIsActive.toggle()
         let changedDay = getDayOfWeek(at: row)
         changeSceduler(day: changedDay)
     }
@@ -191,14 +189,13 @@ final class ScheduleViewController: UIViewController {
     
     @objc
     private func didTapReadyButton() {
-        scheduleVCCallback?(dailySchedule, daysOfWeekForSceduler, shortWeekDaysNamesCreation())
+        scheduleVCCallback?(daysOfWeekForSceduler, shortWeekDaysNamesCreation())
         self.dismiss(animated: true)
     }
     
     
     // MARK: - init
-    init(dailySchedule: [DailySchedule], daysOfWeekForSceduler: [DayOfWeek]) {
-        self.dailySchedule = dailySchedule
+    init(daysOfWeekForSceduler: [DayOfWeek]) {
         self.daysOfWeekForSceduler = daysOfWeekForSceduler
         super.init(nibName: nil, bundle: nil)
     }

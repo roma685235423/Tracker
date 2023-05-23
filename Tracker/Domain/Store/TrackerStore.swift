@@ -58,7 +58,6 @@ final class TrackerStore: NSObject {
             label: label,
             color: color,
             emoji: emoji,
-            dailySchedule: [],
             schedule: schedule,
             daysComplitedCount: 0
         )
@@ -103,7 +102,6 @@ final class TrackerStore: NSObject {
             label: label,
             color: color,
             emoji: emoji,
-            dailySchedule: [],
             schedule: schedule,
             daysComplitedCount: 0
         )

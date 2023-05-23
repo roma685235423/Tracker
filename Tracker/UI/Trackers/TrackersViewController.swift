@@ -183,6 +183,7 @@ class TrackersViewController: UIViewController, CreateTrackerDelegate {
             self?.dismiss(animated: true)
         }
         createTrackerViewController.trackersVCCreateCallback = { [weak self] categoryLabel, tracker in
+            
             self?.dismiss(animated: true)
         }
         present(createTrackerViewController, animated: true)

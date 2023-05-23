@@ -1,17 +1,5 @@
 import UIKit
 
-struct DailySchedule {
-    let dayOfWeek: String
-    var schedulerIsActive: Bool = false
-    let dayOfWeekNumber: Int
-}
-
-extension DailySchedule: Equatable {
-    static func == (lhs: DailySchedule, rhs: DailySchedule) -> Bool {
-        return lhs.dayOfWeekNumber == rhs.dayOfWeekNumber
-    }
-}
-
 
 enum DayOfWeek: String, CaseIterable, Comparable {
     case monday = "Понедельник"
@@ -40,6 +28,7 @@ extension DayOfWeek {
         }
         return binaryRepresentation
     }
+    
     
     static func decodeFrom(dayCodeString: String?) -> [DayOfWeek]? {
         guard let binaryString = dayCodeString else { return nil }
