@@ -1,10 +1,5 @@
 import UIKit
 
-struct OldTrackerCategory {
-    let title: String
-    let trackers: [Tracker]
-}
-
 
 struct TrackerCategory {
     let title: String

@@ -1,10 +1,5 @@
 import UIKit
 
-struct OldTrackerRecord: Hashable {
-    let trackerID: UUID
-    let date: Date
-}
-
 
 struct TrackerRecord: Hashable {
     let id: UUID

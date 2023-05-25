@@ -1,20 +1,14 @@
 import UIKit
 
-protocol CreateTrackerDelegate: AnyObject {
-    func getTrackersCategories() -> [String]
-}
 
-final class CreateTrackerViewController: UIViewController, NewRegularTrackerConstructorDelegate {
+final class CreateTrackerViewController: UIViewController {
     // MARK: - UIElements
     private let screenTopLabel = UILabel()
     private let goToCreateHabitScreenButton = UIButton()
     private let goToCreateIrregularEventScreenButton = UIButton()
     
-    
-    weak var delegate: CreateTrackerDelegate?
-    
     var trackersVCDismissCallback: (() -> Void)?
-    var trackersVCCreateCallback: ((String, Tracker) -> Void)?
+    var trackersVCCreateCallback: ((TrackerCategory, Tracker) -> Void)?
     
     
     // MARK: - Lifecicle
@@ -73,24 +67,13 @@ final class CreateTrackerViewController: UIViewController, NewRegularTrackerCons
     }
     
     
-    // MARK: - Methods
-    func getTrackersCategories() -> [String] {
-        if let categories = delegate?.getTrackersCategories() {
-            return categories
-        } else {
-            return []
-        }
-    }
-    
-    
     // MARK: - Actions
     @objc
     private func didTapGoToCreateHabitScreenButton() {
         let newTrackerConstructorView = NewTrackerConstructorViewController(isRegularEvent: true)
         newTrackerConstructorView.modalPresentationStyle = .pageSheet
-        newTrackerConstructorView.deleagte = self
-        newTrackerConstructorView.trackersVCCreateCallback = { [ weak self ] categoryLabel, tracker in
-            self?.trackersVCCreateCallback?(categoryLabel, tracker)
+        newTrackerConstructorView.trackersVCCreateCallback = { [ weak self ] category, tracker in
+            self?.trackersVCCreateCallback?(category, tracker)
         }
         newTrackerConstructorView.trackersVCCancelCallback = { [ weak self ] in
             self?.trackersVCDismissCallback?()
@@ -103,9 +86,8 @@ final class CreateTrackerViewController: UIViewController, NewRegularTrackerCons
     private func didTapGoToCreateIrregularEventScreenButton() {
         let newIrregularEventView = NewTrackerConstructorViewController(isRegularEvent: false)
         newIrregularEventView.modalPresentationStyle = .pageSheet
-        newIrregularEventView.deleagte = self
-        newIrregularEventView.trackersVCCreateCallback = { [ weak self ] categoryLabel, tracker in
-            self?.trackersVCCreateCallback?(categoryLabel, tracker)
+        newIrregularEventView.trackersVCCreateCallback = { [ weak self ] category, tracker in
+            self?.trackersVCCreateCallback?(category, tracker)
         }
         newIrregularEventView.trackersVCCancelCallback = { [ weak self ] in
             self?.trackersVCDismissCallback?()

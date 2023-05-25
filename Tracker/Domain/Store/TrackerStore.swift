@@ -17,6 +17,7 @@ final class TrackerStore: NSObject {
     weak var delegate: TrackerStoreDelegate?
     private let categoresStore = TrackerCategoryStore()
     private let context: NSManagedObjectContext
+    
     private let colorMarshalling = UIColorMarshalling()
     
     var numberOfTrackers: Int {

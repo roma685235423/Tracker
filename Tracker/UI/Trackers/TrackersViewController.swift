@@ -2,11 +2,7 @@ import UIKit
 
 
 
-class TrackersViewController: UIViewController, CreateTrackerDelegate {
-    func getTrackersCategories() -> [String] {
-        return [""]
-    }
-    
+class TrackersViewController: UIViewController {
     // MARK: - UI
     private let trackerLabel = UILabel()
     private let mainSpacePlaceholderStack = UIStackView()
@@ -15,7 +11,6 @@ class TrackersViewController: UIViewController, CreateTrackerDelegate {
     // MARK: - Properties
     private var currentDate: Date = Date().getDate()!
     private var complitedTrackers: Set<TrackerRecord> = []
-    private var visibleCategories: [OldTrackerCategory] = []
     private let trackerStore = TrackerStore()
     private let trackerCategoryStore = TrackerCategoryStore()
     private let trackerRecordStore = TrackerRecordStore()
@@ -89,7 +84,6 @@ class TrackersViewController: UIViewController, CreateTrackerDelegate {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate()
         view.backgroundColor = InterfaceColors.whiteDay
-        //visibleCategories = categories
         trackerStore.delegate = self
         trackerRecordStore.delegate = self
         trackerLabel.configureLabel(
@@ -178,12 +172,11 @@ class TrackersViewController: UIViewController, CreateTrackerDelegate {
     private func didTapAddTrackerButton() {
         let createTrackerViewController = CreateTrackerViewController()
         createTrackerViewController.modalPresentationStyle = .pageSheet
-        createTrackerViewController.delegate = self
         createTrackerViewController.trackersVCDismissCallback = { [weak self] in
             self?.dismiss(animated: true)
         }
-        createTrackerViewController.trackersVCCreateCallback = { [weak self] categoryLabel, tracker in
-            
+        createTrackerViewController.trackersVCCreateCallback = { [weak self] category, tracker in
+            try? self?.trackerStore.addTracker(tracker: tracker, with: category)
             self?.dismiss(animated: true)
         }
         present(createTrackerViewController, animated: true)
@@ -232,12 +225,12 @@ extension TrackersViewController: UISearchBarDelegate {
 extension TrackersViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         checkMainPlaceholderVisability()
-        return visibleCategories.filter{$0.trackers.count > 0}.count
+        return trackerStore.numberOfSections
     }
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        visibleCategories[section].trackers.count
+        trackerStore.getNumberOfRowsInSection(section: section)
     }
     
     
@@ -245,7 +238,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackersCollectionCell", for: indexPath)
                 as? TrackersCollectinCell else { fatalError("Invalid TrackerCollectionView cell configuration !!!") }
         
-        let tracker = visibleCategories[indexPath.section].trackers[indexPath.row]
+        guard let tracker = trackerStore.getTrackerAt(indexPath: indexPath) else { fatalError("Invalid Tracker creation!!!") }
         let isDone = complitedTrackers.contains { $0.date == currentDate && $0.trackerId == tracker.id }
         let daysCounter = complitedTrackers.filter { $0.trackerId == tracker.id }.count
         cell.configureCellContent(prototype: tracker, daysCounter: daysCounter, isDone: isDone)
@@ -264,7 +257,7 @@ extension TrackersViewController: UICollectionViewDataSource {
             ) as? SupplementaryView
         else { return UICollectionReusableView() }
         view.configoreLayout(leftOffset: 28, topOffset: 15, bottomOffset: 15)
-        view.titleLabel.text = visibleCategories[indexPath.section].title
+        view.titleLabel.text = trackerStore.getHeaderLabelFor(section: indexPath.section)
         return view
     }
 }

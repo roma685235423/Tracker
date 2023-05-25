@@ -7,10 +7,6 @@ struct Offsets {
     let buttonsToBottom: CGFloat = 24
 }
 
-protocol NewRegularTrackerConstructorDelegate: AnyObject {
-    func getTrackersCategories() -> [String]
-}
-
 
 
 final class NewTrackerConstructorViewController: UIViewController {
@@ -36,22 +32,24 @@ final class NewTrackerConstructorViewController: UIViewController {
     private var colorSelectedItem: Int?
     private var selectedItem: IndexPath?
     private let isRegularEvent: Bool
-    weak var deleagte: NewRegularTrackerConstructorDelegate?
     
     private var daysOfWeekForSceduler: [DayOfWeek] = []
-    private let trackerStore = TrackerStore()
     private let trackerCategoryStore = TrackerCategoryStore()
-    private let trackerRecordStore = TrackerRecordStore()
     
     var trackersVCCancelCallback: (() -> Void)?
-    var trackersVCCreateCallback: ((String, Tracker) -> Void)?
+    var trackersVCCreateCallback: ((TrackerCategory, Tracker) -> Void)?
     var scheduleVCCallback: (([DayOfWeek], String) -> Void)?
-    var trackerCategorySelectorVCCallback: ((String) -> Void)?
     
     let scrollViewInterElementOffsets: Offsets
     
     // MARK: - Lazy
-    private lazy var trackersCategories: [String] = ["Важное","Радостные мелочи"]
+    private lazy var trackersCategories: [String] = {
+        var stringCategories: [String] = []
+        for category in trackerCategoryStore.categories {
+            stringCategories.append(category.title)
+        }
+        return stringCategories
+    }()
     
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
@@ -199,6 +197,7 @@ final class NewTrackerConstructorViewController: UIViewController {
         scrollView.addGestureRecognizer(tapToHideKeyboardGesture)
     }
     
+    
     private func scrollViewHeightCalculation() -> CGFloat{
         return textField.frame.height + scrollViewInterElementOffsets.textToTable +
         categoryAndSchedulerTable.frame.height + scrollViewInterElementOffsets.tableToCollection +
@@ -262,11 +261,12 @@ final class NewTrackerConstructorViewController: UIViewController {
             label: trackerNameString,
             color: color,
             emoji: trackerEmogieString,
-            //dailySchedule: nil,
             schedule: daysOfWeekForSceduler,
             daysComplitedCount: 0
         )
-        trackersVCCreateCallback?(trackerCategoryString, tracker)
+        let cateory = trackerCategoryStore.categories.first { $0.title == trackerCategoryString }
+        guard let unwrapCategory = cateory else { return } 
+        trackersVCCreateCallback?(unwrapCategory, tracker)
     }
     
     
