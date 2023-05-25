@@ -12,7 +12,6 @@ class TrackersViewController: UIViewController {
     private var currentDate: Date = Date().getDate()!
     private var complitedTrackers: Set<TrackerRecord> = []
     private let trackerStore = TrackerStore()
-    private let trackerCategoryStore = TrackerCategoryStore()
     private let trackerRecordStore = TrackerRecordStore()
     
     private var searchedText = "" {

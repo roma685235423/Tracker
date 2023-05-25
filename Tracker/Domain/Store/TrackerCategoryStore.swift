@@ -7,6 +7,7 @@ final class TrackerCategoryStore: NSObject {
         case decodeError
     }
     
+    
     // MARK: - Properties
     lazy var categories: [TrackerCategory] = {
         do {
@@ -25,8 +26,8 @@ final class TrackerCategoryStore: NSObject {
     func getCategoryFromCoreData(id: UUID) throws -> TrackerCategoryCoreData? {
         let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
         request.predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerCategoryCoreData.categoryId), id.uuidString)
-        let category = try context.fetch(request)
-        return category.first
+        let category = try context.fetch(request).first
+        return category
     }
     
     
@@ -64,6 +65,7 @@ final class TrackerCategoryStore: NSObject {
         }
         try context.save()
     }
+    
     
     // MARK: - Init
     convenience override init() {
