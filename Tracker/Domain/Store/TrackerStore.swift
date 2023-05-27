@@ -3,7 +3,7 @@ import CoreData
 
 
 protocol TrackerStoreDelegate: AnyObject {
-    func updateTracker()
+    func updateTrackers()
 }
 
 
@@ -119,7 +119,7 @@ final class TrackerStore: NSObject {
         fetchedResultsController.fetchRequest.predicate = compoundPredicate
         
         try fetchedResultsController.performFetch()
-        delegate?.updateTracker()
+        delegate?.updateTrackers()
     }
     
     
@@ -161,6 +161,7 @@ final class TrackerStore: NSObject {
         trackerCoreData.label = tracker.label
         trackerCoreData.emoji = tracker.emoji
         try context.save()
+        //delegate?.updateTrackers()
     }
     
     
@@ -188,5 +189,14 @@ final class TrackerStore: NSObject {
         self.context = context
         super.init()
     }
-    
+}
+
+
+
+// MARK: - NSFetchedResultsControllerDelegate
+
+extension TrackerStore: NSFetchedResultsControllerDelegate {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        delegate?.updateTrackers()
+    }
 }

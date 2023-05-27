@@ -1,14 +1,20 @@
 import UIKit
 
 
+
+protocol CreateTrackerViewControllerDelegate: AnyObject {
+    func openTrackerConstructorWith(regularEvent: Bool)
+}
+
+
+
 final class CreateTrackerViewController: UIViewController {
     // MARK: - UIElements
     private let screenTopLabel = UILabel()
     private let goToCreateHabitScreenButton = UIButton()
     private let goToCreateIrregularEventScreenButton = UIButton()
     
-    var trackersVCDismissCallback: (() -> Void)?
-    var trackersVCCreateCallback: ((TrackerCategory, Tracker) -> Void)?
+    weak var deligate: CreateTrackerViewControllerDelegate?
     
     
     // MARK: - Lifecicle
@@ -70,28 +76,12 @@ final class CreateTrackerViewController: UIViewController {
     // MARK: - Actions
     @objc
     private func didTapGoToCreateHabitScreenButton() {
-        let newTrackerConstructorView = NewTrackerConstructorViewController(isRegularEvent: true)
-        newTrackerConstructorView.modalPresentationStyle = .pageSheet
-        newTrackerConstructorView.trackersVCCreateCallback = { [ weak self ] category, tracker in
-            self?.trackersVCCreateCallback?(category, tracker)
-        }
-        newTrackerConstructorView.trackersVCCancelCallback = { [ weak self ] in
-            self?.trackersVCDismissCallback?()
-        }
-        present(newTrackerConstructorView, animated: true)
+        deligate?.openTrackerConstructorWith(regularEvent: true)
     }
     
     
     @objc
     private func didTapGoToCreateIrregularEventScreenButton() {
-        let newIrregularEventView = NewTrackerConstructorViewController(isRegularEvent: false)
-        newIrregularEventView.modalPresentationStyle = .pageSheet
-        newIrregularEventView.trackersVCCreateCallback = { [ weak self ] category, tracker in
-            self?.trackersVCCreateCallback?(category, tracker)
-        }
-        newIrregularEventView.trackersVCCancelCallback = { [ weak self ] in
-            self?.trackersVCDismissCallback?()
-        }
-        present(newIrregularEventView, animated: true)
+        deligate?.openTrackerConstructorWith(regularEvent: false)
     }
 }

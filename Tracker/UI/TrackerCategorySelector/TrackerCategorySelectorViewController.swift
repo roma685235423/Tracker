@@ -1,6 +1,6 @@
 import UIKit
 
-final class TrackerCategorySelectorViewController: UIViewController {
+final class TrackerCategorySelectorVC: UIViewController {
     // MARK: - UI
     private let screenTopLabel = UILabel()
     private let trackerCategoryTable = UITableView()
@@ -110,7 +110,7 @@ final class TrackerCategorySelectorViewController: UIViewController {
 
 
 // MARK: - UITableViewDelegate Extension
-extension TrackerCategorySelectorViewController: UITableViewDelegate {
+extension TrackerCategorySelectorVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath)
         guard let cell = cell,
@@ -131,7 +131,7 @@ extension TrackerCategorySelectorViewController: UITableViewDelegate {
 
 
 // MARK: - UITableViewDataSource Extension
-extension TrackerCategorySelectorViewController: UITableViewDataSource {
+extension TrackerCategorySelectorVC: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         categories.count
     }
