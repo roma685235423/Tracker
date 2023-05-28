@@ -4,7 +4,7 @@ import CoreData
 
 
 protocol TrackerRecordStoreDelegate: AnyObject {
-    func didUpdateRecords(_ records: Set<TrackerRecord>)
+    func didUpdate(records: Set<TrackerRecord>)
 }
 
 
@@ -29,8 +29,10 @@ final class TrackerRecordStore: NSObject {
             let id = UUID(uuidString: idString),
             let date = coreData.date,
             let trackerCoreData = coreData.tracker,
-            let tracker = try? trackerStore.makeTracker(from: trackerCoreData)
-        else { throw CategoryStoreError.decodeError }
+            let tracker = try? trackerStore.createTracker(from: trackerCoreData)
+        else
+        { throw CategoryStoreError.decodeError }
+        
         return TrackerRecord(id: id, trackerId: tracker.id, date: date)
     }
     
@@ -43,7 +45,7 @@ final class TrackerRecordStore: NSObject {
         let recordsCoreData = try context.fetch(request)
         let records = try recordsCoreData.map { try createTrackerRecord(from: $0) }
         completedTrackers = Set(records)
-        delegate?.didUpdateRecords(completedTrackers)
+        delegate?.didUpdate(records: completedTrackers)
     }
     
     
@@ -55,7 +57,7 @@ final class TrackerRecordStore: NSObject {
         trackerRecordFromCoreData.tracker = trackerCoreData
         try context.save()
         completedTrackers.insert(record)
-        delegate?.didUpdateRecords(completedTrackers)
+        delegate?.didUpdate(records: completedTrackers)
     }
     
     
@@ -70,7 +72,7 @@ final class TrackerRecordStore: NSObject {
         context.delete(recordToRemove)
         try context.save()
         completedTrackers.remove(record)
-        delegate?.didUpdateRecords(completedTrackers)
+        delegate?.didUpdate(records: completedTrackers)
     }
     
     

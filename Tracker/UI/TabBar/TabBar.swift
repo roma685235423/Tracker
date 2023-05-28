@@ -4,6 +4,7 @@ final class TabBarViewController: UITabBarController {
     // MARK: - UIElements
     private let border = UIView()
     
+    
     // MARK: - Properties
     private var tabBarHeight: CGFloat = 0
     
@@ -18,7 +19,6 @@ final class TabBarViewController: UITabBarController {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        
         let trackerViewController = TrackersViewController()
         let statisticViewController = StatisticViewController()
         

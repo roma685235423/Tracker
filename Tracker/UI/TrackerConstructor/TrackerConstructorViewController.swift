@@ -1,5 +1,6 @@
 import UIKit
 
+
 struct Offsets {
     let textToTable: CGFloat = 24
     let tableToCollection: CGFloat = 32
@@ -7,13 +8,16 @@ struct Offsets {
     let buttonsToBottom: CGFloat = 24
 }
 
-protocol NewRegularTrackerConstructorDelegate: AnyObject {
-    func getTrackersCategories() -> [String]
+
+
+protocol TrackerConstructorVCDelegate: AnyObject {
+    func didTapConformButton(tracker: Tracker, category: TrackerCategory)
+    func didTapCancelButton()
 }
 
 
 
-final class NewTrackerConstructorViewController: UIViewController {
+final class NewTrackerConstructorVC: UIViewController {
     // MARK: - UIElements
     private let screenTopLabel = UILabel()
     private let scrollView = UIScrollView()
@@ -26,19 +30,8 @@ final class NewTrackerConstructorViewController: UIViewController {
     private var trackerCategoryString: String = ""
     private var trackerColor: UIColor?
     
-    private var actionsArray: [TableViewActions] = [.init(titleLabelText: "Категория", subTitleLabel: "")]
+    private var actionsArray: [TrackerConstructorTableViewActions] = [.init(titleLabelText: "Категория", subTitleLabel: "")]
     private var currentSelectedCateory: Int?
-    
-    private var dailySchedule: [DailySchedule] = [
-        DailySchedule(dayOfWeek: "Понедельник", dayOfWeekNumber: 2),
-        DailySchedule(dayOfWeek: "Вторник", dayOfWeekNumber: 3),
-        DailySchedule(dayOfWeek: "Среда", dayOfWeekNumber: 4),
-        DailySchedule(dayOfWeek: "Четверг", dayOfWeekNumber: 5),
-        DailySchedule(dayOfWeek: "Пятница", dayOfWeekNumber: 6),
-        DailySchedule(dayOfWeek: "Суббота", dayOfWeekNumber: 7),
-        DailySchedule(dayOfWeek: "Воскресенье", dayOfWeekNumber: 1)
-    ]
-    private var daysOfWeekForSceduler: [DayOfWeek] = []
     
     private let collectionViewSectionHeaders = ["Emoji", "Цвет"]
     private let emojies = [ "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
@@ -46,22 +39,21 @@ final class NewTrackerConstructorViewController: UIViewController {
     private var emojiSelectedItem: Int?
     private var colorSelectedItem: Int?
     private var selectedItem: IndexPath?
-    
     private let isRegularEvent: Bool
-    weak var deleagte: NewRegularTrackerConstructorDelegate?
     
-    var trackersVCCancelCallback: (() -> Void)?
-    var trackersVCCreateCallback: ((String, Tracker) -> Void)?
-    
-    var scheduleVCCallback: (([DailySchedule], [DayOfWeek], String) -> Void)?
-    var trackerCategorySelectorVCCallback: ((String) -> Void)?
+    private let trackerCategoryStore = TrackerCategoryStore()
+    var scheduleVCCallback: (([DayOfWeek], String) -> Void)?
+    weak var delegate: TrackerConstructorVCDelegate?
     
     let scrollViewInterElementOffsets: Offsets
     
     // MARK: - Lazy
     private lazy var trackersCategories: [String] = {
-        guard let categories = deleagte?.getTrackersCategories() else { return [] }
-        return categories
+        var stringCategories: [String] = []
+        for category in trackerCategoryStore.categories {
+            stringCategories.append(category.title)
+        }
+        return stringCategories
     }()
     
     private lazy var cancelButton: UIButton = {
@@ -110,13 +102,22 @@ final class NewTrackerConstructorViewController: UIViewController {
         return collection
     }()
     
+    private lazy var daysOfWeekForSceduler: [DayOfWeek] = {
+        var sceduler: [DayOfWeek] = []
+        if !isRegularEvent {
+            for day in DayOfWeek.allCases {
+                sceduler.append(day)
+            }
+        }
+        return sceduler
+    }()
+    
     private lazy var headerText: String = {
         isRegularEvent == true ? "Новая привычка" : "Новое нерегулярное событие"
     }()
     
     
     // MARK: - Lifecicle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         isNeedToAddSchedulerAction()
@@ -210,6 +211,7 @@ final class NewTrackerConstructorViewController: UIViewController {
         scrollView.addGestureRecognizer(tapToHideKeyboardGesture)
     }
     
+    
     private func scrollViewHeightCalculation() -> CGFloat{
         return textField.frame.height + scrollViewInterElementOffsets.textToTable +
         categoryAndSchedulerTable.frame.height + scrollViewInterElementOffsets.tableToCollection +
@@ -268,23 +270,23 @@ final class NewTrackerConstructorViewController: UIViewController {
     @objc
     private func didTapCreateButton() {
         guard let color = trackerColor else { return }
-        let scheduler = dailySchedule.filter { $0.schedulerIsActive }
         let tracker = Tracker(
             id: UUID.init(),
             label: trackerNameString,
             color: color,
             emoji: trackerEmogieString,
-            dailySchedule: isRegularEvent ? scheduler : nil,
-            scheduler: daysOfWeekForSceduler,
+            schedule: daysOfWeekForSceduler,
             daysComplitedCount: 0
         )
-        trackersVCCreateCallback?(trackerCategoryString, tracker)
+        let cateory = trackerCategoryStore.categories.first { $0.title == trackerCategoryString }
+        guard let unwrapCategory = cateory else { return }
+        delegate?.didTapConformButton(tracker: tracker, category: unwrapCategory)
     }
     
     
     @objc
     private func didTapCancelButton() {
-        trackersVCCancelCallback?()
+        delegate?.didTapCancelButton()
     }
     
     
@@ -327,7 +329,7 @@ final class NewTrackerConstructorViewController: UIViewController {
 
 
 // MARK: - UITableViewDataSource Extension
-extension NewTrackerConstructorViewController: UITableViewDataSource {
+extension NewTrackerConstructorVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         actionsArray.count
     }
@@ -348,7 +350,7 @@ extension NewTrackerConstructorViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 0 {
-            let trackerCategorySelectorViewController = TrackerCategorySelectorViewController(categoryes: trackersCategories, currentItem: currentSelectedCateory)
+            let trackerCategorySelectorViewController = TrackerCategorySelectorVC(categoryes: trackersCategories, currentItem: currentSelectedCateory)
             trackerCategorySelectorViewController.modalPresentationStyle = .pageSheet
             trackerCategorySelectorViewController.trackerCategorySelectorVCCallback = { [ weak self ] cellSubviewText, selectedItem in
                 guard let self = self else { return }
@@ -361,14 +363,12 @@ extension NewTrackerConstructorViewController: UITableViewDataSource {
             show(trackerCategorySelectorViewController, sender: self)
         } else {
             let scheduleViewController = ScheduleViewController(
-                dailySchedule: dailySchedule,
                 daysOfWeekForSceduler: daysOfWeekForSceduler
             )
             scheduleViewController.modalPresentationStyle = .pageSheet
-            scheduleViewController.scheduleVCCallback = { [ weak self ] data, schedule, cellSubviewText in
+            scheduleViewController.scheduleVCCallback = { [ weak self ] schedule, cellSubviewText in
                 guard let self = self else { return }
-                self.scheduleVCCallback?(data, schedule, cellSubviewText)
-                self.dailySchedule = data
+                self.scheduleVCCallback?(schedule, cellSubviewText)
                 self.daysOfWeekForSceduler = schedule
                 self.actionsArray[1].subTitleLabel = cellSubviewText
                 self.checkIsCreateButtonActive()
@@ -382,7 +382,7 @@ extension NewTrackerConstructorViewController: UITableViewDataSource {
 
 
 // MARK: - UICollectionViewDataSource Extension
-extension NewTrackerConstructorViewController: UICollectionViewDataSource {
+extension NewTrackerConstructorVC: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return collectionViewSectionHeaders.count
@@ -439,7 +439,7 @@ extension NewTrackerConstructorViewController: UICollectionViewDataSource {
 
 
 // MARK: - UICollectionViewDelegateFlowLayout Extension
-extension NewTrackerConstructorViewController: UICollectionViewDelegateFlowLayout {
+extension NewTrackerConstructorVC: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: collectionView.bounds.width/6, height: collectionView.bounds.width/6)
     }
@@ -468,7 +468,7 @@ extension NewTrackerConstructorViewController: UICollectionViewDelegateFlowLayou
 
 
 // MARK: - UICollectionViewDelegate Extension
-extension NewTrackerConstructorViewController: UICollectionViewDelegate {
+extension NewTrackerConstructorVC: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         selectedItem = indexPath
         return true
@@ -517,7 +517,7 @@ extension NewTrackerConstructorViewController: UICollectionViewDelegate {
 
 
 // MARK: - UITextFieldDelegate Extension
-extension NewTrackerConstructorViewController: UITextFieldDelegate {
+extension NewTrackerConstructorVC: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         trackerNameString = textField.text ?? ""
         textField.resignFirstResponder()
@@ -536,10 +536,4 @@ extension NewTrackerConstructorViewController: UITextFieldDelegate {
         checkIsCreateButtonActive()
         return true
     }
-}
-
-
-// MARK: - Extensions
-extension NewTrackerConstructorViewController: UITableViewDelegate {
-    
 }
