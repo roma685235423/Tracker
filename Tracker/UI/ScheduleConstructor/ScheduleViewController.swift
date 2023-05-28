@@ -116,8 +116,12 @@ final class ScheduleViewController: UIViewController {
                 shortDaysOfWeekNames.append(shortDayName)
             }
         }
-        let result = daysOfWeekForSceduler.isEmpty ? "" : shortDaysOfWeekNames.joined(separator: ", ")
-        return result
+        if shortDaysOfWeekNames.count < 7 {
+            let result = daysOfWeekForSceduler.isEmpty ? "" : shortDaysOfWeekNames.joined(separator: ", ")
+            return result
+        } else {
+            return "Каждый день"
+        }
     }
     
     

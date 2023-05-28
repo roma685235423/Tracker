@@ -13,6 +13,7 @@ final class TrackerStore: NSObject {
         case decodeError
     }
     
+    
     // MARK: - Properties
     weak var delegate: TrackerStoreDelegate?
     private let categoresStore = TrackerCategoryStore()
@@ -39,6 +40,7 @@ final class TrackerStore: NSObject {
             sectionNameKeyPath: "category",
             cacheName: nil
         )
+        fetchedResultsController.delegate = self
         try? fetchedResultsController.performFetch()
         return fetchedResultsController
     }()
@@ -50,29 +52,31 @@ final class TrackerStore: NSObject {
               let id = UUID(uuidString: idString),
               let label = coreData.label,
               let emoji = coreData.emoji,
-              let colorHEX = coreData.colorHEX
+              let colorHEX = coreData.colorHEX,
+              let complitedDaysCounter = coreData.records
         else { throw CategoryStoreError.decodeError }
         let color = colorFromHEX(colorHEX)
         let schedule = scheduleFromCoreData(coreData)
+        
         return Tracker(
             id: id,
             label: label,
             color: color,
             emoji: emoji,
             schedule: schedule,
-            daysComplitedCount: 0
+            daysComplitedCount: complitedDaysCounter.count
         )
     }
     
     
     func getTrackerFromCoreData(id: UUID) throws -> TrackerCoreData? {
-        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+        let fetchRequest = fetchedResultsController.fetchRequest
         fetchRequest.predicate = NSPredicate(
             format: "%K == %@",
             #keyPath(TrackerCoreData.trackerId), id.uuidString
         )
-        let results = try context.fetch(fetchRequest)
-        return results.first
+        try fetchedResultsController.performFetch()
+        return fetchedResultsController.fetchedObjects?.first
     }
     
     
@@ -90,32 +94,27 @@ final class TrackerStore: NSObject {
     
     
     func getTrackerAt(indexPath: IndexPath) -> Tracker? {
-        let trackerFromCoreData = fetchedResultsController.object(at: indexPath)
-        guard let idString = trackerFromCoreData.trackerId,
-              let id = UUID(uuidString: idString),
-              let label = trackerFromCoreData.label,
-              let emoji = trackerFromCoreData.emoji,
-              let colorHEX = trackerFromCoreData.colorHEX else { return nil }
-        let schedule = scheduleFromCoreData(trackerFromCoreData)
-        let color = colorFromHEX(colorHEX)
-        return Tracker(
-            id: id,
-            label: label,
-            color: color,
-            emoji: emoji,
-            schedule: schedule,
-            daysComplitedCount: 0
-        )
+        let trackerCoreData = fetchedResultsController.object(at: indexPath)
+        do {
+            let tracker = try createTracker(from: trackerCoreData)
+            return tracker
+        } catch {
+            return nil
+        }
     }
     
     
-    func getFilteredTrackers(searchedText: String, date: Date) throws {
+    func getFilteredTrackers( date: Date, searchedText: String) throws {
+        var predicates = [NSPredicate]()
         let dayOfWeekIndex = Calendar.current.component(.weekday, from: date)
         let iso860DayOfWeekIndex = dayOfWeekIndex > 1 ? dayOfWeekIndex - 2 : dayOfWeekIndex + 5
         let regex = createWeekdayRegex(iso860DayOfWeekIndex)
-        let schedulePredicate = createSchedulePredicate(regex)
-        let searchPredicate = createSearchPredicate(searchedText)
-        let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [schedulePredicate, searchPredicate])
+        predicates.append(createSchedulePredicate(regex))
+        
+        if searchedText.isEmpty == false {
+            predicates.append(createSearchPredicate(searchedText))
+        }
+        let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         fetchedResultsController.fetchRequest.predicate = compoundPredicate
         
         try fetchedResultsController.performFetch()
@@ -161,7 +160,6 @@ final class TrackerStore: NSObject {
         trackerCoreData.label = tracker.label
         trackerCoreData.emoji = tracker.emoji
         try context.save()
-        //delegate?.updateTrackers()
     }
     
     
@@ -194,7 +192,6 @@ final class TrackerStore: NSObject {
 
 
 // MARK: - NSFetchedResultsControllerDelegate
-
 extension TrackerStore: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         delegate?.updateTrackers()

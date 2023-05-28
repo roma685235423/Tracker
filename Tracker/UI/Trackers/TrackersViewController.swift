@@ -16,7 +16,7 @@ class TrackersViewController: UIViewController {
     
     private var searchedText = "" {
         didSet{
-            try? trackerStore.getFilteredTrackers(searchedText: searchedText, date: currentDate)
+            try? trackerStore.getFilteredTrackers(date: currentDate, searchedText: searchedText)
             try? trackerRecordStore.completedTrackers(by: currentDate)
         }
     }
@@ -95,7 +95,7 @@ class TrackersViewController: UIViewController {
         configureLayout()
         mainSpacePlaceholderStack.configurePlaceholderStack(imageName: "starPlaceholder", text: "Что будем отслеживать?")
         searchSpacePlaceholderStack.configurePlaceholderStack(imageName: "searchPlaceholder", text: "Ничего не найдено")
-        //try? trackerStore.getFilteredTrackers(searchedText: searchedText, date: currentDate)
+        try? trackerStore.getFilteredTrackers(date: currentDate, searchedText: searchedText)
         try? trackerRecordStore.completedTrackers(by: currentDate)
         checkMainPlaceholderVisability()
         checkPlaceholderVisabilityAfterSearch()
@@ -167,6 +167,10 @@ class TrackersViewController: UIViewController {
     @objc
     private func didChangedDatePickerValue(_ sender: UIDatePicker) {
         currentDate = sender.date.getDate()!
+        do {
+            try trackerStore.getFilteredTrackers(date: currentDate, searchedText: searchedText)
+            try trackerRecordStore.completedTrackers(by: currentDate)
+        } catch {}
         collectionView.reloadData()
     }
     
@@ -179,7 +183,6 @@ class TrackersViewController: UIViewController {
         present(createTrackerViewController, animated: true)
     }
 }
-
 
 
 //MARK: - UISearchBarDelegate
@@ -197,6 +200,7 @@ extension TrackersViewController: UISearchBarDelegate {
         searchBar.resignFirstResponder()
         checkPlaceholderVisabilityAfterSearch()
     }
+    
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         searchedText = searchText
@@ -240,15 +244,17 @@ extension TrackersViewController: UICollectionViewDataSource {
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
         
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackersCollectionCell", for: indexPath)
-                as? TrackersCollectinCell
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: "trackersCollectionCell",
+            for: indexPath
+        ) as? TrackersCollectinCell
         else { fatalError("Invalid TrackerCollectionView cell configuration !!!") }
         
         guard let tracker = trackerStore.getTrackerAt(indexPath: indexPath)
         else { fatalError("Invalid Tracker creation!!!") }
         
         let isDone = complitedTrackers.contains { $0.date == currentDate && $0.trackerId == tracker.id }
-        let daysCounter = complitedTrackers.filter { $0.trackerId == tracker.id }.count
+        let daysCounter = tracker.daysComplitedCount
         cell.configureCellContent(prototype: tracker, daysCounter: daysCounter, isDone: isDone)
         cell.delegate = self
         
@@ -280,14 +286,13 @@ extension TrackersViewController: UICollectionViewDataSource {
 // MARK: - TrackerCellDelegate
 extension TrackersViewController: TrackersCollectinCellDelegate {
     func didTapTaskIsDoneButton(cell: TrackersCollectinCell, tracker: Tracker) {
-        let trackerRecord = TrackerRecord(trackerId: tracker.id, date: currentDate)
-        
-        if complitedTrackers.contains(where: { $0.date == currentDate && $0.trackerId == tracker.id }) {
-            complitedTrackers.remove(trackerRecord)
+        if let removedRecord = complitedTrackers.first(where: { $0.date == currentDate && $0.trackerId == tracker.id }) {
+            try? trackerRecordStore.remove(record: removedRecord)
             cell.changeTaskIsDoneButtonUI(state: false)
             cell.counterSub()
         } else {
-            complitedTrackers.insert(trackerRecord)
+            let trackerRecord = TrackerRecord(trackerId: tracker.id, date: currentDate)
+            try? trackerRecordStore.add(record: trackerRecord)
             cell.changeTaskIsDoneButtonUI(state: true)
             cell.counterAdd()
         }
@@ -381,7 +386,6 @@ extension TrackersViewController: TrackerStoreDelegate {
 extension TrackersViewController: TrackerRecordStoreDelegate {
     func didUpdate(records: Set<TrackerRecord>) {
         complitedTrackers = records
-        collectionView.reloadData()
     }
 }
 

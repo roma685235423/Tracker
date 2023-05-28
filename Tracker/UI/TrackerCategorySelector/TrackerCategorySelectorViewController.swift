@@ -6,6 +6,7 @@ final class TrackerCategorySelectorVC: UIViewController {
     private let trackerCategoryTable = UITableView()
     private lazy var readyButton = UIButton()
     
+    
     // MARK: - Properties
     private var categories: [String]
     private var selectedItem: Int?

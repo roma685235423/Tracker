@@ -30,7 +30,9 @@ final class TrackerRecordStore: NSObject {
             let date = coreData.date,
             let trackerCoreData = coreData.tracker,
             let tracker = try? trackerStore.createTracker(from: trackerCoreData)
-        else { throw CategoryStoreError.decodeError }
+        else
+        { throw CategoryStoreError.decodeError }
+        
         return TrackerRecord(id: id, trackerId: tracker.id, date: date)
     }
     

@@ -1,5 +1,6 @@
 import UIKit
 
+
 struct Offsets {
     let textToTable: CGFloat = 24
     let tableToCollection: CGFloat = 32
@@ -40,9 +41,7 @@ final class NewTrackerConstructorVC: UIViewController {
     private var selectedItem: IndexPath?
     private let isRegularEvent: Bool
     
-    private var daysOfWeekForSceduler: [DayOfWeek] = []
     private let trackerCategoryStore = TrackerCategoryStore()
-    
     var scheduleVCCallback: (([DayOfWeek], String) -> Void)?
     weak var delegate: TrackerConstructorVCDelegate?
     
@@ -103,13 +102,22 @@ final class NewTrackerConstructorVC: UIViewController {
         return collection
     }()
     
+    private lazy var daysOfWeekForSceduler: [DayOfWeek] = {
+        var sceduler: [DayOfWeek] = []
+        if !isRegularEvent {
+            for day in DayOfWeek.allCases {
+                sceduler.append(day)
+            }
+        }
+        return sceduler
+    }()
+    
     private lazy var headerText: String = {
         isRegularEvent == true ? "Новая привычка" : "Новое нерегулярное событие"
     }()
     
     
     // MARK: - Lifecicle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         isNeedToAddSchedulerAction()
@@ -273,14 +281,12 @@ final class NewTrackerConstructorVC: UIViewController {
         let cateory = trackerCategoryStore.categories.first { $0.title == trackerCategoryString }
         guard let unwrapCategory = cateory else { return }
         delegate?.didTapConformButton(tracker: tracker, category: unwrapCategory)
-        //trackersVCCreateCallback?(unwrapCategory, tracker)
     }
     
     
     @objc
     private func didTapCancelButton() {
         delegate?.didTapCancelButton()
-        //trackersVCCancelCallback?()
     }
     
     
