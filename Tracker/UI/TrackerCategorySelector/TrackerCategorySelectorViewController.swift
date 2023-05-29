@@ -1,10 +1,11 @@
 import UIKit
 
-final class TrackerCategorySelectorViewController: UIViewController {
+final class TrackerCategorySelectorVC: UIViewController {
     // MARK: - UI
     private let screenTopLabel = UILabel()
     private let trackerCategoryTable = UITableView()
     private lazy var readyButton = UIButton()
+    
     
     // MARK: - Properties
     private var categories: [String]
@@ -23,7 +24,7 @@ final class TrackerCategorySelectorViewController: UIViewController {
     private func initialSettings() {
         view.backgroundColor = InterfaceColors.whiteDay
         screenTopLabel.configureLabel(
-            text: "Расписание",
+            text: "Категория",
             addToView: view,
             ofSize: 16,
             weight: .medium
@@ -89,7 +90,7 @@ final class TrackerCategorySelectorViewController: UIViewController {
         } else if categories.count == 0 {
             return 0
         } else {
-            return 75
+            return 74
         }
     }
     
@@ -110,7 +111,7 @@ final class TrackerCategorySelectorViewController: UIViewController {
 
 
 // MARK: - UITableViewDelegate Extension
-extension TrackerCategorySelectorViewController: UITableViewDelegate {
+extension TrackerCategorySelectorVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath)
         guard let cell = cell,
@@ -131,7 +132,7 @@ extension TrackerCategorySelectorViewController: UITableViewDelegate {
 
 
 // MARK: - UITableViewDataSource Extension
-extension TrackerCategorySelectorViewController: UITableViewDataSource {
+extension TrackerCategorySelectorVC: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         categories.count
     }

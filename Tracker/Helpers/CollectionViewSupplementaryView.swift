@@ -6,11 +6,11 @@ final class SupplementaryView: UICollectionReusableView {
     
     
     // MARK: - Methods
-    func configoreLayout(leftOffset: CGFloat) {
+    func configoreLayout(leftOffset: CGFloat, topOffset: CGFloat, bottomOffset: CGFloat) {
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: leftOffset),
-            titleLabel.topAnchor.constraint(equalTo: topAnchor),
-            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
+            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: topOffset),
+            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -bottomOffset),
         ])
     }
     
