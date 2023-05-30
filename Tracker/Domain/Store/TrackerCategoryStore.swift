@@ -9,6 +9,8 @@ final class TrackerCategoryStore: NSObject {
     
     
     // MARK: - Properties
+    private let context: NSManagedObjectContext
+    
     lazy var categories: [TrackerCategory] = {
         do {
             let request = TrackerCategoryCoreData.fetchRequest()
@@ -18,8 +20,6 @@ final class TrackerCategoryStore: NSObject {
             return []
         }
     }()
-    
-    private let context: NSManagedObjectContext
     
     
     // MARK: - Methods

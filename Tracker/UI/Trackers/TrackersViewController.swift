@@ -8,6 +8,7 @@ class TrackersViewController: UIViewController {
     private let mainSpacePlaceholderStack = UIStackView()
     private let searchSpacePlaceholderStack = UIStackView()
     
+    
     // MARK: - Properties
     private var currentDate: Date = Date().getDate()!
     private var complitedTrackers: Set<TrackerRecord> = []
