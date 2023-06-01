@@ -22,10 +22,10 @@ final class OnboardingViewController: UIViewController {
         switch page {
         case .first:
             text = "Отслеживайте только то, что хотите"
-            imageView.image = UIImage(named: "onboarding1")
+            imageView.image = UIImage(named: "onboarding_background_1")
         case .second:
             text = "Даже если это не литры воды и йога"
-            imageView.image = UIImage(named: "onboarding2")
+            imageView.image = UIImage(named: "onboarding_background_2")
         }
         textLabel.configureLabel(
             text: text,
