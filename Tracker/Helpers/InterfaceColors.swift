@@ -12,4 +12,5 @@ enum InterfaceColors {
     static let red = UIColor(hex: 0xF56B6C)
     static let blue = UIColor(hex: 0x3772E7)
     static let searchBarDay = UIColor(hex: 0x767680, alpha: 0.12)
+    static let blackDayTint = UIColor(hex: 0x1A1B22,alpha: 0.3)
 }
