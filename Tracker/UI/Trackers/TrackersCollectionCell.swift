@@ -3,12 +3,12 @@ import UIKit
 
 // MARK: - TrackersCollectinCellDelegate
 protocol TrackersCollectinCellDelegate: AnyObject {
-    func didTapTaskIsDoneButton(cell: TrackersCollectinCell, tracker: Tracker)
+    func didTapTaskIsDoneButton(cell: TrackersCollectionCell, tracker: Tracker)
 }
 
 
 // MARK: - TrackersCollectinCell
-final class TrackersCollectinCell: UICollectionViewCell {
+final class TrackersCollectionCell: UICollectionViewCell {
     // MARK: - UI
     private let trackerBackgroundLabel = UILabel()
     private let emojieLabel = UILabel()

@@ -184,7 +184,7 @@ final class ScheduleViewController: UIViewController {
     
     // MARK: - Actions
     @objc
-    private func switchChanged(_ sender : UISwitch!){
+    private func switchChanged(_ sender : UISwitch!) {
         let row = sender.tag
         let changedDay = getDayOfWeek(at: row)
         changeSceduler(day: changedDay)

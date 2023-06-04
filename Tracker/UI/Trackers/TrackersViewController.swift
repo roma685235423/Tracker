@@ -5,8 +5,14 @@ import UIKit
 class TrackersViewController: UIViewController {
     // MARK: - UI
     private let trackerLabel = UILabel()
-    private let mainSpacePlaceholderStack = UIStackView()
-    private let searchSpacePlaceholderStack = UIStackView()
+    private let mainSpacePlaceholderStack = UIStackView(
+        imageName: "starPlaceholder",
+        text: "Что будем отслеживать?"
+    )
+    private let searchSpacePlaceholderStack = UIStackView(
+        imageName: "searchPlaceholder",
+        text: "Ничего не найдено"
+    )
     
     
     // MARK: - Properties
@@ -54,7 +60,7 @@ class TrackersViewController: UIViewController {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collection.dataSource = self
         collection.delegate = self
-        collection.register(TrackersCollectinCell.self, forCellWithReuseIdentifier: "trackersCollectionCell")
+        collection.register(TrackersCollectionCell.self, forCellWithReuseIdentifier: "trackersCollectionCell")
         collection.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
         collection.backgroundColor = InterfaceColors.whiteDay
         collection.isScrollEnabled = true
@@ -94,8 +100,6 @@ class TrackersViewController: UIViewController {
             weight: .bold
         )
         configureLayout()
-        mainSpacePlaceholderStack.configurePlaceholderStack(imageName: "starPlaceholder", text: "Что будем отслеживать?")
-        searchSpacePlaceholderStack.configurePlaceholderStack(imageName: "searchPlaceholder", text: "Ничего не найдено")
         try? trackerStore.getFilteredTrackers(date: currentDate, searchedText: searchedText)
         try? trackerRecordStore.completedTrackers(by: currentDate)
         checkMainPlaceholderVisability()
@@ -178,7 +182,7 @@ class TrackersViewController: UIViewController {
     
     @objc
     private func didTapAddTrackerButton() {
-        let createTrackerViewController = CreateTrackerViewController()
+        let createTrackerViewController = TrackerCreationViewController()
         createTrackerViewController.modalPresentationStyle = .pageSheet
         createTrackerViewController.deligate = self
         present(createTrackerViewController, animated: true)
@@ -248,7 +252,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: "trackersCollectionCell",
             for: indexPath
-        ) as? TrackersCollectinCell
+        ) as? TrackersCollectionCell
         else { fatalError("Invalid TrackerCollectionView cell configuration !!!") }
         
         guard let tracker = trackerStore.getTrackerAt(indexPath: indexPath)
@@ -286,7 +290,7 @@ extension TrackersViewController: UICollectionViewDataSource {
 
 // MARK: - TrackerCellDelegate
 extension TrackersViewController: TrackersCollectinCellDelegate {
-    func didTapTaskIsDoneButton(cell: TrackersCollectinCell, tracker: Tracker) {
+    func didTapTaskIsDoneButton(cell: TrackersCollectionCell, tracker: Tracker) {
         if let removedRecord = complitedTrackers.first(where: { $0.date == currentDate && $0.trackerId == tracker.id }) {
             try? trackerRecordStore.remove(record: removedRecord)
             cell.changeTaskIsDoneButtonUI(state: false)

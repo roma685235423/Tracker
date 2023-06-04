@@ -1,10 +1,14 @@
 import UIKit
 
-final class TrackerCategorySelectorVC: UIViewController {
+final class TrackerCategorySelectionVC: UIViewController {
     // MARK: - UI
     private let screenTopLabel = UILabel()
     private let trackerCategoryTable = UITableView()
-    private lazy var readyButton = UIButton()
+    private lazy var addCategoryButton = UIButton(label: "Добавить категорию")
+    private let mainSpacePlaceholderStack = UIStackView(
+        imageName: "starPlaceholder",
+        text: "Привычки и события можно объединить по смыслу"
+    )
     
     
     // MARK: - Properties
@@ -17,6 +21,7 @@ final class TrackerCategorySelectorVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         initialSettings()
+        checkMainPlaceholderVisability()
     }
     
     
@@ -30,8 +35,8 @@ final class TrackerCategorySelectorVC: UIViewController {
             weight: .medium
         )
         configureTrackerCategoryTable()
-        configureReadyButton()
         configureLayout()
+        addCategoryButton.addTarget(self, action: #selector(didTapAddCategoryButton), for: .touchUpInside)
     }
     
     
@@ -46,25 +51,17 @@ final class TrackerCategorySelectorVC: UIViewController {
     }
     
     
-    private func configureReadyButton() {
-        readyButton.backgroundColor = InterfaceColors.blackDay
-        readyButton.setTitle("Добавить категорию", for: .normal)
-        readyButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        readyButton.titleLabel?.textColor = InterfaceColors.whiteDay
-        readyButton.layer.cornerRadius = 16
-        readyButton.layer.masksToBounds = true
-    }
-    
-    
     // MARK: - Layout configuraion
     private func configureLayout() {
         screenTopLabel.translatesAutoresizingMaskIntoConstraints = false
         trackerCategoryTable.translatesAutoresizingMaskIntoConstraints = false
-        readyButton.translatesAutoresizingMaskIntoConstraints = false
+        addCategoryButton.translatesAutoresizingMaskIntoConstraints = false
+        mainSpacePlaceholderStack.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(screenTopLabel)
         view.addSubview(trackerCategoryTable)
-        view.addSubview(readyButton)
+        view.addSubview(addCategoryButton)
+        view.addSubview(mainSpacePlaceholderStack)
         
         NSLayoutConstraint.activate([
             screenTopLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
@@ -75,10 +72,14 @@ final class TrackerCategorySelectorVC: UIViewController {
             trackerCategoryTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             trackerCategoryTable.heightAnchor.constraint(equalToConstant: calculateTableSize()),
             
-            readyButton.heightAnchor.constraint(equalToConstant: 60),
-            readyButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            readyButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            readyButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50)
+            mainSpacePlaceholderStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            mainSpacePlaceholderStack.topAnchor.constraint(equalTo: screenTopLabel.bottomAnchor, constant: 246),
+            mainSpacePlaceholderStack.widthAnchor.constraint(equalToConstant: 180),
+            
+            addCategoryButton.heightAnchor.constraint(equalToConstant: 60),
+            addCategoryButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            addCategoryButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            addCategoryButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50)
         ])
     }
     
@@ -92,6 +93,20 @@ final class TrackerCategorySelectorVC: UIViewController {
         } else {
             return 74
         }
+    }
+    
+    
+    private func checkMainPlaceholderVisability() {
+        let isHidden = categories.count < 1
+        mainSpacePlaceholderStack.isHidden = !isHidden
+    }
+    
+    
+    @objc
+    private func didTapAddCategoryButton() {
+        let trackerCategoryCreationViewController = TrackerCategoryCreationViewController()
+        trackerCategoryCreationViewController.modalPresentationStyle = .pageSheet
+        present(trackerCategoryCreationViewController, animated: true)
     }
     
     
@@ -111,7 +126,7 @@ final class TrackerCategorySelectorVC: UIViewController {
 
 
 // MARK: - UITableViewDelegate Extension
-extension TrackerCategorySelectorVC: UITableViewDelegate {
+extension TrackerCategorySelectionVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath)
         guard let cell = cell,
@@ -132,7 +147,7 @@ extension TrackerCategorySelectorVC: UITableViewDelegate {
 
 
 // MARK: - UITableViewDataSource Extension
-extension TrackerCategorySelectorVC: UITableViewDataSource {
+extension TrackerCategorySelectionVC: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         categories.count
     }

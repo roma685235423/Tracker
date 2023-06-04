@@ -13,19 +13,7 @@ final class OnboardingPageController: UIPageViewController {
     ]
     
     // MARK: - UI
-    private lazy var goToTrackerScreenButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(button)
-        button.backgroundColor = InterfaceColors.blackDay
-        button.setTitle("Вот это технологии!", for: .normal)
-        button.titleLabel?.textColor = InterfaceColors.whiteDay
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.layer.cornerRadius = 16
-        button.layer.masksToBounds = true
-        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        return button
-    }()
+    private let goToTrackerScreenButton = UIButton(label: "Вот это технологии!")
     
     private lazy var pageControl: UIPageControl = {
         let pageControl = UIPageControl()
@@ -48,7 +36,10 @@ final class OnboardingPageController: UIPageViewController {
             self.setViewControllers([first], direction: .forward, animated: false, completion: nil)
         }
         configureLayout()
+        goToTrackerScreenButton.addTarget(self, action: #selector(didTapGoToTrackerScreenButton), for: .touchUpInside)
     }
+    
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.currentIndex = 0
@@ -58,6 +49,7 @@ final class OnboardingPageController: UIPageViewController {
     
     // MARK: - Layout configuration
     private func configureLayout() {
+        goToTrackerScreenButton.addToSuperview(view)
         view.addSubview(goToTrackerScreenButton)
         view.addSubview(pageControl)
         
@@ -86,7 +78,7 @@ final class OnboardingPageController: UIPageViewController {
     
     // MARK: - Action
     @objc
-    private func buttonAction() {
+    private func didTapGoToTrackerScreenButton() {
         showTabBar()
         isOnboardingShown = true
     }

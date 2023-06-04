@@ -3,8 +3,11 @@ import UIKit
 final class StatisticViewController: UIViewController {
     // MARK: - UI
     private let statisticLabel = UILabel()
-    private let mainSpacePlaceholderStack = UIStackView()
     private var currentDate = Date.getDate(Date())
+    private let mainSpacePlaceholderStack = UIStackView(
+        imageName: "statisticPlaceholder",
+        text: "Анализировать пока нечего"
+    )
     
     
     // MARK: - Life cicle
@@ -22,7 +25,6 @@ final class StatisticViewController: UIViewController {
             weight: .bold
         )
         configureLayout()
-        mainSpacePlaceholderStack.configurePlaceholderStack(imageName: "statisticPlaceholder", text: "Анализировать пока нечего")
     }
     
     

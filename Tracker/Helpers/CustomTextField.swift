@@ -1,6 +1,6 @@
 import UIKit
 
-class MyTextField: UITextField {
+class CustomTextField: UITextField {
     let leftInset: CGFloat = 16
     let rightInset: CGFloat = 46
     let topInset: CGFloat = 27

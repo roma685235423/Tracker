@@ -21,7 +21,7 @@ final class NewTrackerConstructorVC: UIViewController {
     // MARK: - UIElements
     private let screenTopLabel = UILabel()
     private let scrollView = UIScrollView()
-    private let textField = MyTextField()
+    private let textField = CustomTextField()
     private let categoryAndSchedulerTable = UITableView()
     
     // MARK: - Properties
@@ -56,30 +56,8 @@ final class NewTrackerConstructorVC: UIViewController {
         return stringCategories
     }()
     
-    private lazy var cancelButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("Отменить", for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 16)
-        button.setTitleColor(InterfaceColors.red, for: .normal)
-        button.backgroundColor = InterfaceColors.backgruondDay
-        button.layer.borderWidth = 1
-        button.layer.borderColor = InterfaceColors.red.cgColor
-        button.layer.cornerRadius = 16
-        button.layer.masksToBounds = true
-        button.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
-        return button
-    }()
-    
-    private lazy var createButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("Создать", for: .normal)
-        button.titleLabel?.textColor = InterfaceColors.whiteDay
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 16)
-        button.layer.cornerRadius = 16
-        button.layer.masksToBounds = true
-        button.addTarget(self, action: #selector(didTapCreateButton), for: .touchUpInside)
-        return button
-    }()
+    private let cancelButton = UIButton(label: "Отменить")
+    private let createButton = UIButton(label: "Создать")
     
     private lazy var buttonsStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [cancelButton, createButton])
@@ -120,6 +98,14 @@ final class NewTrackerConstructorVC: UIViewController {
     // MARK: - Lifecicle
     override func viewDidLoad() {
         super.viewDidLoad()
+        cancelButton.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
+        cancelButton.setTitleColor(InterfaceColors.red, for: .normal)
+        cancelButton.backgroundColor = InterfaceColors.backgruondDay
+        cancelButton.layer.borderWidth = 1
+        cancelButton.layer.borderColor = InterfaceColors.red.cgColor
+        
+        createButton.addTarget(self, action: #selector(didTapCreateButton), for: .touchUpInside)
+        
         isNeedToAddSchedulerAction()
     }
     
@@ -212,7 +198,7 @@ final class NewTrackerConstructorVC: UIViewController {
     }
     
     
-    private func scrollViewHeightCalculation() -> CGFloat{
+    private func scrollViewHeightCalculation() -> CGFloat {
         return textField.frame.height + scrollViewInterElementOffsets.textToTable +
         categoryAndSchedulerTable.frame.height + scrollViewInterElementOffsets.tableToCollection +
         collectionView.frame.height + scrollViewInterElementOffsets.collectionToButton +
@@ -236,13 +222,6 @@ final class NewTrackerConstructorVC: UIViewController {
     
     
     // MARK: - Methods
-    private func makeCreateButtonActive(isActive: Bool) {
-        createButton.isEnabled = isActive
-        let backgroundColor = isActive ? InterfaceColors.blackDay : InterfaceColors.gray
-        createButton.backgroundColor = backgroundColor
-    }
-    
-    
     private func configureCategoryAndSchedulerTable() {
         categoryAndSchedulerTable.delegate = self
         categoryAndSchedulerTable.dataSource = self
@@ -306,9 +285,9 @@ final class NewTrackerConstructorVC: UIViewController {
            self.trackerEmogieString != "",
            self.trackerColor != nil,
            self.actionsArray.allSatisfy({ $0.subTitleLabel != "" }) {
-            makeCreateButtonActive(isActive: true)
+            createButton.isButtonActive(isActive: true)
         } else {
-            makeCreateButtonActive(isActive: false)
+            createButton.isButtonActive(isActive: false)
         }
     }
     
@@ -350,7 +329,7 @@ extension NewTrackerConstructorVC: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 0 {
-            let trackerCategorySelectorViewController = TrackerCategorySelectorVC(categoryes: trackersCategories, currentItem: currentSelectedCateory)
+            let trackerCategorySelectorViewController = TrackerCategorySelectionVC(categoryes: trackersCategories, currentItem: currentSelectedCateory)
             trackerCategorySelectorViewController.modalPresentationStyle = .pageSheet
             trackerCategorySelectorViewController.trackerCategorySelectorVCCallback = { [ weak self ] cellSubviewText, selectedItem in
                 guard let self = self else { return }
