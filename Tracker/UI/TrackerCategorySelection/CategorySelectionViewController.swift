@@ -12,6 +12,9 @@ final class TrackerCategorySelectionVC: UIViewController {
     
     
     // MARK: - Properties
+//    private var viewModel: CategorySelectionViewModel
+//    private var selectedCategory: TrackerCategory?
+    
     private var categories: [String]
     private var selectedItem: Int?
     var trackerCategorySelectorVCCallback: ((String, Int?) -> Void)?
@@ -47,7 +50,7 @@ final class TrackerCategorySelectionVC: UIViewController {
         trackerCategoryTable.layer.cornerRadius = 16
         trackerCategoryTable.layer.masksToBounds = true
         trackerCategoryTable.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        trackerCategoryTable.isScrollEnabled = false
+        trackerCategoryTable.isScrollEnabled = true
     }
     
     
@@ -71,6 +74,7 @@ final class TrackerCategorySelectionVC: UIViewController {
             trackerCategoryTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             trackerCategoryTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             trackerCategoryTable.heightAnchor.constraint(equalToConstant: calculateTableSize()),
+//            trackerCategoryTable.heightAnchor.constraint(equalToConstant: viewModel.calculateTableSize()),
             
             mainSpacePlaceholderStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             mainSpacePlaceholderStack.topAnchor.constraint(equalTo: screenTopLabel.bottomAnchor, constant: 246),

@@ -257,9 +257,9 @@ final class NewTrackerConstructorVC: UIViewController {
             schedule: daysOfWeekForSceduler,
             daysComplitedCount: 0
         )
-        let cateory = trackerCategoryStore.categories.first { $0.title == trackerCategoryString }
-        guard let unwrapCategory = cateory else { return }
-        delegate?.didTapConformButton(tracker: tracker, category: unwrapCategory)
+//        let cateory = trackerCategoryStore.categories.first { $0.title == trackerCategoryString }
+//        guard let unwrapCategory = cateory else { return }
+//        delegate?.didTapConformButton(tracker: tracker, category: unwrapCategory)
     }
     
     
