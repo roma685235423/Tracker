@@ -23,6 +23,8 @@ final class NewTrackerConstructorVC: UIViewController {
     private let scrollView = UIScrollView()
     private let textField = CustomTextField()
     private let categoryAndSchedulerTable = UITableView()
+    private let cancelButton = UIButton(label: "Отменить")
+    private let createButton = UIButton(label: "Создать")
     
     // MARK: - Properties
     private var trackerNameString: String = ""
@@ -41,24 +43,12 @@ final class NewTrackerConstructorVC: UIViewController {
     private var selectedItem: IndexPath?
     private let isRegularEvent: Bool
     
-    private let trackerCategoryStore = TrackerCategoryStore()
     var scheduleVCCallback: (([DayOfWeek], String) -> Void)?
     weak var delegate: TrackerConstructorVCDelegate?
     
     let scrollViewInterElementOffsets: Offsets
     
     // MARK: - Lazy
-    private lazy var trackersCategories: [String] = {
-        var stringCategories: [String] = []
-        for category in trackerCategoryStore.categories {
-            stringCategories.append(category.title)
-        }
-        return stringCategories
-    }()
-    
-    private let cancelButton = UIButton(label: "Отменить")
-    private let createButton = UIButton(label: "Создать")
-    
     private lazy var buttonsStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [cancelButton, createButton])
         stackView.axis = .horizontal
@@ -329,7 +319,7 @@ extension NewTrackerConstructorVC: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 0 {
-            let trackerCategorySelectorViewController = TrackerCategorySelectionVC(categoryes: trackersCategories, currentItem: currentSelectedCateory)
+            let trackerCategorySelectorViewController = TrackerCategorySelectionVC(currentItem: currentSelectedCateory)
             trackerCategorySelectorViewController.modalPresentationStyle = .pageSheet
             trackerCategorySelectorViewController.trackerCategorySelectorVCCallback = { [ weak self ] cellSubviewText, selectedItem in
                 guard let self = self else { return }

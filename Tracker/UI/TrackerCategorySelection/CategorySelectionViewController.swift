@@ -10,15 +10,22 @@ final class TrackerCategorySelectionVC: UIViewController {
         text: "Привычки и события можно объединить по смыслу"
     )
     
+    private lazy var scrollView = UIScrollView()
+    
     
     // MARK: - Properties
-//    private var viewModel: CategorySelectionViewModel
-//    private var selectedCategory: TrackerCategory?
-    
-    private var categories: [String]
+    private let trackerCategoryStore = TrackerCategoryStore()
     private var selectedItem: Int?
-    var trackerCategorySelectorVCCallback: ((String, Int?) -> Void)?
     
+    private lazy var trackersCategories: [String] = {
+        var stringCategories: [String] = []
+        for category in trackerCategoryStore.categories {
+            stringCategories.append(category.title)
+        }
+        return stringCategories
+    }()
+    
+    var trackerCategorySelectorVCCallback: ((String, Int?) -> Void)?
     
     // MARK: - Life cicle
     override func viewDidLoad() {
@@ -39,6 +46,7 @@ final class TrackerCategorySelectionVC: UIViewController {
         )
         configureTrackerCategoryTable()
         configureLayout()
+        configureScrollView()
         addCategoryButton.addTarget(self, action: #selector(didTapAddCategoryButton), for: .touchUpInside)
     }
     
@@ -50,31 +58,37 @@ final class TrackerCategorySelectionVC: UIViewController {
         trackerCategoryTable.layer.cornerRadius = 16
         trackerCategoryTable.layer.masksToBounds = true
         trackerCategoryTable.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        trackerCategoryTable.isScrollEnabled = true
+        trackerCategoryTable.isScrollEnabled = false
+        trackerCategoryTable.register(CategorySelectionCell.self, forCellReuseIdentifier: CategorySelectionCell.identifier)
     }
     
+    
+    private func configureScrollView() {
+        scrollView.alwaysBounceVertical = true
+        scrollView.decelerationRate = UIScrollView.DecelerationRate.normal
+        scrollView.isScrollEnabled = true
+        scrollView.isUserInteractionEnabled = true
+        scrollView.automaticallyAdjustsScrollIndicatorInsets = false
+        scrollView.contentSize = CGSize(width: self.view.frame.width, height: calculateTableHeight())
+    }
     
     // MARK: - Layout configuraion
     private func configureLayout() {
         screenTopLabel.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
         trackerCategoryTable.translatesAutoresizingMaskIntoConstraints = false
         addCategoryButton.translatesAutoresizingMaskIntoConstraints = false
         mainSpacePlaceholderStack.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(screenTopLabel)
-        view.addSubview(trackerCategoryTable)
+        view.addSubview(scrollView)
         view.addSubview(addCategoryButton)
         view.addSubview(mainSpacePlaceholderStack)
+        scrollView.addSubview(trackerCategoryTable)
         
         NSLayoutConstraint.activate([
             screenTopLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
             screenTopLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            
-            trackerCategoryTable.topAnchor.constraint(equalTo: screenTopLabel.bottomAnchor, constant: 38),
-            trackerCategoryTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            trackerCategoryTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            trackerCategoryTable.heightAnchor.constraint(equalToConstant: calculateTableSize()),
-//            trackerCategoryTable.heightAnchor.constraint(equalToConstant: viewModel.calculateTableSize()),
             
             mainSpacePlaceholderStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             mainSpacePlaceholderStack.topAnchor.constraint(equalTo: screenTopLabel.bottomAnchor, constant: 246),
@@ -83,16 +97,28 @@ final class TrackerCategorySelectionVC: UIViewController {
             addCategoryButton.heightAnchor.constraint(equalToConstant: 60),
             addCategoryButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             addCategoryButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            addCategoryButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50)
+            addCategoryButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
+            
+            
+            scrollView.topAnchor.constraint(equalTo: screenTopLabel.bottomAnchor, constant: 38),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            scrollView.bottomAnchor.constraint(equalTo: addCategoryButton.topAnchor, constant: -30),
+            
+            trackerCategoryTable.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 0),
+            trackerCategoryTable.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            trackerCategoryTable.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            trackerCategoryTable.heightAnchor.constraint(equalToConstant: calculateTableHeight()),
+            trackerCategoryTable.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
     }
     
     
     // MARK: - Methods
-    private func calculateTableSize() -> CGFloat {
-        if categories.count > 1 {
-            return CGFloat((categories.count * 75) - 1)
-        } else if categories.count == 0 {
+    private func calculateTableHeight() -> CGFloat {
+        if trackersCategories.count > 1 {
+            return CGFloat((trackersCategories.count * 75) - 1)
+        } else if trackersCategories.count == 0 {
             return 0
         } else {
             return 74
@@ -101,7 +127,7 @@ final class TrackerCategorySelectionVC: UIViewController {
     
     
     private func checkMainPlaceholderVisability() {
-        let isHidden = categories.count < 1
+        let isHidden = trackersCategories.count < 1
         mainSpacePlaceholderStack.isHidden = !isHidden
     }
     
@@ -115,8 +141,7 @@ final class TrackerCategorySelectionVC: UIViewController {
     
     
     // MARK: - init
-    init(categoryes: [String], currentItem: Int?) {
-        self.categories = categoryes
+    init(currentItem: Int?) {
         self.selectedItem = currentItem
         super.init(nibName: nil, bundle: nil)
     }
@@ -153,21 +178,15 @@ extension TrackerCategorySelectionVC: UITableViewDelegate {
 // MARK: - UITableViewDataSource Extension
 extension TrackerCategorySelectionVC: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        categories.count
+        trackersCategories.count
     }
     
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .value1, reuseIdentifier: nil)
-        cell.textLabel?.text = categories[indexPath.row]
-        cell.textLabel?.textColor = InterfaceColors.blackDay
-        cell.textLabel?.font = UIFont.systemFont(ofSize: 17)
-        cell.tintColor = InterfaceColors.blue
-        if indexPath.row == selectedItem{
-            cell.accessoryType = .checkmark
-        }
-        cell.selectionStyle = .none
-        cell.backgroundColor = InterfaceColors.backgruondDay
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: CategorySelectionCell.identifier) as?
+                CategorySelectionCell else { return UITableViewCell() }
+        let categoryName = trackersCategories[indexPath.row]
+        cell.configureCell(with: categoryName, isSelected: indexPath.row % 2 == 0 ? true : false)
         return cell
     }
     

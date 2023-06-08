@@ -15,7 +15,8 @@ final class TrackerCategoryStore: NSObject {
         do {
             let request = TrackerCategoryCoreData.fetchRequest()
             let result = try context.fetch(request)
-            return try result.map { try createCategory(from: $0) }
+            let resultArray = try result.map { try createCategory(from: $0) }
+            return resultArray
         } catch {
             return []
         }
@@ -55,7 +56,12 @@ final class TrackerCategoryStore: NSObject {
             TrackerCategory(title: "Самочувствие"),
             TrackerCategory(title: "Привычки"),
             TrackerCategory(title: "Внимательность"),
-            TrackerCategory(title: "Спорт")
+            TrackerCategory(title: "Спорт"),
+            TrackerCategory(title: "Игры"),
+            TrackerCategory(title: "Учёба"),
+            TrackerCategory(title: "Работа"),
+            TrackerCategory(title: "Медитации")
+            
         ].map { category in
             let categoryFromCoreData = TrackerCategoryCoreData(context: context)
             categoryFromCoreData.categoryId = category.id.uuidString
