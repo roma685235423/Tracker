@@ -1,11 +1,10 @@
 import UIKit
 
-
 final class CategorySelectionCell: UITableViewCell {
-    // MARK: - Properties
-    static let identifier = "CategoryCell"
+    // MARK: - UI
     private let categoryLabel = UILabel()
-    
+    private let background = UIView()
+    private let separatorView = UIView()
     private lazy var checkmarkImage: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -16,7 +15,56 @@ final class CategorySelectionCell: UITableViewCell {
         return imageView
     }()
     
+    // MARK: - Properties
+    static let identifier = "CategoryCell"
     
+    // MARK: - Lifecycle
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        configureLayout()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        configureLayout()
+    }
+    
+    // MARK: - Public Methods
+    func configureCell(with text: String, isSelected: Bool, cellIndex: Int, totalRowsInTable: Int) {
+        background.backgroundColor = InterfaceColors.backgruondDay
+        separatorView.backgroundColor = InterfaceColors.gray
+        checkmarkImage.isHidden = !isSelected
+        configureLabel(with: text)
+        
+        applyCornerRadius(cellIndex: cellIndex, totalRowsInTable: totalRowsInTable)
+    }
+    
+    private func applyCornerRadius(cellIndex: Int, totalRowsInTable: Int) {
+        let cornerRadius: CGFloat = 16
+        
+        switch (cellIndex, totalRowsInTable) {
+        case (0, 1):
+            // Single cell in section
+            separatorView.isHidden = true
+            background.layer.cornerRadius = cornerRadius
+            background.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        case (0, _):
+            // First cell in section
+            background.layer.cornerRadius = cornerRadius
+            background.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        case (_, _) where cellIndex == totalRowsInTable - 1:
+            // Last cell in section
+            separatorView.isHidden = true
+            background.layer.cornerRadius = cornerRadius
+            background.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        default:
+            // Middle cells in section
+            background.layer.cornerRadius = 0
+            background.layer.maskedCorners = []
+        }
+    }
+    
+    // MARK: - Private Methods
     private func configureLabel(with text: String) {
         categoryLabel.configureLabel(
             text: text,
@@ -27,15 +75,25 @@ final class CategorySelectionCell: UITableViewCell {
         categoryLabel.textAlignment = .left
     }
     
-    func configureCell(with text: String, isSelected: Bool) {
-        contentView.backgroundColor = InterfaceColors.backgruondDay
-        
-        checkmarkImage.isHidden = !isSelected
+    private func configureLayout() {
+        background.translatesAutoresizingMaskIntoConstraints = false
+        separatorView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(background)
+        background.addSubview(separatorView)
         contentView.addSubview(checkmarkImage)
         contentView.addSubview(categoryLabel)
-        configureLabel(with: text)
         
         NSLayoutConstraint.activate([
+            background.topAnchor.constraint(equalTo: contentView.topAnchor),
+            background.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            background.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            background.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            
+            separatorView.heightAnchor.constraint(equalToConstant: 0.5),
+            separatorView.bottomAnchor.constraint(equalTo: background.bottomAnchor),
+            separatorView.leadingAnchor.constraint(equalTo: background.leadingAnchor, constant: 20),
+            separatorView.trailingAnchor.constraint(equalTo: background.trailingAnchor, constant: -20),
+            
             checkmarkImage.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -21),
             checkmarkImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 31),
             checkmarkImage.widthAnchor.constraint(equalToConstant: 24),
