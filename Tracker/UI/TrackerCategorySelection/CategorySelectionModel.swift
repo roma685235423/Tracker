@@ -1,15 +1,12 @@
 import Foundation
 
-
-@objcMembers
 final class CategorySelectionModel: NSObject, Identifiable {
     let id: String
-    private(set) dynamic var emojis: String
-    //private(set) dynamic var size: String
+    private(set) dynamic var category: String
 
-    init(id: String, emojis: String) {
+    init(id: String, category: String) {
         self.id = id
-        self.emojis = emojis
+        self.category = category
         super.init()
     }
 }

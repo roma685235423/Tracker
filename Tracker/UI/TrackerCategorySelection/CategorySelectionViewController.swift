@@ -58,15 +58,10 @@ final class TrackerCategorySelectionVC: UIViewController {
     
     // MARK: - Layout Configuration
     private func configureLayout() {
-        screenTopLabel.translatesAutoresizingMaskIntoConstraints = false
-        trackerCategoryTable.translatesAutoresizingMaskIntoConstraints = false
-        addCategoryButton.translatesAutoresizingMaskIntoConstraints = false
-        mainSpacePlaceholderStack.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(screenTopLabel)
-        view.addSubview(addCategoryButton)
-        view.addSubview(mainSpacePlaceholderStack)
-        view.addSubview(trackerCategoryTable)
+        [screenTopLabel, trackerCategoryTable, addCategoryButton, mainSpacePlaceholderStack].forEach{
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
         
         NSLayoutConstraint.activate([
             screenTopLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),

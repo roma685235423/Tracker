@@ -109,21 +109,11 @@ class TrackersViewController: UIViewController {
     
     // MARK: - Layout configuraion
     private func configureLayout() {
-        addTrackerButton.translatesAutoresizingMaskIntoConstraints = false
-        trackerLabel.translatesAutoresizingMaskIntoConstraints = false
-        trackersSearchBar.translatesAutoresizingMaskIntoConstraints = false
-        datePicker.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        mainSpacePlaceholderStack.translatesAutoresizingMaskIntoConstraints = false
-        searchSpacePlaceholderStack.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(trackerLabel)
-        view.addSubview(addTrackerButton)
-        view.addSubview(trackersSearchBar)
-        view.addSubview(datePicker)
-        view.addSubview(collectionView)
-        view.addSubview(mainSpacePlaceholderStack)
-        view.addSubview(searchSpacePlaceholderStack)
+        [addTrackerButton, trackerLabel, trackersSearchBar, datePicker,
+         collectionView, mainSpacePlaceholderStack, searchSpacePlaceholderStack].forEach{
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
         
         NSLayoutConstraint.activate([
             trackerLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.1083),

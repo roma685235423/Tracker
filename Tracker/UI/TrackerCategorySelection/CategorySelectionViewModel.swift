@@ -3,7 +3,6 @@ import Foundation
 typealias Binding<T> = (T) -> Void
 
 final class CategorySelectionViewModel {
-//    private let trackerCategoryStore = TrackerCategoryStore()
     var selectedCategory: Binding<TrackerCategory>?
     
     private let model: CategorySelectionModel

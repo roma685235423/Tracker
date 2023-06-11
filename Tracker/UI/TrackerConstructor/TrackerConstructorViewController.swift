@@ -110,16 +110,11 @@ final class NewTrackerConstructorVC: UIViewController {
     // MARK: - Layout configuraion
     private func layoutConfigure() {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        categoryAndSchedulerTable.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        buttonsStackView.translatesAutoresizingMaskIntoConstraints = false
-        
         view.addSubview(scrollView)
-        scrollView.addSubview(textField)
-        scrollView.addSubview(categoryAndSchedulerTable)
-        scrollView.addSubview(collectionView)
-        scrollView.addSubview(buttonsStackView)
+        [textField, categoryAndSchedulerTable, collectionView, buttonsStackView].forEach {
+            scrollView.addSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
         
         NSLayoutConstraint.activate([
             screenTopLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.0515),
@@ -247,9 +242,9 @@ final class NewTrackerConstructorVC: UIViewController {
             schedule: daysOfWeekForSceduler,
             daysComplitedCount: 0
         )
-//        let cateory = trackerCategoryStore.categories.first { $0.title == trackerCategoryString }
-//        guard let unwrapCategory = cateory else { return }
-//        delegate?.didTapConformButton(tracker: tracker, category: unwrapCategory)
+        //        let cateory = trackerCategoryStore.categories.first { $0.title == trackerCategoryString }
+        //        guard let unwrapCategory = cateory else { return }
+        //        delegate?.didTapConformButton(tracker: tracker, category: unwrapCategory)
     }
     
     

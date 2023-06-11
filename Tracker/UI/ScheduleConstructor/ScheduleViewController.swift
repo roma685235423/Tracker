@@ -28,13 +28,10 @@ final class ScheduleViewController: UIViewController {
     
     // MARK: - Layout configuraion
     private func configureLayout() {
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        schedulerTable.translatesAutoresizingMaskIntoConstraints = false
-        readyButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(scrollView)
-        scrollView.addSubview(schedulerTable)
-        scrollView.addSubview(readyButton)
+        [scrollView, schedulerTable, readyButton].forEach{
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
         
         NSLayoutConstraint.activate([
             screenTopLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.0515),
