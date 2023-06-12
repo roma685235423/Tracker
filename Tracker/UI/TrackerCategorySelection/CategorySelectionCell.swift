@@ -22,46 +22,25 @@ final class CategorySelectionCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureLayout()
+        self.selectionStyle = .none
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        configureLayout()
     }
     
     // MARK: - Public Methods
     func configureCell(with text: String, isSelected: Bool, cellIndex: Int, totalRowsInTable: Int) {
         background.backgroundColor = InterfaceColors.backgruondDay
         separatorView.backgroundColor = InterfaceColors.gray
-        checkmarkImage.isHidden = !isSelected
+        checkmarkIs(visible: !isSelected)
         configureLabel(with: text)
         
         applyCornerRadius(cellIndex: cellIndex, totalRowsInTable: totalRowsInTable)
     }
     
-    private func applyCornerRadius(cellIndex: Int, totalRowsInTable: Int) {
-        let cornerRadius: CGFloat = 16
-        
-        switch (cellIndex, totalRowsInTable) {
-        case (0, 1):
-            // Single cell in section
-            separatorView.isHidden = true
-            background.layer.cornerRadius = cornerRadius
-            background.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-        case (0, _):
-            // First cell in section
-            background.layer.cornerRadius = cornerRadius
-            background.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        case (_, _) where cellIndex == totalRowsInTable - 1:
-            // Last cell in section
-            separatorView.isHidden = true
-            background.layer.cornerRadius = cornerRadius
-            background.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-        default:
-            // Middle cells in section
-            background.layer.cornerRadius = 0
-            background.layer.maskedCorners = []
-        }
+    func checkmarkIs(visible: Bool) {
+        checkmarkImage.isHidden = visible
     }
     
     // MARK: - Private Methods
@@ -103,5 +82,30 @@ final class CategorySelectionCell: UITableViewCell {
             categoryLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             categoryLabel.widthAnchor.constraint(equalToConstant: contentView.frame.width - (16 + 21 + 24))
         ])
+    }
+    
+    private func applyCornerRadius(cellIndex: Int, totalRowsInTable: Int) {
+        let cornerRadius: CGFloat = 16
+        
+        switch (cellIndex, totalRowsInTable) {
+        case (0, 1):
+            // Single cell in section
+            separatorView.isHidden = true
+            background.layer.cornerRadius = cornerRadius
+            background.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        case (0, _):
+            // First cell in section
+            background.layer.cornerRadius = cornerRadius
+            background.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        case (_, _) where cellIndex == totalRowsInTable - 1:
+            // Last cell in section
+            separatorView.isHidden = true
+            background.layer.cornerRadius = cornerRadius
+            background.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        default:
+            // Middle cells in section
+            background.layer.cornerRadius = 0
+            background.layer.maskedCorners = []
+        }
     }
 }

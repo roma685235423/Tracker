@@ -29,11 +29,14 @@ final class NewTrackerConstructorVC: UIViewController {
     // MARK: - Properties
     private var trackerNameString: String = ""
     private var trackerEmogieString: String = ""
-    private var trackerCategoryString: String = ""
     private var trackerColor: UIColor?
     
     private var actionsArray: [TrackerConstructorTableViewActions] = [.init(titleLabelText: "Категория", subTitleLabel: "")]
-    private var currentSelectedCateory: Int?
+    private lazy var currentSelectedCateory: TrackerCategory? = nil {
+        didSet {
+            checkIsCreateButtonActive()
+        }
+    }
     
     private let collectionViewSectionHeaders = ["Emoji", "Цвет"]
     private let emojies = [ "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
@@ -242,9 +245,8 @@ final class NewTrackerConstructorVC: UIViewController {
             schedule: daysOfWeekForSceduler,
             daysComplitedCount: 0
         )
-        //        let cateory = trackerCategoryStore.categories.first { $0.title == trackerCategoryString }
-        //        guard let unwrapCategory = cateory else { return }
-        //        delegate?.didTapConformButton(tracker: tracker, category: unwrapCategory)
+        guard let unwrapCategory = currentSelectedCateory else { return }
+        delegate?.didTapConformButton(tracker: tracker, category: unwrapCategory)
     }
     
     
@@ -314,13 +316,12 @@ extension NewTrackerConstructorVC: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 0 {
-            let trackerCategorySelectorViewController = TrackerCategorySelectionVC(currentItem: currentSelectedCateory)
+            let trackerCategorySelectorViewController = CategorySelectionViewController(selectedCategory: currentSelectedCateory)
             trackerCategorySelectorViewController.modalPresentationStyle = .pageSheet
-            trackerCategorySelectorViewController.trackerCategorySelectorVCCallback = { [ weak self ] cellSubviewText, selectedItem in
+            trackerCategorySelectorViewController.trackerCategorySelectorVCCallback = { [ weak self ] selectedCategory in
                 guard let self = self else { return }
-                self.actionsArray[0].subTitleLabel = cellSubviewText
-                self.trackerCategoryString = cellSubviewText
-                self.currentSelectedCateory = selectedItem
+                self.actionsArray[0].subTitleLabel = selectedCategory.title
+                self.currentSelectedCateory = selectedCategory
                 self.checkIsCreateButtonActive()
                 self.categoryAndSchedulerTable.reloadData()
             }

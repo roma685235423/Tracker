@@ -2,14 +2,19 @@ import UIKit
 import CoreData
 
 
+protocol TrackersCategoriesStoreDelegate: AnyObject {
+    func categoriesDidUpdate()
+}
+
+
 final class TrackerCategoryStore: NSObject {
     enum CategoryStoreError: Error {
         case decodeError
     }
     
-    
     // MARK: - Properties
     private let context: NSManagedObjectContext
+    weak var delegate: TrackersCategoriesStoreDelegate?
     
     lazy var categories: [TrackerCategory] = {
         do {
@@ -84,5 +89,14 @@ final class TrackerCategoryStore: NSObject {
         self.context = context
         super.init()
         try setupMockCategories(with: context)
+    }
+}
+
+
+// MARK: - NSFetchedResultsControllerDelegate
+
+extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        delegate?.categoriesDidUpdate()
     }
 }

@@ -1,6 +1,6 @@
 import UIKit
 
-final class TrackerCategorySelectionVC: UIViewController {
+final class CategorySelectionViewController: UIViewController {
     // MARK: - UI
     private let screenTopLabel = UILabel()
     private let trackerCategoryTable = UITableView()
@@ -12,8 +12,6 @@ final class TrackerCategorySelectionVC: UIViewController {
     
     // MARK: - Properties
     private let trackerCategoryStore = TrackerCategoryStore()
-    private var selectedItem: Int?
-    
     private lazy var trackersCategories: [String] = {
         var stringCategories: [String] = []
         for category in trackerCategoryStore.categories {
@@ -22,13 +20,15 @@ final class TrackerCategorySelectionVC: UIViewController {
         return stringCategories
     }()
     
-    var trackerCategorySelectorVCCallback: ((String, Int?) -> Void)?
+    private let viewModel: CategorySelectionViewModel
+    
+    var trackerCategorySelectorVCCallback: ((TrackerCategory) -> Void)?
     
     // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         initialSettings()
-        checkMainPlaceholderVisibility()
+        viewModel.loadCategories()
     }
     
     // MARK: - UI Configuration methods
@@ -84,20 +84,6 @@ final class TrackerCategorySelectionVC: UIViewController {
     }
     
     // MARK: - Methods
-    private func calculateTableHeight() -> CGFloat {
-        if trackersCategories.count > 1 {
-            return CGFloat((trackersCategories.count * 75) - 1)
-        } else if trackersCategories.isEmpty {
-            return 0
-        } else {
-            return 74
-        }
-    }
-    
-    private func checkMainPlaceholderVisibility() {
-        let isHidden = trackersCategories.count < 1
-        mainSpacePlaceholderStack.isHidden = !isHidden
-    }
     
     @objc private func didTapAddCategoryButton() {
         let trackerCategoryCreationViewController = TrackerCategoryCreationViewController()
@@ -106,9 +92,10 @@ final class TrackerCategorySelectionVC: UIViewController {
     }
     
     // MARK: - init
-    init(currentItem: Int?) {
-        self.selectedItem = currentItem
+    init(selectedCategory: TrackerCategory?) {
+        self.viewModel = CategorySelectionViewModel(for: selectedCategory)
         super.init(nibName: nil, bundle: nil)
+        viewModel.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -117,14 +104,10 @@ final class TrackerCategorySelectionVC: UIViewController {
 }
 
 // MARK: - UITableViewDelegate Extension
-extension TrackerCategorySelectionVC: UITableViewDelegate {
+extension CategorySelectionViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let cell = tableView.cellForRow(at: indexPath),
-              let text = cell.textLabel?.text
-        else { return }
-        
-        cell.accessoryType = .checkmark
-        trackerCategorySelectorVCCallback?(text, indexPath.row)
+        let category = viewModel.categoies[indexPath.row]
+        trackerCategorySelectorVCCallback?(category)
         dismiss(animated: true)
     }
     
@@ -135,7 +118,7 @@ extension TrackerCategorySelectionVC: UITableViewDelegate {
 }
 
 // MARK: - UITableViewDataSource Extension
-extension TrackerCategorySelectionVC: UITableViewDataSource {
+extension CategorySelectionViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return trackersCategories.count
     }
@@ -145,18 +128,30 @@ extension TrackerCategorySelectionVC: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        let categoryName = trackersCategories[indexPath.row]
-        let isSelected = indexPath.row % 2 == 0 ? true : false
+        let categoryName = viewModel.categoies[indexPath.row].title
+        let isSelected = viewModel.categoies[indexPath.row].id == viewModel.selectedCategory?.id ? true : false
         cell.configureCell(
             with: categoryName,
             isSelected: isSelected,
             cellIndex: indexPath.row,
-            totalRowsInTable: trackersCategories.count
+            totalRowsInTable: viewModel.categoies.count
         )
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 75
+    }
+}
+
+
+extension CategorySelectionViewController: CategorySelectionViewModelProtocol {
+    func categoriesDidUpdate() {
+        let isHidden = viewModel.categoies.count < 1
+        mainSpacePlaceholderStack.isHidden = !isHidden
+    }
+    
+    func didSelect(category: TrackerCategory) {
+        dismiss(animated: true)
     }
 }

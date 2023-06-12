@@ -1,31 +1,63 @@
 import Foundation
 
-typealias Binding<T> = (T) -> Void
+
+protocol CategorySelectionViewModelProtocol: AnyObject {
+    func categoriesDidUpdate()
+    func didSelect(category: TrackerCategory)
+}
+
+
 
 final class CategorySelectionViewModel {
-    var selectedCategory: Binding<TrackerCategory>?
+    weak var delegate: CategorySelectionViewModelProtocol?
     
-    private let model: CategorySelectionModel
-    
-    init(for model: CategorySelectionModel) {
-        self.model = model
+    private let trackerCategoryStore = TrackerCategoryStore()
+    private (set) var categoies: [TrackerCategory] = [] {
+        didSet {
+            delegate?.categoriesDidUpdate()
+        }
     }
-//    func getCategoriesFromStore() -> [TrackerCategory] {
-//
-//        return trackerCategoryStore.categories
-//    }
-//
-//    func getCategoriesCount() -> Int {
-//        trackerCategoryStore.categories.count
-//    }
-//
-//    func calculateTableSize() -> CGFloat {
-//        if trackerCategoryStore.categories.count > 1 {
-//            return CGFloat((trackerCategoryStore.categories.count * 75) - 1)
-//        } else if trackerCategoryStore.categories.count == 0 {
-//            return 0
-//        } else {
-//            return 74
-//        }
-//    }
+    
+    private (set) var selectedCategory: TrackerCategory? = nil {
+        didSet {
+            guard let selectedCategory else { return }
+            delegate?.didSelect(category: selectedCategory)
+        }
+    }
+    
+    
+    init(for selectedCategory: TrackerCategory?) {
+        self.selectedCategory = selectedCategory
+        trackerCategoryStore.delegate = self
+    }
+    
+    func getCategoriesStringsFromStore() -> [String] {
+        var stringCategories: [String] = []
+        for category in trackerCategoryStore.categories {
+            stringCategories.append(category.title)
+        }
+        return stringCategories
+    }
+    
+    func getCategoriesFromStore() -> [TrackerCategory] {
+        var categories: [TrackerCategory] = []
+        categories = trackerCategoryStore.categories
+        return categories
+    }
+    
+    func loadCategories() {
+        categoies = getCategoriesFromStore()
+    }
+    
+    func isCheckmarkVisible(in row: Int) -> Bool {
+        guard let category = selectedCategory else { return false }
+        return category.id == categoies[row].id ? true : false
+    }
+}
+
+
+extension CategorySelectionViewModel: TrackersCategoriesStoreDelegate {
+    func categoriesDidUpdate() {
+        categoies = trackerCategoryStore.categories
+    }
 }
