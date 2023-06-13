@@ -1,18 +1,17 @@
 import Foundation
 
-
-protocol CategorySelectionViewModelProtocol: AnyObject {
+protocol CategorySelectionViewModelDelegate: AnyObject {
     func categoriesDidUpdate()
     func didSelect(category: TrackerCategory)
 }
 
-
-
 final class CategorySelectionViewModel {
-    weak var delegate: CategorySelectionViewModelProtocol?
+    // MARK: - Properties
+    
+    weak var delegate: CategorySelectionViewModelDelegate?
     
     private let trackerCategoryStore = TrackerCategoryStore()
-    private (set) var categoies: [TrackerCategory] = [] {
+    private (set) var categories: [TrackerCategory] = [] {
         didSet {
             delegate?.categoriesDidUpdate()
         }
@@ -20,44 +19,51 @@ final class CategorySelectionViewModel {
     
     private (set) var selectedCategory: TrackerCategory? = nil {
         didSet {
-            guard let selectedCategory else { return }
+            guard let selectedCategory = selectedCategory else { return }
             delegate?.didSelect(category: selectedCategory)
         }
     }
     
+    // MARK: - Initialization
     
     init(for selectedCategory: TrackerCategory?) {
         self.selectedCategory = selectedCategory
         trackerCategoryStore.delegate = self
     }
     
-    func getCategoriesStringsFromStore() -> [String] {
-        var stringCategories: [String] = []
-        for category in trackerCategoryStore.categories {
-            stringCategories.append(category.title)
-        }
-        return stringCategories
-    }
     
-    func getCategoriesFromStore() -> [TrackerCategory] {
-        var categories: [TrackerCategory] = []
-        categories = trackerCategoryStore.categories
-        return categories
+    // MARK: - Public Methods
+    func selectCategory(row: Int) {
+        selectedCategory = categories[row]
     }
     
     func loadCategories() {
-        categoies = getCategoriesFromStore()
+        categories = getCategoriesFromStore()
     }
     
     func isCheckmarkVisible(in row: Int) -> Bool {
         guard let category = selectedCategory else { return false }
-        return category.id == categoies[row].id ? true : false
+        return category.id == categories[row].id ? true : false
+    }
+    
+    func categoriesCount() -> Int {
+        return categories.count
+    }
+    
+    // MARK: - Private Methods
+    
+    private func getCategoriesFromStore() -> [TrackerCategory] {
+        var categories: [TrackerCategory] = []
+        categories = trackerCategoryStore.categories
+        return categories
     }
 }
 
 
+// MARK: - TrackersCategoriesStoreDelegate
+
 extension CategorySelectionViewModel: TrackersCategoriesStoreDelegate {
     func categoriesDidUpdate() {
-        categoies = trackerCategoryStore.categories
+        categories = trackerCategoryStore.categories
     }
 }
