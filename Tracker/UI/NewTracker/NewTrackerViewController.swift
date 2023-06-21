@@ -8,9 +8,8 @@ protocol CreateTrackerViewControllerDelegate: AnyObject {
 
 
 
-final class TrackerCreationViewController: UIViewController {
+final class NewTrackerViewController: UIViewController {
     // MARK: - UIElements
-    private let screenTopLabel = UILabel()
     private let goToCreateHabitScreenButton = UIButton(label: "Привычка")
     private let goToCreateIrregularEventScreenButton = UIButton(label: "Нерегулярные событие")
     
@@ -22,6 +21,7 @@ final class TrackerCreationViewController: UIViewController {
         super.viewDidLoad()
         contentConfiguration()
         configureLayout()
+        navigationControllerConfiguration()
     }
     
     
@@ -31,9 +31,6 @@ final class TrackerCreationViewController: UIViewController {
         goToCreateIrregularEventScreenButton.addToSuperview(view)
         
         NSLayoutConstraint.activate([
-            screenTopLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
-            screenTopLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            
             goToCreateHabitScreenButton.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.431),
             goToCreateHabitScreenButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20),
             goToCreateHabitScreenButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20),
@@ -47,14 +44,16 @@ final class TrackerCreationViewController: UIViewController {
     }
     
     // MARK: - Methods
+    private func navigationControllerConfiguration() {
+        title = "Создание трекера"
+        navigationController?.navigationBar.titleTextAttributes = [
+            .font: UIFont.systemFont(ofSize: 16, weight: .medium),
+            .foregroundColor: InterfaceColors.blackDay
+        ]
+    }
+    
     private func contentConfiguration() {
         view.backgroundColor = InterfaceColors.whiteDay
-        screenTopLabel.configureLabel(
-            text: "Создание трекера",
-            addToView: view,
-            ofSize: 16,
-            weight: .medium)
-        
         goToCreateHabitScreenButton.addTarget(
             self,
             action: #selector(didTapGoToCreateHabitScreenButton),
@@ -71,12 +70,16 @@ final class TrackerCreationViewController: UIViewController {
     // MARK: - Actions
     @objc
     private func didTapGoToCreateHabitScreenButton() {
-        deligate?.openTrackerConstructorWith(regularEvent: true)
+        let newTrackerConstructorView = NewTrackerConstructorVC(isRegularEvent: true)
+        navigationController?.pushViewController(newTrackerConstructorView, animated: true)
+//        deligate?.openTrackerConstructorWith(regularEvent: true)
     }
     
     
     @objc
     private func didTapGoToCreateIrregularEventScreenButton() {
-        deligate?.openTrackerConstructorWith(regularEvent: false)
+        let newTrackerConstructorView = NewTrackerConstructorVC(isRegularEvent: false)
+        navigationController?.pushViewController(newTrackerConstructorView, animated: true)
+//        deligate?.openTrackerConstructorWith(regularEvent: false)
     }
 }

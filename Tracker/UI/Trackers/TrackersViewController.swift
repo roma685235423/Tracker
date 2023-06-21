@@ -172,10 +172,12 @@ class TrackersViewController: UIViewController {
     
     @objc
     private func didTapAddTrackerButton() {
-        let createTrackerViewController = TrackerCreationViewController()
-        createTrackerViewController.modalPresentationStyle = .pageSheet
+        let createTrackerViewController = NewTrackerViewController()
+//        createTrackerViewController.modalPresentationStyle = .pageSheet
         createTrackerViewController.deligate = self
-        present(createTrackerViewController, animated: true)
+        let navigationController = UINavigationController(rootViewController: createTrackerViewController)
+        present(navigationController, animated: true)
+//        present(createTrackerViewController, animated: true)
     }
 }
 

@@ -1,6 +1,5 @@
 import UIKit
 
-
 struct Offsets {
     let textToTable: CGFloat = 24
     let tableToCollection: CGFloat = 32
@@ -8,23 +7,19 @@ struct Offsets {
     let buttonsToBottom: CGFloat = 24
 }
 
-
-
 protocol TrackerConstructorVCDelegate: AnyObject {
     func didTapConformButton(tracker: Tracker, category: TrackerCategory)
     func didTapCancelButton()
 }
 
-
-
 final class NewTrackerConstructorVC: UIViewController {
     // MARK: - UIElements
-    private let screenTopLabel = UILabel()
+    private let contentView = UIView()
     private let scrollView = UIScrollView()
-    private let textField = CustomTextField()
     private let categoryAndSchedulerTable = UITableView()
     private let cancelButton = UIButton(label: "Отменить")
     private let createButton = UIButton(label: "Создать")
+    private let textField = CustomTextField()
     
     // MARK: - Properties
     private var trackerNameString: String = ""
@@ -60,6 +55,28 @@ final class NewTrackerConstructorVC: UIViewController {
         return stackView
     }()
     
+    private lazy var textLimitLabel: UILabel = {
+        let label = UILabel()
+        label.configureLabel(
+            text: "Ограничение 38 символов",
+            addToView: scrollView,
+            ofSize: 17,
+            weight: .regular
+        )
+        label.isHidden = true
+        label.textColor = InterfaceColors.red
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let textFieldStackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.distribution = .fill
+        stack.spacing = 8
+        return stack
+    }()
+    
     private lazy var collectionView: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collection.dataSource = self
@@ -87,10 +104,93 @@ final class NewTrackerConstructorVC: UIViewController {
         isRegularEvent == true ? "Новая привычка" : "Новое нерегулярное событие"
     }()
     
-    
     // MARK: - Lifecicle
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationControllerConfiguration()
+        isNeedToAddSchedulerAction()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        initialSettings()
+        layoutConfigure()
+    }
+    
+    // MARK: - Layout configuraion
+    private func layoutConfigure() {
+        view.addSubview(scrollView)
+        
+        scrollView.addSubview(contentView)
+        
+        [categoryAndSchedulerTable, collectionView, buttonsStackView, textFieldStackView].forEach {
+            contentView.addSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        textFieldStackView.addArrangedSubview(textField)
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
+            
+            textFieldStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
+            textFieldStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            textFieldStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
+            textField.heightAnchor.constraint(equalToConstant: 75),
+            
+            categoryAndSchedulerTable.topAnchor.constraint(equalTo: textFieldStackView.bottomAnchor, constant: scrollViewInterElementOffsets.textToTable),
+            categoryAndSchedulerTable.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            categoryAndSchedulerTable.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            categoryAndSchedulerTable.heightAnchor.constraint(equalToConstant: configureTableHeight()),
+            
+            collectionView.topAnchor.constraint(equalTo: categoryAndSchedulerTable.bottomAnchor, constant: scrollViewInterElementOffsets.tableToCollection),
+            collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 28),
+            collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -28),
+            collectionView.heightAnchor.constraint(equalToConstant: 470),
+            
+            buttonsStackView.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: scrollViewInterElementOffsets.collectionToButton),
+            buttonsStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            buttonsStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            buttonsStackView.heightAnchor.constraint(equalToConstant: 60)
+        ])
+        scrollView.layoutIfNeeded()
+    }
+    
+    // MARK: - Layout configuration methods
+    private func initialSettings() {
+        view.backgroundColor = InterfaceColors.whiteDay
+        textField.delegate = self
+        configureCategoryAndSchedulerTable()
+        configureScrollView()
+        buttonsConfiguration()
+        checkIsCreateButtonActive()
+        configureTextField()
+    }
+    
+    private func configureTableHeight() -> CGFloat {
+        actionsArray.count == 1 ? 75 : 149
+    }
+    
+    private func navigationControllerConfiguration() {
+        title = "Новая привычка"
+        navigationController?.navigationBar.titleTextAttributes = [
+            .font: UIFont.systemFont(ofSize: 16, weight: .medium),
+            .foregroundColor: InterfaceColors.blackDay
+            ]
+        self.navigationItem.setHidesBackButton(true, animated: true)
+    }
+    
+    private func buttonsConfiguration() {
         cancelButton.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
         cancelButton.setTitleColor(InterfaceColors.red, for: .normal)
         cancelButton.backgroundColor = InterfaceColors.backgruondDay
@@ -98,81 +198,7 @@ final class NewTrackerConstructorVC: UIViewController {
         cancelButton.layer.borderColor = InterfaceColors.red.cgColor
         
         createButton.addTarget(self, action: #selector(didTapCreateButton), for: .touchUpInside)
-        
-        isNeedToAddSchedulerAction()
     }
-    
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        initialSettings()
-    }
-    
-    
-    
-    // MARK: - Layout configuraion
-    private func layoutConfigure() {
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(scrollView)
-        [textField, categoryAndSchedulerTable, collectionView, buttonsStackView].forEach {
-            scrollView.addSubview($0)
-            $0.translatesAutoresizingMaskIntoConstraints = false
-        }
-        
-        NSLayoutConstraint.activate([
-            screenTopLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.0515),
-            screenTopLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            
-            scrollView.topAnchor.constraint(equalTo: screenTopLabel.bottomAnchor, constant: view.frame.height * 0.0744),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            
-            textField.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            textField.heightAnchor.constraint(equalToConstant: 75),
-            textField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            
-            categoryAndSchedulerTable.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: scrollViewInterElementOffsets.textToTable),
-            categoryAndSchedulerTable.leadingAnchor.constraint(equalTo: textField.leadingAnchor),
-            categoryAndSchedulerTable.trailingAnchor.constraint(equalTo: textField.trailingAnchor),
-            categoryAndSchedulerTable.heightAnchor.constraint(equalToConstant: configureTableHeight()),
-            
-            collectionView.topAnchor.constraint(equalTo: categoryAndSchedulerTable.bottomAnchor, constant: scrollViewInterElementOffsets.tableToCollection),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 28),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -28),
-            collectionView.heightAnchor.constraint(equalToConstant: 470),
-            
-            buttonsStackView.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: scrollViewInterElementOffsets.collectionToButton),
-            buttonsStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            buttonsStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            buttonsStackView.heightAnchor.constraint(equalToConstant: 60)
-        ])
-        scrollView.layoutIfNeeded()
-    }
-    
-    
-    // MARK: - Layout methods
-    private func initialSettings() {
-        view.backgroundColor = InterfaceColors.whiteDay
-        textField.delegate = self
-        configureTextField()
-        configureCategoryAndSchedulerTable()
-        screenTopLabel.configureLabel(
-            text: headerText,
-            addToView: view,
-            ofSize: 16,
-            weight: .medium)
-        layoutConfigure()
-        configureScrollView()
-        checkIsCreateButtonActive()
-    }
-    
-    
-    private func configureTableHeight() -> CGFloat {
-        actionsArray.count == 1 ? 75 : 149
-    }
-    
     
     private func configureScrollView() {
         scrollView.alwaysBounceVertical = true
@@ -185,6 +211,18 @@ final class NewTrackerConstructorVC: UIViewController {
         scrollView.addGestureRecognizer(tapToHideKeyboardGesture)
     }
     
+    private func textLimitLabelIs(visible: Bool) {
+        UIView.animate(withDuration: 0.3) {
+            if visible {
+                self.textFieldStackView.addArrangedSubview(self.textLimitLabel)
+                self.textLimitLabel.alpha = 1
+            } else {
+                self.textLimitLabel.alpha = 0
+                self.textFieldStackView.removeArrangedSubview(self.textLimitLabel)
+                self.textLimitLabel.removeFromSuperview()
+            }
+        }
+    }
     
     private func scrollViewHeightCalculation() -> CGFloat {
         return textField.frame.height + scrollViewInterElementOffsets.textToTable +
@@ -192,7 +230,6 @@ final class NewTrackerConstructorVC: UIViewController {
         collectionView.frame.height + scrollViewInterElementOffsets.collectionToButton +
         buttonsStackView.frame.height + scrollViewInterElementOffsets.buttonsToBottom
     }
-    
     
     private func configureTextField() {
         textField.backgroundColor = InterfaceColors.backgruondDay
@@ -208,8 +245,6 @@ final class NewTrackerConstructorVC: UIViewController {
         )
     }
     
-    
-    // MARK: - Methods
     private func configureCategoryAndSchedulerTable() {
         categoryAndSchedulerTable.delegate = self
         categoryAndSchedulerTable.dataSource = self
@@ -225,13 +260,11 @@ final class NewTrackerConstructorVC: UIViewController {
         }
     }
     
-    
     private func isNeedToAddSchedulerAction() {
         if isRegularEvent == true {
             actionsArray.append(.init(titleLabelText: "Расписание", subTitleLabel: ""))
         }
     }
-    
     
     // MARK: - Actions
     @objc
@@ -249,12 +282,10 @@ final class NewTrackerConstructorVC: UIViewController {
         delegate?.didTapConformButton(tracker: tracker, category: unwrapCategory)
     }
     
-    
     @objc
     private func didTapCancelButton() {
         delegate?.didTapCancelButton()
     }
-    
     
     @objc
     private func hideKeyboardAndSaveTextFieldValue() {
@@ -264,7 +295,6 @@ final class NewTrackerConstructorVC: UIViewController {
             checkIsCreateButtonActive()
         }
     }
-    
     
     @objc
     private func checkIsCreateButtonActive() {
@@ -278,14 +308,12 @@ final class NewTrackerConstructorVC: UIViewController {
         }
     }
     
-    
     // MARK: - Init
     init(isRegularEvent: Bool) {
         self.isRegularEvent = isRegularEvent
         self.scrollViewInterElementOffsets = .init()
         super.init(nibName: nil, bundle: nil)
     }
-    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -497,8 +525,15 @@ extension NewTrackerConstructorVC: UITextFieldDelegate {
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        trackerNameString = textField.text ?? ""
+        let textFieldText = textField.text ?? ""
+        let newLength = textFieldText.count + string.count - range.length
+        let newText = (textFieldText as NSString).replacingCharacters(in: range, with: string)
         checkIsCreateButtonActive()
-        return true
+        if newLength > 38 {
+            textLimitLabelIs(visible: true)
+        } else {
+            textLimitLabelIs(visible: false)
+        }
+        return newLength <= 38
     }
 }
