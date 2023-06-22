@@ -173,11 +173,8 @@ class TrackersViewController: UIViewController {
     @objc
     private func didTapAddTrackerButton() {
         let createTrackerViewController = NewTrackerViewController()
-//        createTrackerViewController.modalPresentationStyle = .pageSheet
-        createTrackerViewController.deligate = self
         let navigationController = UINavigationController(rootViewController: createTrackerViewController)
         present(navigationController, animated: true)
-//        present(createTrackerViewController, animated: true)
     }
 }
 
@@ -398,18 +395,5 @@ extension TrackersViewController: TrackerConstructorVCDelegate {
     
     func didTapCancelButton() {
         dismiss(animated: true)
-    }
-}
-
-
-
-// MARK: - CreateTrackerViewControllerDelegate
-extension TrackersViewController: CreateTrackerViewControllerDelegate {
-    func openTrackerConstructorWith(regularEvent: Bool) {
-        let newTrackerConstructorView = NewTrackerConstructorVC(isRegularEvent: regularEvent)
-        newTrackerConstructorView.modalPresentationStyle = .pageSheet
-        newTrackerConstructorView.delegate = self
-        dismiss(animated: true)
-        present(newTrackerConstructorView, animated: true)
     }
 }

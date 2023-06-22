@@ -1,20 +1,9 @@
 import UIKit
 
-
-
-protocol CreateTrackerViewControllerDelegate: AnyObject {
-    func openTrackerConstructorWith(regularEvent: Bool)
-}
-
-
-
 final class NewTrackerViewController: UIViewController {
     // MARK: - UIElements
     private let goToCreateHabitScreenButton = UIButton(label: "Привычка")
     private let goToCreateIrregularEventScreenButton = UIButton(label: "Нерегулярные событие")
-    
-    weak var deligate: CreateTrackerViewControllerDelegate?
-    
     
     // MARK: - Lifecicle
     override func viewDidLoad() {
@@ -72,7 +61,6 @@ final class NewTrackerViewController: UIViewController {
     private func didTapGoToCreateHabitScreenButton() {
         let newTrackerConstructorView = NewTrackerConstructorVC(isRegularEvent: true)
         navigationController?.pushViewController(newTrackerConstructorView, animated: true)
-//        deligate?.openTrackerConstructorWith(regularEvent: true)
     }
     
     
@@ -80,6 +68,5 @@ final class NewTrackerViewController: UIViewController {
     private func didTapGoToCreateIrregularEventScreenButton() {
         let newTrackerConstructorView = NewTrackerConstructorVC(isRegularEvent: false)
         navigationController?.pushViewController(newTrackerConstructorView, animated: true)
-//        deligate?.openTrackerConstructorWith(regularEvent: false)
     }
 }
