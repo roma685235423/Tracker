@@ -12,7 +12,7 @@ protocol TrackerConstructorVCDelegate: AnyObject {
     func didTapCancelButton()
 }
 
-final class NewTrackerConstructorVC: UIViewController {
+final class ConstructorViewController: UIViewController {
     // MARK: - UIElements
     private let contentView = UIView()
     private let scrollView = UIScrollView()
@@ -209,7 +209,7 @@ final class NewTrackerConstructorVC: UIViewController {
         scrollView.showsVerticalScrollIndicator = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.isUserInteractionEnabled = true
-        scrollView.delaysContentTouches = false 
+        scrollView.delaysContentTouches = false
         
         let tapToHideKeyboardGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboardAndSaveTextFieldValue))
         tapToHideKeyboardGesture.cancelsTouchesInView = false
@@ -328,7 +328,7 @@ final class NewTrackerConstructorVC: UIViewController {
 
 
 // MARK: - UITableViewDataSource Extension
-extension NewTrackerConstructorVC: UITableViewDataSource, UITableViewDelegate {
+extension ConstructorViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         actionsArray.count
     }
@@ -380,7 +380,7 @@ extension NewTrackerConstructorVC: UITableViewDataSource, UITableViewDelegate {
 
 
 // MARK: - UICollectionViewDataSource Extension
-extension NewTrackerConstructorVC: UICollectionViewDataSource {
+extension ConstructorViewController: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return collectionViewSectionHeaders.count
@@ -437,7 +437,7 @@ extension NewTrackerConstructorVC: UICollectionViewDataSource {
 
 
 // MARK: - UICollectionViewDelegateFlowLayout Extension
-extension NewTrackerConstructorVC: UICollectionViewDelegateFlowLayout {
+extension ConstructorViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: collectionView.bounds.width/6, height: collectionView.bounds.width/6)
     }
@@ -466,7 +466,7 @@ extension NewTrackerConstructorVC: UICollectionViewDelegateFlowLayout {
 
 
 // MARK: - UICollectionViewDelegate Extension
-extension NewTrackerConstructorVC: UICollectionViewDelegate {
+extension ConstructorViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         selectedItem = indexPath
         return true
@@ -515,7 +515,7 @@ extension NewTrackerConstructorVC: UICollectionViewDelegate {
 
 
 // MARK: - UITextFieldDelegate Extension
-extension NewTrackerConstructorVC: UITextFieldDelegate {
+extension ConstructorViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         trackerNameString = textField.text ?? ""
         textField.resignFirstResponder()

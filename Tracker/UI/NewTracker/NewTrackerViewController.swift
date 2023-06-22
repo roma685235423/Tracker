@@ -59,14 +59,14 @@ final class NewTrackerViewController: UIViewController {
     // MARK: - Actions
     @objc
     private func didTapGoToCreateHabitScreenButton() {
-        let newTrackerConstructorView = NewTrackerConstructorVC(isRegularEvent: true)
+        let newTrackerConstructorView = ConstructorViewController(isRegularEvent: true)
         navigationController?.pushViewController(newTrackerConstructorView, animated: true)
     }
     
     
     @objc
     private func didTapGoToCreateIrregularEventScreenButton() {
-        let newTrackerConstructorView = NewTrackerConstructorVC(isRegularEvent: false)
+        let newTrackerConstructorView = ConstructorViewController(isRegularEvent: false)
         navigationController?.pushViewController(newTrackerConstructorView, animated: true)
     }
 }
