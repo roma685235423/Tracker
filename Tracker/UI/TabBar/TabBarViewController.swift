@@ -4,18 +4,15 @@ final class TabBarViewController: UITabBarController {
     // MARK: - UIElements
     private let border = UIView()
     
-    
     // MARK: - Properties
     private var tabBarHeight: CGFloat = 0
-    
     
     // MARK: - Lifecicle
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tabBarHeight = tabBar.frame.height
-        configureBorder()
+        borderConfigure()
     }
-    
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -36,9 +33,8 @@ final class TabBarViewController: UITabBarController {
         self.viewControllers = [trackerViewController, statisticViewController]
     }
     
-    
     // MARK: - Layout configuraion
-    private func configureBorder() {
+    private func borderConfigure() {
         border.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(border)
         border.backgroundColor = InterfaceColors.gray

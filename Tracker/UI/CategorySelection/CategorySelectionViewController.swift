@@ -2,7 +2,6 @@ import UIKit
 
 final class CategorySelectionViewController: UIViewController {
     // MARK: - UI
-    
     private let screenTopLabel = UILabel()
     private let trackerCategoryTable = UITableView()
     private lazy var addCategoryButton = UIButton(label: "Добавить категорию")
@@ -12,10 +11,8 @@ final class CategorySelectionViewController: UIViewController {
     )
     
     // MARK: - Properties
-    
-    private let viewModel: CategorySelectionViewModel
-    
     var trackerCategorySelectorVCCallback: ((TrackerCategory) -> Void)?
+    private let viewModel: CategorySelectionViewModel
     
     // MARK: - Life Cycle
     
@@ -25,40 +22,24 @@ final class CategorySelectionViewController: UIViewController {
         viewModel.loadCategories()
     }
     
-    // MARK: - UI Configuration methods
-    
-    private func initialSettings() {
-        view.backgroundColor = InterfaceColors.whiteDay
-        screenTopLabel.configureLabel(
-            text: "Категория",
-            addToView: view,
-            ofSize: 16,
-            weight: .medium
-        )
-        configureTrackerCategoryTable()
-        configureLayout()
-        addCategoryButton.addTarget(self, action: #selector(didTapAddCategoryButton), for: .touchUpInside)
+    init(selectedCategory: TrackerCategory?) {
+        self.viewModel = CategorySelectionViewModel(for: selectedCategory)
+        super.init(nibName: nil, bundle: nil)
+        viewModel.delegate = self
     }
     
-    private func configureTrackerCategoryTable() {
-        trackerCategoryTable.delegate = self
-        trackerCategoryTable.dataSource = self
-        trackerCategoryTable.layer.cornerRadius = 16
-        trackerCategoryTable.separatorStyle = .none
-        trackerCategoryTable.layer.masksToBounds = true
-        trackerCategoryTable.isDirectionalLockEnabled = true
-        trackerCategoryTable.register(CategorySelectionCell.self, forCellReuseIdentifier: CategorySelectionCell.identifier)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-    
-    
     // MARK: - Layout Configuration
-    
-    private func configureLayout() {
+    private func addingUIElements() {
         [screenTopLabel, trackerCategoryTable, addCategoryButton, mainSpacePlaceholderStack].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
-        
+    }
+    
+    private func layoutConfigure() {
         NSLayoutConstraint.activate([
             screenTopLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
             screenTopLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -79,28 +60,41 @@ final class CategorySelectionViewController: UIViewController {
         ])
     }
     
-    // MARK: - Methods
+    // MARK: - Helpers
+    private func initialSettings() {
+        view.backgroundColor = InterfaceColors.whiteDay
+        addCategoryButton.addTarget(self, action: #selector(didTapAddCategoryButton), for: .touchUpInside)
+        screenTopLabel.configureLabel(
+            text: "Категория",
+            addToView: view,
+            ofSize: 16,
+            weight: .medium
+        )
+        configureTrackerCategoryTable()
+        addingUIElements()
+        layoutConfigure()
+    }
     
+    private func configureTrackerCategoryTable() {
+        trackerCategoryTable.delegate = self
+        trackerCategoryTable.dataSource = self
+        trackerCategoryTable.layer.cornerRadius = 16
+        trackerCategoryTable.separatorStyle = .none
+        trackerCategoryTable.layer.masksToBounds = true
+        trackerCategoryTable.isDirectionalLockEnabled = true
+        trackerCategoryTable.register(CategorySelectionCell.self, forCellReuseIdentifier: CategorySelectionCell.identifier)
+    }
+    
+    // MARK: - Actions
     @objc private func didTapAddCategoryButton() {
-        let trackerCategoryCreationViewController = TrackerCategoryCreationViewController()
+        let trackerCategoryCreationViewController = CategoryCreationViewController()
+        let navigationVC = UINavigationController(rootViewController: trackerCategoryCreationViewController)
         trackerCategoryCreationViewController.modalPresentationStyle = .pageSheet
-        present(trackerCategoryCreationViewController, animated: true)
-    }
-    
-    // MARK: - init
-    init(selectedCategory: TrackerCategory?) {
-        self.viewModel = CategorySelectionViewModel(for: selectedCategory)
-        super.init(nibName: nil, bundle: nil)
-        viewModel.delegate = self
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        present(navigationVC, animated: true)
     }
 }
 
 // MARK: - UITableViewDelegate Extension
-
 extension CategorySelectionViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedCategory = viewModel.categories[indexPath.row]
@@ -122,7 +116,6 @@ extension CategorySelectionViewController: UITableViewDelegate {
 }
 
 // MARK: - UITableViewDataSource Extension
-
 extension CategorySelectionViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.categoriesCount()
@@ -151,7 +144,6 @@ extension CategorySelectionViewController: UITableViewDataSource {
 
 
 // MARK: - CategorySelectionViewModelDelegate
-
 extension CategorySelectionViewController: CategorySelectionViewModelDelegate {
     func categoriesDidUpdate() {
         mainSpacePlaceholderStack.isHidden = viewModel.categoriesCount() > 0

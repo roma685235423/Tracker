@@ -7,7 +7,6 @@ protocol CategorySelectionViewModelDelegate: AnyObject {
 
 final class CategorySelectionViewModel {
     // MARK: - Properties
-    
     weak var delegate: CategorySelectionViewModelDelegate?
     
     private let trackerCategoryStore = TrackerCategoryStore()
@@ -24,8 +23,7 @@ final class CategorySelectionViewModel {
         }
     }
     
-    // MARK: - Initialization
-    
+    // MARK: - Life cicle
     init(for selectedCategory: TrackerCategory?) {
         self.selectedCategory = selectedCategory
         trackerCategoryStore.delegate = self
@@ -51,7 +49,6 @@ final class CategorySelectionViewModel {
     }
     
     // MARK: - Private Methods
-    
     private func getCategoriesFromStore() -> [TrackerCategory] {
         var categories: [TrackerCategory] = []
         categories = trackerCategoryStore.categories
@@ -61,7 +58,6 @@ final class CategorySelectionViewModel {
 
 
 // MARK: - TrackersCategoriesStoreDelegate
-
 extension CategorySelectionViewModel: TrackersCategoriesStoreDelegate {
     func categoriesDidUpdate() {
         categories = trackerCategoryStore.categories

@@ -2,6 +2,19 @@ import UIKit
 
 
 final class OnboardingPageController: UIPageViewController {
+    // MARK: - UIElements
+    private let goToTrackerScreenButton = UIButton(label: "Вот это технологии!")
+    
+    private lazy var pageControl: UIPageControl = {
+        let pageControl = UIPageControl()
+        pageControl.numberOfPages = pages.count
+        pageControl.currentPage = 0
+        pageControl.currentPageIndicatorTintColor = InterfaceColors.blackDay
+        pageControl.pageIndicatorTintColor = InterfaceColors.blackDayTint
+        pageControl.translatesAutoresizingMaskIntoConstraints = false
+        return pageControl
+    }()
+    
     // MARK: - Properties
     @UserDefaultsBacked(key: "isOnboardingShown", defaultValue: false)
     private var isOnboardingShown: Bool
@@ -11,19 +24,6 @@ final class OnboardingPageController: UIPageViewController {
         OnboardingViewController(page: .first),
         OnboardingViewController(page: .second)
     ]
-    
-    // MARK: - UI
-    private let goToTrackerScreenButton = UIButton(label: "Вот это технологии!")
-    
-    private lazy var pageControl: UIPageControl = {
-        let pageControl = UIPageControl()
-        pageControl.numberOfPages = pages.count
-        pageControl.currentPage = 0
-        pageControl.currentPageIndicatorTintColor = InterfaceColors.blackDay
-        pageControl.pageIndicatorTintColor = InterfaceColors.blackDayTint
-        return pageControl
-    }()
-    
     
     // MARK: - Life cicle
     override func viewDidLoad() {
@@ -35,10 +35,10 @@ final class OnboardingPageController: UIPageViewController {
         if let first = pages.first {
             self.setViewControllers([first], direction: .forward, animated: false, completion: nil)
         }
-        configureLayout()
+        addingUIElements()
         goToTrackerScreenButton.addTarget(self, action: #selector(didTapGoToTrackerScreenButton), for: .touchUpInside)
+        layoutConfigure()
     }
-    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -46,14 +46,14 @@ final class OnboardingPageController: UIPageViewController {
         self.pageControl.currentPage = 0
     }
     
-    
     // MARK: - Layout configuration
-    private func configureLayout() {
+    private func addingUIElements() {
         goToTrackerScreenButton.addToSuperview(view)
         view.addSubview(goToTrackerScreenButton)
         view.addSubview(pageControl)
-        
-        pageControl.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    private func layoutConfigure() {
         goToTrackerScreenButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
@@ -67,13 +67,12 @@ final class OnboardingPageController: UIPageViewController {
         ])
     }
     
-    
-    // MARK: - Methods
+    // MARK: - Helpers
     private func showTabBar() {
         let tabBarViewController = TabBarViewController()
         tabBarViewController.awakeFromNib()
-        tabBarViewController.modalPresentationStyle = .fullScreen
-        present(tabBarViewController, animated: true)
+        let window = UIApplication.shared.windows.first
+        window?.rootViewController = tabBarViewController
     }
     
     // MARK: - Action
@@ -100,6 +99,7 @@ final class OnboardingPageController: UIPageViewController {
 }
 
 
+// MARK: - UIPageViewControllerDataSource
 extension OnboardingPageController: UIPageViewControllerDataSource {
     func pageViewController(
         _ pageViewController: UIPageViewController,
@@ -124,7 +124,6 @@ extension OnboardingPageController: UIPageViewControllerDataSource {
             return nil
         }
         let nextIndex = viewControllerIndex + 1
-        
         guard nextIndex < pages.count else {
             return pages[0]
         }
@@ -134,6 +133,7 @@ extension OnboardingPageController: UIPageViewControllerDataSource {
 }
 
 
+// MARK: - UIPageViewControllerDelegate
 extension OnboardingPageController: UIPageViewControllerDelegate {
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         if let currentViewController = pageViewController.viewControllers?.first,
@@ -143,4 +143,3 @@ extension OnboardingPageController: UIPageViewControllerDelegate {
         }
     }
 }
-

@@ -5,49 +5,32 @@ final class NewTrackerViewController: UIViewController {
     private let goToCreateHabitScreenButton = UIButton(label: "Привычка")
     private let goToCreateIrregularEventScreenButton = UIButton(label: "Нерегулярные событие")
     
+    private let buttonsStackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.distribution = .fill
+        stack.spacing = 16
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+    
     // MARK: - Lifecicle
     override func viewDidLoad() {
         super.viewDidLoad()
-        contentConfiguration()
-        configureLayout()
-        navigationControllerConfiguration()
+        view.backgroundColor = InterfaceColors.whiteDay
+        configurenavigationController()
+        configureStackView()
+        configureButtons()
+        
     }
-    
     
     // MARK: - Layout configuraion
-    private func configureLayout() {
-        goToCreateHabitScreenButton.addToSuperview(view)
-        goToCreateIrregularEventScreenButton.addToSuperview(view)
-        
-        NSLayoutConstraint.activate([
-            goToCreateHabitScreenButton.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.431),
-            goToCreateHabitScreenButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20),
-            goToCreateHabitScreenButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20),
-            goToCreateHabitScreenButton.heightAnchor.constraint(equalToConstant: 60),
-            
-            goToCreateIrregularEventScreenButton.topAnchor.constraint(equalTo: goToCreateHabitScreenButton.bottomAnchor, constant: 16),
-            goToCreateIrregularEventScreenButton.leftAnchor.constraint(equalTo: goToCreateHabitScreenButton.leftAnchor),
-            goToCreateIrregularEventScreenButton.rightAnchor.constraint(equalTo: goToCreateHabitScreenButton.rightAnchor),
-            goToCreateIrregularEventScreenButton.heightAnchor.constraint(equalTo: goToCreateHabitScreenButton.heightAnchor)
-        ])
-    }
-    
-    // MARK: - Methods
-    private func navigationControllerConfiguration() {
-        title = "Создание трекера"
-        navigationController?.navigationBar.titleTextAttributes = [
-            .font: UIFont.systemFont(ofSize: 16, weight: .medium),
-            .foregroundColor: InterfaceColors.blackDay
-        ]
-    }
-    
-    private func contentConfiguration() {
-        view.backgroundColor = InterfaceColors.whiteDay
+    private func configureButtons() {
         goToCreateHabitScreenButton.addTarget(
-            self,
-            action: #selector(didTapGoToCreateHabitScreenButton),
-            for: .touchUpInside
-        )
+        self,
+        action: #selector(didTapGoToCreateHabitScreenButton),
+        for: .touchUpInside
+    )
         goToCreateIrregularEventScreenButton.addTarget(
             self,
             action: #selector(didTapGoToCreateIrregularEventScreenButton),
@@ -55,6 +38,30 @@ final class NewTrackerViewController: UIViewController {
         )
     }
     
+    //MARK: - Helpers
+    private func configureStackView() {
+        view.addSubview(buttonsStackView)
+        
+        buttonsStackView.addArrangedSubview(goToCreateHabitScreenButton)
+        buttonsStackView.addArrangedSubview(goToCreateIrregularEventScreenButton)
+        
+        NSLayoutConstraint.activate([
+            buttonsStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            buttonsStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            buttonsStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            
+            goToCreateHabitScreenButton.heightAnchor.constraint(equalToConstant: 60),
+            goToCreateIrregularEventScreenButton.heightAnchor.constraint(equalTo: goToCreateHabitScreenButton.heightAnchor)
+        ])
+    }
+    
+    private func configurenavigationController() {
+        title = "Создание трекера"
+        navigationController?.navigationBar.titleTextAttributes = [
+            .font: UIFont.systemFont(ofSize: 16, weight: .medium),
+            .foregroundColor: InterfaceColors.blackDay
+        ]
+    }
     
     // MARK: - Actions
     @objc
@@ -62,7 +69,6 @@ final class NewTrackerViewController: UIViewController {
         let newTrackerConstructorView = ConstructorViewController(isRegularEvent: true)
         navigationController?.pushViewController(newTrackerConstructorView, animated: true)
     }
-    
     
     @objc
     private func didTapGoToCreateIrregularEventScreenButton() {

@@ -43,17 +43,7 @@ final class CategorySelectionCell: UITableViewCell {
         checkmarkImage.isHidden = visible
     }
     
-    // MARK: - Private Methods
-    private func configureLabel(with text: String) {
-        categoryLabel.configureLabel(
-            text: text,
-            addToView: contentView,
-            ofSize: 17,
-            weight: .regular
-        )
-        categoryLabel.textAlignment = .left
-    }
-    
+    // MARK: - Layout configuraion
     private func configureLayout() {
         background.translatesAutoresizingMaskIntoConstraints = false
         separatorView.translatesAutoresizingMaskIntoConstraints = false
@@ -82,6 +72,17 @@ final class CategorySelectionCell: UITableViewCell {
             categoryLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             categoryLabel.widthAnchor.constraint(equalToConstant: contentView.frame.width - (16 + 21 + 24))
         ])
+    }
+    
+    // MARK: - Helpers
+    private func configureLabel(with text: String) {
+        categoryLabel.configureLabel(
+            text: text,
+            addToView: contentView,
+            ofSize: 17,
+            weight: .regular
+        )
+        categoryLabel.textAlignment = .left
     }
     
     private func applyCornerRadius(cellIndex: Int, totalRowsInTable: Int) {

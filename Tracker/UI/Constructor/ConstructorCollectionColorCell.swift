@@ -5,19 +5,23 @@ final class CollectionColorCell: UICollectionViewCell {
     private let framelabel = UILabel()
     private let colorLabel = UILabel()
     
-    
-    // MARK: - Layout configuraion
-    private func configureLayout() {
+    // MARK: - Life cicle
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         contentView.addSubview(framelabel)
         contentView.addSubview(colorLabel)
-        colorLabel.translatesAutoresizingMaskIntoConstraints = false
-        framelabel.translatesAutoresizingMaskIntoConstraints = false
-        framelabel.layer.cornerRadius = 52/5
-        framelabel.layer.borderWidth = 3
-        framelabel.layer.borderColor = UIColor.clear.cgColor
-        colorLabel.layer.cornerRadius = 8
-        colorLabel.layer.masksToBounds = true
-        framelabel.layer.masksToBounds = true
+        
+        configureColorLabel()
+        configureFrameLabel()
+        layoutConfigure()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Layout configuraion
+    private func layoutConfigure() {
         NSLayoutConstraint.activate([
             framelabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             framelabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
@@ -31,12 +35,10 @@ final class CollectionColorCell: UICollectionViewCell {
         ])
     }
     
-    
     // MARK: - Methods
     func setCellColor(color: UIColor) {
         self.colorLabel.backgroundColor = color
     }
-    
     
     func cellIsSelected(state: Bool) {
         if state == true {
@@ -47,14 +49,17 @@ final class CollectionColorCell: UICollectionViewCell {
         }
     }
     
-    
-    // MARK: - init
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        configureLayout()
+    private func configureColorLabel() {
+        colorLabel.translatesAutoresizingMaskIntoConstraints = false
+        colorLabel.layer.cornerRadius = 8
+        colorLabel.layer.masksToBounds = true
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    private func configureFrameLabel() {
+        framelabel.translatesAutoresizingMaskIntoConstraints = false
+        framelabel.layer.cornerRadius = 52/5
+        framelabel.layer.borderWidth = 3
+        framelabel.layer.borderColor = UIColor.clear.cgColor
+        framelabel.layer.masksToBounds = true
     }
 }

@@ -1,6 +1,6 @@
 import UIKit
 
-final class TrackerCategoryCreationViewController: UIViewController {
+final class CategoryCreationViewController: UIViewController {
     // MARK: - UIElements
     private let textField = CustomTextField()
     private let screenTopLabel = UILabel()
@@ -18,21 +18,22 @@ final class TrackerCategoryCreationViewController: UIViewController {
             addToView: view,
             ofSize: 16,
             weight: .medium)
+        addingUIElements()
         createNewCategoryButton.addTarget(self, action: #selector(didTapCreateNewCategoryButton), for: .touchUpInside)
-        configureLayout()
         checkIsCreateButtonActive()
         configureTextField()
+        layoutConfigure()
     }
     
-    
-    
-    private func configureLayout() {
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        screenTopLabel.translatesAutoresizingMaskIntoConstraints = false
-        
+    // MARK: - Layout configuraion
+    private func addingUIElements() {
         view.addSubview(textField)
         view.addSubview(screenTopLabel)
         createNewCategoryButton.addToSuperview(view)
+    }
+    
+    private func layoutConfigure() {
+        screenTopLabel.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             screenTopLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
@@ -50,13 +51,13 @@ final class TrackerCategoryCreationViewController: UIViewController {
         ])
     }
     
-    
+    // MARK: - Helpers
     private func configureTextField() {
         textField.delegate = self
+        textField.translatesAutoresizingMaskIntoConstraints = false
         textField.backgroundColor = InterfaceColors.backgruondDay
         textField.layer.cornerRadius = 16
         textField.layer.masksToBounds = true
-        textField.clearButtonMode = .whileEditing
         textField.keyboardType = .default
         textField.attributedPlaceholder = NSAttributedString(
             string: "Введите название категории",
@@ -66,7 +67,7 @@ final class TrackerCategoryCreationViewController: UIViewController {
         )
     }
     
-    
+    // MARK: - Actions
     @objc
     private func checkIsCreateButtonActive() {
         if self.newCategoryName != "" {
@@ -76,7 +77,6 @@ final class TrackerCategoryCreationViewController: UIViewController {
         }
     }
     
-    
     @objc
     private func didTapCreateNewCategoryButton() {
         dismiss(animated: true)
@@ -84,9 +84,8 @@ final class TrackerCategoryCreationViewController: UIViewController {
 }
 
 
-
 // MARK: - UITextFieldDelegate Extension
-extension TrackerCategoryCreationViewController: UITextFieldDelegate {
+extension CategoryCreationViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         newCategoryName = textField.text ?? ""
         textField.resignFirstResponder()

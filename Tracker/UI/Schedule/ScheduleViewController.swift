@@ -22,17 +22,31 @@ final class ScheduleViewController: UIViewController {
     // MARK: - Life cicle
     override func viewDidLoad() {
         super.viewDidLoad()
-        initialSettings()
+        view.backgroundColor = InterfaceColors.whiteDay
+        spacing = self.view.frame.height * 0.0458
+        screenTopLabel.configureLabel(
+            text: "Расписание",
+            addToView: view,
+            ofSize: 16,
+            weight: .medium
+        )
+        addingUIElements()
+        configureScrollView()
+        configureSchedulerTable()
+        configureReadyButton()
+        layoutConfigure()
     }
     
     
     // MARK: - Layout configuraion
-    private func configureLayout() {
+    private func addingUIElements() {
         [scrollView, schedulerTable, readyButton].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
-        
+    }
+    
+    private func layoutConfigure() {
         NSLayoutConstraint.activate([
             screenTopLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.0515),
             screenTopLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -58,22 +72,6 @@ final class ScheduleViewController: UIViewController {
     
     
     // MARK: - UIConfiguration methods
-    private func initialSettings() {
-        view.backgroundColor = InterfaceColors.whiteDay
-        spacing = self.view.frame.height * 0.0458
-        screenTopLabel.configureLabel(
-            text: "Расписание",
-            addToView: view,
-            ofSize: 16,
-            weight: .medium
-        )
-        configureScrollView()
-        configureSchedulerTable()
-        configureReadyButton()
-        configureLayout()
-    }
-    
-    
     private func configureScrollView() {
         scrollView.alwaysBounceVertical = true
         scrollView.decelerationRate = UIScrollView.DecelerationRate.normal
@@ -191,7 +189,7 @@ final class ScheduleViewController: UIViewController {
     @objc
     private func didTapReadyButton() {
         scheduleVCCallback?(daysOfWeekForSceduler, shortWeekDaysNamesCreation())
-        self.dismiss(animated: true)
+        dismiss(animated: true)
     }
     
     
