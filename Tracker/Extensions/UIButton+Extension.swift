@@ -5,9 +5,9 @@ extension UIButton {
         self.init(frame: .zero)
         
         self.translatesAutoresizingMaskIntoConstraints = false
-        self.backgroundColor = .ypBlackDay
+        self.backgroundColor = InterfaceColors.blackDay
         self.setTitle(label, for: .normal)
-        self.setTitleColor(.ypWhiteDay, for: .normal)
+        self.setTitleColor(InterfaceColors.whiteDay, for: .normal)
         self.titleLabel?.font = UIFont.systemFont(ofSize: size, weight: .medium)
         self.layer.cornerRadius = cornerRadius
         self.layer.masksToBounds = true
@@ -19,7 +19,7 @@ extension UIButton {
     
     func isButtonActive(isActive: Bool) {
         self.isEnabled = isActive
-        let backgroundColor = isActive ? UIColor.ypBlackDay : UIColor.ypGray
+        let backgroundColor = isActive ? InterfaceColors.blackDay : InterfaceColors.gray
         self.backgroundColor = backgroundColor
     }
 }

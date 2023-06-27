@@ -20,7 +20,7 @@ final class CollectionEmojiCell: UICollectionViewCell {
     // MARK: - Helpers
     func cellIsSelected(state: Bool) {
         if state == true {
-            contentView.backgroundColor = .lightGray
+            contentView.backgroundColor = InterfaceColors.lightGray
         } else {
             contentView.backgroundColor = UIColor.clear
         }

@@ -19,7 +19,7 @@ class TrackersViewController: UIViewController {
         let button = UIButton()
         let image = UIImage(named: "plus")
         button.setImage(image, for: .normal)
-        button.imageView?.tintColor = .ypBlackDay
+        button.imageView?.tintColor = InterfaceColors.blackDay
         button.imageView?.contentMode = .scaleAspectFit
         button.layer.masksToBounds = true
         button.addTarget(self, action: #selector(didTapAddTrackerButton), for: .touchUpInside)
@@ -41,7 +41,7 @@ class TrackersViewController: UIViewController {
         collection.delegate = self
         collection.register(TrackersCollectionCell.self, forCellWithReuseIdentifier: "trackersCollectionCell")
         collection.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
-        collection.backgroundColor = .ypWhiteDay
+        collection.backgroundColor = InterfaceColors.whiteDay
         collection.isScrollEnabled = true
         collection.allowsMultipleSelection = false
         return collection
@@ -53,7 +53,7 @@ class TrackersViewController: UIViewController {
         picker.datePickerMode = .date
         picker.locale = Locale(identifier: "ru_RU")
         picker.maximumDate = Date()
-        picker.tintColor = .blue
+        picker.tintColor = InterfaceColors.blue
         picker.layer.cornerRadius = 8
         picker.layer.masksToBounds = true
         picker.addTarget(self, action: #selector(didChangedDatePickerValue), for: .valueChanged)
@@ -88,7 +88,7 @@ class TrackersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate()
-        view.backgroundColor = .ypWhiteDay
+        view.backgroundColor = InterfaceColors.whiteDay
         trackerStore.delegate = self
         trackerRecordStore.delegate = self
         trackerLabel.configureLabel(

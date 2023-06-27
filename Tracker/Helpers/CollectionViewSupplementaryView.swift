@@ -4,18 +4,6 @@ final class SupplementaryView: UICollectionReusableView {
     // MARK: - UIElements
     var titleLabel = UILabel()
     
-    // MARK: - Lifecicle
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.addSubview(titleLabel)
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.textColor = .black
-        titleLabel.font = UIFont.systemFont(ofSize: 19, weight: .bold)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
     
     // MARK: - Methods
     func configoreLayout(leftOffset: CGFloat, topOffset: CGFloat, bottomOffset: CGFloat) {
@@ -24,5 +12,21 @@ final class SupplementaryView: UICollectionReusableView {
             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: topOffset),
             titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -bottomOffset),
         ])
+    }
+    
+    
+    
+    // MARK: - Init
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.addSubview(titleLabel)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.textColor = .black
+        titleLabel.font = UIFont.systemFont(ofSize: 19, weight: .bold)
+    }
+    
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

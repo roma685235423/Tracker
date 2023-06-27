@@ -37,7 +37,7 @@ final class TabBarViewController: UITabBarController {
     private func borderConfigure() {
         border.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(border)
-        border.backgroundColor = .gray
+        border.backgroundColor = InterfaceColors.gray
         
         NSLayoutConstraint.activate([
             border.topAnchor.constraint(equalTo: view.bottomAnchor, constant: -tabBarHeight),

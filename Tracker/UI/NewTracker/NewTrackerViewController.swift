@@ -17,11 +17,11 @@ final class NewTrackerViewController: UIViewController {
     // MARK: - Lifecicle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .ypWhiteDay
-        addingUIElements()
+        view.backgroundColor = InterfaceColors.whiteDay
         configurenavigationController()
+        configureStackView()
         configureButtons()
-        layoutConfigure()
+        
     }
     
     // MARK: - Layout configuraion
@@ -38,14 +38,13 @@ final class NewTrackerViewController: UIViewController {
         )
     }
     
-    // MARK: - Layout configuraion
-    private func addingUIElements() {
+    //MARK: - Helpers
+    private func configureStackView() {
         view.addSubview(buttonsStackView)
+        
         buttonsStackView.addArrangedSubview(goToCreateHabitScreenButton)
         buttonsStackView.addArrangedSubview(goToCreateIrregularEventScreenButton)
-    }
-    
-    private func layoutConfigure() {
+        
         NSLayoutConstraint.activate([
             buttonsStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             buttonsStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
@@ -60,7 +59,7 @@ final class NewTrackerViewController: UIViewController {
         title = "Создание трекера"
         navigationController?.navigationBar.titleTextAttributes = [
             .font: UIFont.systemFont(ofSize: 16, weight: .medium),
-            .foregroundColor: UIColor.ypBlackDay
+            .foregroundColor: InterfaceColors.blackDay
         ]
     }
     

@@ -12,7 +12,7 @@ final class CategoryCreationViewController: UIViewController {
     // MARK: - Lifecicle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .ypWhiteDay
+        view.backgroundColor = InterfaceColors.whiteDay
         screenTopLabel.configureLabel(
             text: "Новая категория",
             addToView: view,
@@ -55,14 +55,14 @@ final class CategoryCreationViewController: UIViewController {
     private func configureTextField() {
         textField.delegate = self
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.backgroundColor = .ypBackgruondDay
+        textField.backgroundColor = InterfaceColors.backgruondDay
         textField.layer.cornerRadius = 16
         textField.layer.masksToBounds = true
         textField.keyboardType = .default
         textField.attributedPlaceholder = NSAttributedString(
             string: "Введите название категории",
             attributes: [
-                NSAttributedString.Key.foregroundColor: UIColor.ypGray,
+                NSAttributedString.Key.foregroundColor: InterfaceColors.gray,
             ]
         )
     }
