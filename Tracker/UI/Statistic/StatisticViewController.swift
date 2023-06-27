@@ -17,7 +17,7 @@ final class StatisticViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate()
-        view.backgroundColor = InterfaceColors.whiteDay
+        view.backgroundColor = .ypWhiteDay
         statisticLabel.configureLabel(
             text: "Статистика",
             addToView: view,

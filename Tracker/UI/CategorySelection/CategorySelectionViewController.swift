@@ -62,7 +62,7 @@ final class CategorySelectionViewController: UIViewController {
     
     // MARK: - Helpers
     private func initialSettings() {
-        view.backgroundColor = InterfaceColors.whiteDay
+        view.backgroundColor = .ypWhiteDay
         addCategoryButton.addTarget(self, action: #selector(didTapAddCategoryButton), for: .touchUpInside)
         screenTopLabel.configureLabel(
             text: "Категория",

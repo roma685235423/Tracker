@@ -38,7 +38,6 @@
 		BA69EE6C29DDD98C00E65C92 /* ConstructorTableViewActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA69EE6B29DDD98C00E65C92 /* ConstructorTableViewActions.swift */; };
 		BA69EE6F29DE23BA00E65C92 /* CategorySelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA69EE6E29DE23BA00E65C92 /* CategorySelectionViewController.swift */; };
 		BA8289E529D5DFEB00879101 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8289E429D5DFEB00879101 /* UIColor+Extension.swift */; };
-		BA8289E729D5E29900879101 /* InterfaceColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8289E629D5E29900879101 /* InterfaceColors.swift */; };
 		BA8289E929D5FBB600879101 /* ColorSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8289E829D5FBB600879101 /* ColorSelection.swift */; };
 		BA8289EC29D62E6B00879101 /* StatisticViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8289EB29D62E6B00879101 /* StatisticViewController.swift */; };
 		BA8289F229D740DA00879101 /* NewTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8289F129D740DA00879101 /* NewTrackerViewController.swift */; };
@@ -110,7 +109,6 @@
 		BA69EE6B29DDD98C00E65C92 /* ConstructorTableViewActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstructorTableViewActions.swift; sourceTree = "<group>"; };
 		BA69EE6E29DE23BA00E65C92 /* CategorySelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorySelectionViewController.swift; sourceTree = "<group>"; };
 		BA8289E429D5DFEB00879101 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
-		BA8289E629D5E29900879101 /* InterfaceColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceColors.swift; sourceTree = "<group>"; };
 		BA8289E829D5FBB600879101 /* ColorSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSelection.swift; sourceTree = "<group>"; };
 		BA8289EB29D62E6B00879101 /* StatisticViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticViewController.swift; sourceTree = "<group>"; };
 		BA8289F129D740DA00879101 /* NewTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTrackerViewController.swift; sourceTree = "<group>"; };
@@ -353,7 +351,6 @@
 			children = (
 				BA3B5CD529D77009000C53FC /* CustomTextField.swift */,
 				BA418D6029DA243900080EB0 /* CollectionViewSupplementaryView.swift */,
-				BA8289E629D5E29900879101 /* InterfaceColors.swift */,
 				BA8289E829D5FBB600879101 /* ColorSelection.swift */,
 				BA418D6729DB5F1D00080EB0 /* CollectionParameters.swift */,
 				BA418D6929DB6BF800080EB0 /* DayOfWeek.swift */,
@@ -524,7 +521,6 @@
 				BA3B5CD629D77009000C53FC /* CustomTextField.swift in Sources */,
 				BAE4C1CD2A041F6300103299 /* TrackerRecordStore.swift in Sources */,
 				BA9F0A572A44CAA200FBB08D /* Offsets.swift in Sources */,
-				BA8289E729D5E29900879101 /* InterfaceColors.swift in Sources */,
 				BAD52EBA2A2E252F006C0D68 /* CategorySelectionViewModel.swift in Sources */,
 				BAE4C1C82A041F4000103299 /* TrackerStore.swift in Sources */,
 				BA3B5CD029D75B52000C53FC /* ConstructorViewController.swift in Sources */,

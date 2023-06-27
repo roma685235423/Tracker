@@ -22,7 +22,7 @@ final class ScheduleViewController: UIViewController {
     // MARK: - Life cicle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = InterfaceColors.whiteDay
+        view.backgroundColor = .ypWhiteDay
         spacing = self.view.frame.height * 0.0458
         screenTopLabel.configureLabel(
             text: "Расписание",
@@ -84,7 +84,7 @@ final class ScheduleViewController: UIViewController {
     private func configureSchedulerTable() {
         schedulerTable.delegate = self
         schedulerTable.dataSource = self
-        schedulerTable.separatorColor = InterfaceColors.gray
+        schedulerTable.separatorColor = .ypGray
         schedulerTable.layer.cornerRadius = 16
         schedulerTable.layer.masksToBounds = true
         schedulerTable.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
@@ -93,10 +93,10 @@ final class ScheduleViewController: UIViewController {
     
     
     private func configureReadyButton() {
-        readyButton.backgroundColor = InterfaceColors.blackDay
+        readyButton.backgroundColor = .ypBlackDay
         readyButton.setTitle("Готово", for: .normal)
         readyButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        readyButton.titleLabel?.textColor = InterfaceColors.whiteDay
+        readyButton.titleLabel?.textColor = .ypWhiteDay
         readyButton.layer.cornerRadius = 16
         readyButton.layer.masksToBounds = true
         readyButton.addTarget(self, action: #selector(didTapReadyButton), for: .touchUpInside)
@@ -229,15 +229,15 @@ extension ScheduleViewController: UITableViewDataSource {
         
         switchView.setOn(isSwitchOn, animated: true)
         switchView.tag = indexPath.row
-        switchView.onTintColor = InterfaceColors.blue
+        switchView.onTintColor = .ypBlue
         switchView.addTarget(self, action: #selector(self.switchChanged(_:)), for: .valueChanged)
         
         cell.textLabel?.text = currentDay
-        cell.textLabel?.textColor = InterfaceColors.blackDay
+        cell.textLabel?.textColor = .ypBlackDay
         cell.textLabel?.font = UIFont.systemFont(ofSize: 17)
         cell.accessoryView = switchView
         cell.selectionStyle = .none
-        cell.backgroundColor = InterfaceColors.backgruondDay
+        cell.backgroundColor = .ypBackgruondDay
         return cell
     }
     
