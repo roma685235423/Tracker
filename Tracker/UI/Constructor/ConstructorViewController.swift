@@ -21,7 +21,7 @@ final class ConstructorViewController: UIViewController {
     private lazy var textLimitLabel: UILabel = {
         let label = UILabel()
         label.text = "Ограничение 38 символов"
-        label.textColor = InterfaceColors.red
+        label.textColor = .ypRed
         label.font = UIFont.systemFont(ofSize: 17, weight: .medium)
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -43,7 +43,7 @@ final class ConstructorViewController: UIViewController {
         collection.register(CollectionEmojiCell.self, forCellWithReuseIdentifier: "emojieCell")
         collection.register(CollectionColorCell.self, forCellWithReuseIdentifier: "colorCell")
         collection.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
-        collection.backgroundColor = InterfaceColors.whiteDay
+        collection.backgroundColor = .ypWhiteDay
         collection.isScrollEnabled = false
         collection.allowsMultipleSelection = false
         collection.backgroundColor = .clear
@@ -87,7 +87,7 @@ final class ConstructorViewController: UIViewController {
     // MARK: - Lifecicle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = InterfaceColors.whiteDay
+        view.backgroundColor = .ypWhiteDay
         navigationControllerConfiguration()
         addingUIElements()
         configureScrollView()
@@ -172,17 +172,17 @@ final class ConstructorViewController: UIViewController {
         title = "Новая привычка"
         navigationController?.navigationBar.titleTextAttributes = [
             .font: UIFont.systemFont(ofSize: 16, weight: .medium),
-            .foregroundColor: InterfaceColors.blackDay
+            .foregroundColor: UIColor.ypBlackDay
         ]
         self.navigationItem.setHidesBackButton(true, animated: true)
     }
     
     private func buttonsConfiguration() {
         cancelButton.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
-        cancelButton.setTitleColor(InterfaceColors.red, for: .normal)
-        cancelButton.backgroundColor = InterfaceColors.backgruondDay
+        cancelButton.setTitleColor(.ypRed, for: .normal)
+        cancelButton.backgroundColor = .ypBackgroundDay
         cancelButton.layer.borderWidth = 1
-        cancelButton.layer.borderColor = InterfaceColors.red.cgColor
+        cancelButton.layer.borderColor = UIColor.ypRed.cgColor
         
         createButton.addTarget(self, action: #selector(didTapCreateButton), for: .touchUpInside)
     }
@@ -215,14 +215,14 @@ final class ConstructorViewController: UIViewController {
     private func configureTextField() {
         textField.delegate = self
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.backgroundColor = InterfaceColors.backgruondDay
+        textField.backgroundColor = .ypBackgroundDay
         textField.layer.cornerRadius = 16
         textField.layer.masksToBounds = true
         textField.keyboardType = .default
         textField.attributedPlaceholder = NSAttributedString(
             string: "Введите название трекера",
             attributes: [
-                NSAttributedString.Key.foregroundColor: InterfaceColors.gray,
+                NSAttributedString.Key.foregroundColor: UIColor.ypGray,
             ]
         )
     }
@@ -231,8 +231,8 @@ final class ConstructorViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(CategoryAndSchedulerTableCell.self, forCellReuseIdentifier: "tableViewCell")
-        tableView.backgroundColor = InterfaceColors.backgruondDay
-        tableView.separatorColor = InterfaceColors.gray
+        tableView.backgroundColor = .ypBackgroundDay
+        tableView.separatorColor = .ypGray
         tableView.layer.cornerRadius = 16
         tableView.layer.masksToBounds = true
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)

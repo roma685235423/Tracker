@@ -17,7 +17,7 @@ final class NewTrackerViewController: UIViewController {
     // MARK: - Lifecicle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = InterfaceColors.whiteDay
+        view.backgroundColor = .ypWhiteDay
         configurenavigationController()
         configureStackView()
         configureButtons()
@@ -57,9 +57,12 @@ final class NewTrackerViewController: UIViewController {
     
     private func configurenavigationController() {
         title = "Создание трекера"
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        
         navigationController?.navigationBar.titleTextAttributes = [
             .font: UIFont.systemFont(ofSize: 16, weight: .medium),
-            .foregroundColor: InterfaceColors.blackDay
+            .foregroundColor: UIColor.ypBlackDay
         ]
     }
     

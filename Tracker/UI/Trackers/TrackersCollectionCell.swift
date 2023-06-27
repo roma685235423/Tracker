@@ -123,7 +123,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
     private func configureCounterLabel() {
         counterLabel.textAlignment = .left
         counterLabel.font = UIFont.systemFont(ofSize: 12)
-        counterLabel.textColor = InterfaceColors.blackDay
+        counterLabel.textColor = .ypBlackDay
         counterLabel.text = getCorrectRussianWordDay(days: daysCounter)
     }
     
@@ -141,7 +141,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
         emojieLabel.layer.cornerRadius =  emojieLabel.layer.frame.height/2
         emojieLabel.layer.masksToBounds = true
         
-        emojieLabel.backgroundColor = InterfaceColors.whiteDay.withAlphaComponent(0.3)
+        emojieLabel.backgroundColor = .ypWhiteDay.withAlphaComponent(0.3)
         emojieLabel.font = UIFont.systemFont(ofSize: 13)
         emojieLabel.text = emoji
         emojieLabel.textAlignment = .center
@@ -155,7 +155,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
         trackerTextLabel.textAlignment = .left
         trackerTextLabel.numberOfLines = 0
         trackerTextLabel.layer.borderColor = UIColor.clear.cgColor
-        trackerTextLabel.textColor = InterfaceColors.whiteDay
+        trackerTextLabel.textColor = .ypWhiteDay
     }
     
     private func configureTaskIsDoneButton(color: UIColor) {
@@ -165,7 +165,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
         
         taskIsDoneButton.backgroundColor = color
         taskIsDoneButton.setImage(UIImage(systemName: "plus"), for: .normal)
-        taskIsDoneButton.tintColor = InterfaceColors.whiteDay
+        taskIsDoneButton.tintColor = .ypWhiteDay
         taskIsDoneButton.addTarget(self, action: #selector(didTapTaskIsDoneButton), for: .touchUpInside)
     }
     

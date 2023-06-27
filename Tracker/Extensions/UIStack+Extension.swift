@@ -10,7 +10,7 @@ extension UIStackView {
         let imageView = UIImageView(image: UIImage(named: imageName))
         imageView.layer.frame = CGRect(origin: .zero, size: CGSize(width: 80, height: 80))
         let label = UILabel()
-        label.textColor = InterfaceColors.blackDay
+        label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.text = text
         label.textAlignment = .center

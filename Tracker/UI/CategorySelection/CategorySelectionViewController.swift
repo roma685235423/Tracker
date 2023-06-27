@@ -2,7 +2,6 @@ import UIKit
 
 final class CategorySelectionViewController: UIViewController {
     // MARK: - UI
-    private let screenTopLabel = UILabel()
     private let trackerCategoryTable = UITableView()
     private lazy var addCategoryButton = UIButton(label: "Добавить категорию")
     private let mainSpacePlaceholderStack = UIStackView(
@@ -33,7 +32,7 @@ final class CategorySelectionViewController: UIViewController {
     }
     // MARK: - Layout Configuration
     private func addingUIElements() {
-        [screenTopLabel, trackerCategoryTable, addCategoryButton, mainSpacePlaceholderStack].forEach{
+        [trackerCategoryTable, addCategoryButton, mainSpacePlaceholderStack].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -41,11 +40,8 @@ final class CategorySelectionViewController: UIViewController {
     
     private func layoutConfigure() {
         NSLayoutConstraint.activate([
-            screenTopLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
-            screenTopLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            
             mainSpacePlaceholderStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            mainSpacePlaceholderStack.topAnchor.constraint(equalTo: screenTopLabel.bottomAnchor, constant: 246),
+            mainSpacePlaceholderStack.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             mainSpacePlaceholderStack.widthAnchor.constraint(equalToConstant: 180),
             
             addCategoryButton.heightAnchor.constraint(equalToConstant: 60),
@@ -53,7 +49,7 @@ final class CategorySelectionViewController: UIViewController {
             addCategoryButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             addCategoryButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
             
-            trackerCategoryTable.topAnchor.constraint(equalTo: screenTopLabel.bottomAnchor, constant: 38),
+            trackerCategoryTable.topAnchor.constraint(equalTo: view.topAnchor, constant: 44),
             trackerCategoryTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             trackerCategoryTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             trackerCategoryTable.bottomAnchor.constraint(equalTo: addCategoryButton.topAnchor, constant: -30)
@@ -62,17 +58,23 @@ final class CategorySelectionViewController: UIViewController {
     
     // MARK: - Helpers
     private func initialSettings() {
-        view.backgroundColor = InterfaceColors.whiteDay
+        view.backgroundColor = .ypWhiteDay
         addCategoryButton.addTarget(self, action: #selector(didTapAddCategoryButton), for: .touchUpInside)
-        screenTopLabel.configureLabel(
-            text: "Категория",
-            addToView: view,
-            ofSize: 16,
-            weight: .medium
-        )
+        configurenavigationController()
         configureTrackerCategoryTable()
         addingUIElements()
         layoutConfigure()
+    }
+    
+    private func configurenavigationController() {
+        title = "Категория"
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        
+        navigationController?.navigationBar.titleTextAttributes = [
+            .font: UIFont.systemFont(ofSize: 16, weight: .medium),
+            .foregroundColor: UIColor.ypBlackDay
+        ]
     }
     
     private func configureTrackerCategoryTable() {
