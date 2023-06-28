@@ -8,7 +8,7 @@ final class CategorySelectionCell: UITableViewCell {
     private lazy var checkmarkImage: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = UIImage(named: "checkmark")
+        imageView.image = UIImage(named: "check")
         imageView.frame.size = CGSize(width: 24, height: 24)
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
@@ -21,7 +21,8 @@ final class CategorySelectionCell: UITableViewCell {
     // MARK: - Lifecycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        configureLayout()
+        addingUIElements()
+        layoutConfigure()
         self.selectionStyle = .none
     }
     
@@ -43,14 +44,17 @@ final class CategorySelectionCell: UITableViewCell {
         checkmarkImage.isHidden = visible
     }
     
-    // MARK: - Layout configuraion
-    private func configureLayout() {
-        background.translatesAutoresizingMaskIntoConstraints = false
-        separatorView.translatesAutoresizingMaskIntoConstraints = false
+    // MARK: - Layout Configuration
+    private func addingUIElements() {
         contentView.addSubview(background)
         background.addSubview(separatorView)
         contentView.addSubview(checkmarkImage)
         contentView.addSubview(categoryLabel)
+    }
+    
+    private func layoutConfigure() {
+        background.translatesAutoresizingMaskIntoConstraints = false
+        separatorView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             background.topAnchor.constraint(equalTo: contentView.topAnchor),
