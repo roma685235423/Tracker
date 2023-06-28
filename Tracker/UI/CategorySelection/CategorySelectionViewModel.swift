@@ -31,6 +31,10 @@ final class CategorySelectionViewModel {
     
     
     // MARK: - Public Methods
+    func isCategoriesExist() -> Bool {
+            return categoriesCount() > 0
+        }
+    
     func selectCategory(row: Int) {
         selectedCategory = categories[row]
     }

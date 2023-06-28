@@ -148,7 +148,7 @@ extension CategorySelectionViewController: UITableViewDataSource {
 // MARK: - CategorySelectionViewModelDelegate
 extension CategorySelectionViewController: CategorySelectionViewModelDelegate {
     func categoriesDidUpdate() {
-        mainSpacePlaceholderStack.isHidden = viewModel.categoriesCount() > 0
+        mainSpacePlaceholderStack.isHidden = viewModel.isCategoriesExist()
     }
     
     func didSelect(category: TrackerCategory) {
