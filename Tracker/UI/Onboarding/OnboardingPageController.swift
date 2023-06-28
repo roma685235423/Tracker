@@ -42,8 +42,8 @@ final class OnboardingPageController: UIPageViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.currentIndex = 0
-        self.pageControl.currentPage = 0
+        currentIndex = 0
+        pageControl.currentPage = 0
     }
     
     // MARK: - Layout configuration

@@ -49,7 +49,7 @@ final class CategorySelectionViewController: UIViewController {
             addCategoryButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             addCategoryButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
             
-            trackerCategoryTable.topAnchor.constraint(equalTo: view.topAnchor, constant: 44),
+            trackerCategoryTable.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             trackerCategoryTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             trackerCategoryTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             trackerCategoryTable.bottomAnchor.constraint(equalTo: addCategoryButton.topAnchor, constant: -30)
