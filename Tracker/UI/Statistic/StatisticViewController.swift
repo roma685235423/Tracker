@@ -1,11 +1,14 @@
 import UIKit
 
 final class StatisticViewController: UIViewController {
-    // MARK: - UI
+    // MARK: - Private properties
     private let statisticLabel = UILabel()
-    private let mainSpacePlaceholderStack = UIStackView()
-    private var currentDate = Date.getDate(Date())
+    private let mainSpacePlaceholderStack = UIStackView(
+        imageName: "statisticPlaceholder",
+        text: "Анализировать пока нечего"
+    )
     
+    private var currentDate = Date.getDate(Date())
     
     // MARK: - Life cicle
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -14,7 +17,7 @@ final class StatisticViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate()
-        view.backgroundColor = InterfaceColors.whiteDay
+        view.backgroundColor = .ypWhiteDay
         statisticLabel.configureLabel(
             text: "Статистика",
             addToView: view,
@@ -22,7 +25,6 @@ final class StatisticViewController: UIViewController {
             weight: .bold
         )
         configureLayout()
-        mainSpacePlaceholderStack.configurePlaceholderStack(imageName: "statisticPlaceholder", text: "Анализировать пока нечего")
     }
     
     

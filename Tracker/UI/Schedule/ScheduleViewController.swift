@@ -1,46 +1,55 @@
 import UIKit
 
 final class ScheduleViewController: UIViewController {
-    // MARK: - UIElements
-    private let scrollView = UIScrollView()
-    private let screenTopLabel = UILabel()
-    private let schedulerTable = UITableView()
-    private lazy var readyButton = UIButton()
-    
-    // MARK: - Properties
-    private let weekDaysStringForTable = DayOfWeek.allCases.map { $0.rawValue }
-    private var daysOfWeekForSceduler: [DayOfWeek]
-    
+    // MARK: - Public properties
     var scheduleVCCallback: (([DayOfWeek], String) -> Void)?
     
+    // MARK: - Private properties
+    private let scrollView = UIScrollView()
+    private let schedulerTable = UITableView()
+    
+    private lazy var readyButton = UIButton()
+    
+    private let weekDaysStringForTable = DayOfWeek.allCases.map { $0.rawValue }
     private let tableHeight = CGFloat(524)
     private let buttonHeight = CGFloat(60)
+    
     private var spacing = CGFloat()
-    
-    
+    private var daysOfWeekForSceduler: [DayOfWeek]
     
     // MARK: - Life cicle
     override func viewDidLoad() {
         super.viewDidLoad()
-        initialSettings()
+        view.backgroundColor = .ypWhiteDay
+        spacing = self.view.frame.height * 0.0458
+        addingUIElements()
+        configurenavigationController()
+        configureScrollView()
+        configureSchedulerTable()
+        configureReadyButton()
+        layoutConfigure()
     }
     
+    init(daysOfWeekForSceduler: [DayOfWeek]) {
+        self.daysOfWeekForSceduler = daysOfWeekForSceduler
+        super.init(nibName: nil, bundle: nil)
+    }
     
-    // MARK: - Layout configuraion
-    private func configureLayout() {
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        schedulerTable.translatesAutoresizingMaskIntoConstraints = false
-        readyButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(scrollView)
-        scrollView.addSubview(schedulerTable)
-        scrollView.addSubview(readyButton)
-        
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Private methods
+    private func addingUIElements() {
+        [scrollView, schedulerTable, readyButton].forEach{
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
+    }
+    
+    private func layoutConfigure() {
         NSLayoutConstraint.activate([
-            screenTopLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.0515),
-            screenTopLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            
-            scrollView.topAnchor.constraint(equalTo: screenTopLabel.bottomAnchor, constant: view.frame.height * 0.0744),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -50,32 +59,24 @@ final class ScheduleViewController: UIViewController {
             schedulerTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             schedulerTable.heightAnchor.constraint(equalToConstant: tableHeight),
             
-            
             readyButton.heightAnchor.constraint(equalToConstant: buttonHeight),
             readyButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             readyButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            readyButton.topAnchor.constraint(equalTo: schedulerTable.bottomAnchor, constant: spacing)
+            readyButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
         ])
         scrollView.layoutIfNeeded()
     }
     
-    
-    // MARK: - UIConfiguration methods
-    private func initialSettings() {
-        view.backgroundColor = InterfaceColors.whiteDay
-        spacing = self.view.frame.height * 0.0458
-        screenTopLabel.configureLabel(
-            text: "Расписание",
-            addToView: view,
-            ofSize: 16,
-            weight: .medium
-        )
-        configureScrollView()
-        configureSchedulerTable()
-        configureReadyButton()
-        configureLayout()
+    private func configurenavigationController() {
+        title = "Расписание"
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        
+        navigationController?.navigationBar.titleTextAttributes = [
+            .font: UIFont.systemFont(ofSize: 16, weight: .medium),
+            .foregroundColor: UIColor.ypBlackDay
+        ]
     }
-    
     
     private func configureScrollView() {
         scrollView.alwaysBounceVertical = true
@@ -85,11 +86,10 @@ final class ScheduleViewController: UIViewController {
         scrollView.contentSize = CGSize(width: view.frame.width, height: tableHeight + buttonHeight + (spacing * 2))
     }
     
-    
     private func configureSchedulerTable() {
         schedulerTable.delegate = self
         schedulerTable.dataSource = self
-        schedulerTable.separatorColor = InterfaceColors.gray
+        schedulerTable.separatorColor = .ypGray
         schedulerTable.layer.cornerRadius = 16
         schedulerTable.layer.masksToBounds = true
         schedulerTable.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
@@ -98,17 +98,15 @@ final class ScheduleViewController: UIViewController {
     
     
     private func configureReadyButton() {
-        readyButton.backgroundColor = InterfaceColors.blackDay
+        readyButton.backgroundColor = .ypBlackDay
         readyButton.setTitle("Готово", for: .normal)
         readyButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        readyButton.titleLabel?.textColor = InterfaceColors.whiteDay
+        readyButton.titleLabel?.textColor = .ypWhiteDay
         readyButton.layer.cornerRadius = 16
         readyButton.layer.masksToBounds = true
         readyButton.addTarget(self, action: #selector(didTapReadyButton), for: .touchUpInside)
     }
     
-    
-    // MARK: - Methods
     private func shortWeekDaysNamesCreation() -> String {
         var shortDaysOfWeekNames: [String] = []
         for day in daysOfWeekForSceduler {
@@ -123,7 +121,6 @@ final class ScheduleViewController: UIViewController {
             return "Каждый день"
         }
     }
-    
     
     private func weekDaysNamesShorting(day: String?) -> String? {
         switch day {
@@ -146,7 +143,6 @@ final class ScheduleViewController: UIViewController {
         }
     }
     
-    
     private func getDayOfWeek(at row: Int) -> DayOfWeek? {
         guard let dayOfWeek = DayOfWeek.allCases[safe: row] else {
             return nil
@@ -154,8 +150,6 @@ final class ScheduleViewController: UIViewController {
         let changedDayOfWeek = dayOfWeek
         return changedDayOfWeek
     }
-    
-    
     
     private func changeSceduler(day: DayOfWeek?) {
         guard let changedDay = day else { return }
@@ -167,7 +161,6 @@ final class ScheduleViewController: UIViewController {
             sortDaysOfWeekForSceduler()
         }
     }
-    
     
     private func sortDaysOfWeekForSceduler() {
         if daysOfWeekForSceduler.count > 1 {
@@ -181,35 +174,20 @@ final class ScheduleViewController: UIViewController {
         }
     }
     
-    
     // MARK: - Actions
     @objc
-    private func switchChanged(_ sender : UISwitch!){
+    private func switchChanged(_ sender : UISwitch!) {
         let row = sender.tag
         let changedDay = getDayOfWeek(at: row)
         changeSceduler(day: changedDay)
     }
     
-    
     @objc
     private func didTapReadyButton() {
         scheduleVCCallback?(daysOfWeekForSceduler, shortWeekDaysNamesCreation())
-        self.dismiss(animated: true)
-    }
-    
-    
-    // MARK: - init
-    init(daysOfWeekForSceduler: [DayOfWeek]) {
-        self.daysOfWeekForSceduler = daysOfWeekForSceduler
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        dismiss(animated: true)
     }
 }
-
 
 
 // MARK: - UITableViewDelegate Extension
@@ -218,13 +196,11 @@ extension ScheduleViewController: UITableViewDelegate {
 }
 
 
-
 // MARK: - UITableViewDataSource Extension
 extension ScheduleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return weekDaysStringForTable.count
     }
-    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
@@ -234,15 +210,15 @@ extension ScheduleViewController: UITableViewDataSource {
         
         switchView.setOn(isSwitchOn, animated: true)
         switchView.tag = indexPath.row
-        switchView.onTintColor = InterfaceColors.blue
+        switchView.onTintColor = .ypBlue
         switchView.addTarget(self, action: #selector(self.switchChanged(_:)), for: .valueChanged)
         
         cell.textLabel?.text = currentDay
-        cell.textLabel?.textColor = InterfaceColors.blackDay
+        cell.textLabel?.textColor = .ypBlackDay
         cell.textLabel?.font = UIFont.systemFont(ofSize: 17)
         cell.accessoryView = switchView
         cell.selectionStyle = .none
-        cell.backgroundColor = InterfaceColors.backgruondDay
+        cell.backgroundColor = .ypBackgroundDay
         return cell
     }
     

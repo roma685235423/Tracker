@@ -1,22 +1,12 @@
 import UIKit
 
 final class TabBarViewController: UITabBarController {
-    // MARK: - UIElements
+    // MARK: - Private properties
     private let border = UIView()
     
-    
-    // MARK: - Properties
     private var tabBarHeight: CGFloat = 0
     
-    
     // MARK: - Lifecicle
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        tabBarHeight = tabBar.frame.height
-        configureBorder()
-    }
-    
-    
     override func awakeFromNib() {
         super.awakeFromNib()
         let trackerViewController = TrackersViewController()
@@ -36,12 +26,17 @@ final class TabBarViewController: UITabBarController {
         self.viewControllers = [trackerViewController, statisticViewController]
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tabBarHeight = tabBar.frame.height
+        borderConfigure()
+    }
     
-    // MARK: - Layout configuraion
-    private func configureBorder() {
+    // MARK: - Private properties
+    private func borderConfigure() {
         border.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(border)
-        border.backgroundColor = InterfaceColors.gray
+        border.backgroundColor = .ypGray
         
         NSLayoutConstraint.activate([
             border.topAnchor.constraint(equalTo: view.bottomAnchor, constant: -tabBarHeight),

@@ -1,5 +1,4 @@
-import UIKit
-
+import Foundation
 
 struct TrackerCategory {
     let title: String
