@@ -1,26 +1,20 @@
 import UIKit
 
 final class CategorySelectionViewController: UIViewController {
-    // MARK: - UI
+    // MARK: - Public properties
+    var trackerCategorySelectorVCCallback: ((TrackerCategory) -> Void)?
+    
+    // MARK: - Private properties
     private let trackerCategoryTable = UITableView()
-    private lazy var addCategoryButton = UIButton(label: "Добавить категорию")
     private let mainSpacePlaceholderStack = UIStackView(
         imageName: "starPlaceholder",
         text: "Привычки и события можно объединить по смыслу"
     )
+    private lazy var addCategoryButton = UIButton(label: "Добавить категорию")
     
-    // MARK: - Properties
-    var trackerCategorySelectorVCCallback: ((TrackerCategory) -> Void)?
     private let viewModel: CategorySelectionViewModel
     
     // MARK: - Life Cycle
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        initialSettings()
-        viewModel.loadCategories()
-    }
-    
     init(selectedCategory: TrackerCategory?) {
         self.viewModel = CategorySelectionViewModel(for: selectedCategory)
         super.init(nibName: nil, bundle: nil)
@@ -30,6 +24,13 @@ final class CategorySelectionViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        initialSettings()
+        viewModel.loadCategories()
+    }
+    
     // MARK: - Layout Configuration
     private func addingUIElements() {
         [trackerCategoryTable, addCategoryButton, mainSpacePlaceholderStack].forEach{
@@ -56,7 +57,7 @@ final class CategorySelectionViewController: UIViewController {
         ])
     }
     
-    // MARK: - Helpers
+    // MARK: - Private methods
     private func initialSettings() {
         view.backgroundColor = .ypWhiteDay
         addCategoryButton.addTarget(self, action: #selector(didTapAddCategoryButton), for: .touchUpInside)
@@ -96,6 +97,7 @@ final class CategorySelectionViewController: UIViewController {
     }
 }
 
+
 // MARK: - UITableViewDelegate Extension
 extension CategorySelectionViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -116,6 +118,7 @@ extension CategorySelectionViewController: UITableViewDelegate {
         cell?.accessoryType = .none
     }
 }
+
 
 // MARK: - UITableViewDataSource Extension
 extension CategorySelectionViewController: UITableViewDataSource {

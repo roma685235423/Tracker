@@ -1,6 +1,5 @@
 import Foundation
 
-
 struct TrackerCategory {
     let title: String
     let id: UUID

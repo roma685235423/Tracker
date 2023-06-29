@@ -1,21 +1,14 @@
 import UIKit
 import CoreData
 
-
-protocol TrackersCategoriesStoreDelegate: AnyObject {
-    func categoriesDidUpdate()
-}
-
-
 final class TrackerCategoryStore: NSObject {
+    // MARK: - Errors
     enum CategoryStoreError: Error {
         case decodeError
     }
     
-    // MARK: - Properties
-    private let context: NSManagedObjectContext
+    // MARK: - Private properties
     weak var delegate: TrackersCategoriesStoreDelegate?
-    
     lazy var categories: [TrackerCategory] = {
         do {
             let request = TrackerCategoryCoreData.fetchRequest()
@@ -26,9 +19,21 @@ final class TrackerCategoryStore: NSObject {
             return []
         }
     }()
+    private let context: NSManagedObjectContext
     
+    // MARK: - Life cicle
+    convenience override init() {
+        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        try! self.init(context: context)
+    }
     
-    // MARK: - Methods
+    init(context: NSManagedObjectContext) throws {
+        self.context = context
+        super.init()
+        try setupMockCategories(with: context)
+    }
+    
+    // MARK: - Public method
     func getCategoryFromCoreData(id: UUID) throws -> TrackerCategoryCoreData? {
         let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
         request.predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerCategoryCoreData.categoryId), id.uuidString)
@@ -36,7 +41,7 @@ final class TrackerCategoryStore: NSObject {
         return category
     }
     
-    
+    // MARK: - Private methods
     private func createCategory(from coreData: TrackerCategoryCoreData) throws -> TrackerCategory {
         guard let idString = coreData.categoryId,
               let title = coreData.label,
@@ -44,7 +49,6 @@ final class TrackerCategoryStore: NSObject {
         else { throw CategoryStoreError.decodeError}
         return TrackerCategory(title: title, id: id)
     }
-    
     
     private func setupMockCategories(with context: NSManagedObjectContext) throws {
         let request = TrackerCategoryCoreData.fetchRequest()
@@ -54,7 +58,6 @@ final class TrackerCategoryStore: NSObject {
             categories = try result.map { try createCategory(from: $0) }
             return
         }
-        
         let _ = [
             TrackerCategory(title: "Домашний уют"),
             TrackerCategory(title: "Радостные мелочи"),
@@ -66,7 +69,6 @@ final class TrackerCategoryStore: NSObject {
             TrackerCategory(title: "Учёба"),
             TrackerCategory(title: "Работа"),
             TrackerCategory(title: "Медитации")
-            
         ].map { category in
             let categoryFromCoreData = TrackerCategoryCoreData(context: context)
             categoryFromCoreData.categoryId = category.id.uuidString
@@ -76,25 +78,10 @@ final class TrackerCategoryStore: NSObject {
         }
         try context.save()
     }
-    
-    
-    // MARK: - Init
-    convenience override init() {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-        try! self.init(context: context)
-    }
-    
-    
-    init(context: NSManagedObjectContext) throws {
-        self.context = context
-        super.init()
-        try setupMockCategories(with: context)
-    }
 }
 
 
 // MARK: - NSFetchedResultsControllerDelegate
-
 extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         delegate?.categoriesDidUpdate()

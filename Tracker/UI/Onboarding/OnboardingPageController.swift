@@ -1,8 +1,7 @@
 import UIKit
 
-
 final class OnboardingPageController: UIPageViewController {
-    // MARK: - UIElements
+    // MARK: - Private properties
     private let goToTrackerScreenButton = UIButton(label: "Вот это технологии!")
     
     private lazy var pageControl: UIPageControl = {
@@ -15,11 +14,9 @@ final class OnboardingPageController: UIPageViewController {
         return pageControl
     }()
     
-    // MARK: - Properties
     @UserDefaultsBacked(key: "isOnboardingShown", defaultValue: false)
     private var isOnboardingShown: Bool
     private var currentIndex: Int = 0
-    
     private lazy var pages: [UIViewController] = [
         OnboardingViewController(page: .first),
         OnboardingViewController(page: .second)
@@ -46,7 +43,7 @@ final class OnboardingPageController: UIPageViewController {
         pageControl.currentPage = 0
     }
     
-    // MARK: - Layout configuration
+    // MARK: - Private methods
     private func addingUIElements() {
         goToTrackerScreenButton.addToSuperview(view)
         view.addSubview(goToTrackerScreenButton)
@@ -67,7 +64,6 @@ final class OnboardingPageController: UIPageViewController {
         ])
     }
     
-    // MARK: - Helpers
     private func showTabBar() {
         let tabBarViewController = TabBarViewController()
         tabBarViewController.awakeFromNib()

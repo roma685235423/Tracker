@@ -1,14 +1,14 @@
 import UIKit
 
 final class StatisticViewController: UIViewController {
-    // MARK: - UI
+    // MARK: - Private properties
     private let statisticLabel = UILabel()
-    private var currentDate = Date.getDate(Date())
     private let mainSpacePlaceholderStack = UIStackView(
         imageName: "statisticPlaceholder",
         text: "Анализировать пока нечего"
     )
     
+    private var currentDate = Date.getDate(Date())
     
     // MARK: - Life cicle
     override var preferredStatusBarStyle: UIStatusBarStyle {

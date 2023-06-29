@@ -1,7 +1,5 @@
 import Foundation
 
-
-
 @propertyWrapper
 struct UserDefaultsBacked<Value> {
     let key: String

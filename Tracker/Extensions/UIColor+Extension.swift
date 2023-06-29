@@ -1,6 +1,7 @@
 import UIKit
 
 extension UIColor {
+    // MARK: - Public properties
     static let ypBlackDay = UIColor(hex: 0x1A1B22)
     static let ypBlackNight = UIColor(hex: 0xFFFFFF)
     static let ypWhiteDay = UIColor(hex: 0xFFFFFF)
@@ -14,6 +15,7 @@ extension UIColor {
     static let ypSearchBarDay = UIColor(hex: 0x767680, alpha: 0.12)
     static let ypBlackDayTint = UIColor(hex: 0x1A1B22,alpha: 0.3)
     
+    // MARK: - Life cicle
     convenience init(hex: Int, alpha: CGFloat = 1.0) {
         self.init(
             red: CGFloat((hex & 0xFF0000) >> 16) / 255.0,

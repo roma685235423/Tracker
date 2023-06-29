@@ -1,7 +1,7 @@
 import UIKit
 
 final class CollectionColorCell: UICollectionViewCell {
-    // MARK: - UI
+    // MARK: - Private properties
     private let framelabel = UILabel()
     private let colorLabel = UILabel()
     
@@ -20,7 +20,21 @@ final class CollectionColorCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Layout configuraion
+    // MARK: - Public methods
+    func setCellColor(color: UIColor) {
+        self.colorLabel.backgroundColor = color
+    }
+    
+    func cellIsSelected(state: Bool) {
+        if state == true {
+            let color = colorLabel.backgroundColor
+            framelabel.layer.borderColor = color?.withAlphaComponent(0.3).cgColor
+        } else {
+            framelabel.layer.borderColor = UIColor.clear.cgColor
+        }
+    }
+    
+    // MARK: - Private methods
     private func layoutConfigure() {
         NSLayoutConstraint.activate([
             framelabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
@@ -33,20 +47,6 @@ final class CollectionColorCell: UICollectionViewCell {
             colorLabel.heightAnchor.constraint(equalToConstant: 40),
             colorLabel.widthAnchor.constraint(equalToConstant: 40)
         ])
-    }
-    
-    // MARK: - Methods
-    func setCellColor(color: UIColor) {
-        self.colorLabel.backgroundColor = color
-    }
-    
-    func cellIsSelected(state: Bool) {
-        if state == true {
-            let color = colorLabel.backgroundColor
-            framelabel.layer.borderColor = color?.withAlphaComponent(0.3).cgColor
-        } else {
-            framelabel.layer.borderColor = UIColor.clear.cgColor
-        }
     }
     
     private func configureColorLabel() {

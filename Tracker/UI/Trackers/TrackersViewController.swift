@@ -1,9 +1,7 @@
 import UIKit
 
-
-
 class TrackersViewController: UIViewController {
-    // MARK: - UI
+    // MARK: - Private properties
     private let trackerLabel = UILabel()
     private let mainSpacePlaceholderStack = UIStackView(
         imageName: "starPlaceholder",
@@ -14,8 +12,7 @@ class TrackersViewController: UIViewController {
         text: "Ничего не найдено"
     )
     
-    // MARK: - UI Lazy
-    lazy var addTrackerButton: UIButton = {
+    private lazy var addTrackerButton: UIButton = {
         let button = UIButton()
         let image = UIImage(named: "plus")
         button.setImage(image, for: .normal)
@@ -25,7 +22,6 @@ class TrackersViewController: UIViewController {
         button.addTarget(self, action: #selector(didTapAddTrackerButton), for: .touchUpInside)
         return button
     }()
-    
     private lazy var trackersSearchBar: UISearchBar = {
         let bar = UISearchBar()
         bar.layer.masksToBounds = true
@@ -34,7 +30,6 @@ class TrackersViewController: UIViewController {
         bar.delegate = self
         return bar
     }()
-    
     private lazy var collectionView: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collection.dataSource = self
@@ -46,7 +41,6 @@ class TrackersViewController: UIViewController {
         collection.allowsMultipleSelection = false
         return collection
     }()
-    
     private lazy var datePicker: UIDatePicker = {
         let picker = UIDatePicker()
         picker.preferredDatePickerStyle = .compact
@@ -60,19 +54,17 @@ class TrackersViewController: UIViewController {
         return picker
     }()
     
-    // MARK: - Properties
-    private var currentDate: Date = Date().getDate()!
-    private var complitedTrackers: Set<TrackerRecord> = []
     private let trackerStore = TrackerStore()
     private let trackerRecordStore = TrackerRecordStore()
     
+    private var currentDate: Date = Date().getDate()!
+    private var complitedTrackers: Set<TrackerRecord> = []
     private var searchedText = "" {
         didSet{
             try? trackerStore.getFilteredTrackers(date: currentDate, searchedText: searchedText)
             try? trackerRecordStore.completedTrackers(by: currentDate)
         }
     }
-    
     private var trackerCollectionViewParameters = CollectionParameters(
         cellCount: 2,
         leftInset: 16,
@@ -105,8 +97,7 @@ class TrackersViewController: UIViewController {
         checkPlaceholderVisabilityAfterSearch()
     }
     
-    
-    // MARK: - Layout configuraion
+    // MARK: - Private methods
     private func addingUIElements() {
         [addTrackerButton, trackerLabel, trackersSearchBar, datePicker,
          collectionView, mainSpacePlaceholderStack, searchSpacePlaceholderStack].forEach{
@@ -145,19 +136,15 @@ class TrackersViewController: UIViewController {
         ])
     }
     
-    
-    // MARK: - Helpers
     private func checkMainPlaceholderVisability() {
         let isHidden = trackerStore.numberOfTrackers == 0 && searchSpacePlaceholderStack.isHidden
         mainSpacePlaceholderStack.isHidden = !isHidden
     }
     
-    
     private func checkPlaceholderVisabilityAfterSearch() {
         let isHidden = trackerStore.numberOfTrackers == 0 && searchedText != ""
         searchSpacePlaceholderStack.isHidden = !isHidden
     }
-    
     
     // MARK: - Actions
     @objc
@@ -211,7 +198,6 @@ extension TrackersViewController: UISearchBarDelegate {
         checkPlaceholderVisabilityAfterSearch()
     }
 }
-
 
 
 //MARK: - UICollectionViewDataSource
@@ -284,7 +270,6 @@ extension TrackersViewController: TrackersCollectinCellDelegate {
         }
     }
 }
-
 
 
 //MARK: - UICollectionViewDelegateFlowLayout

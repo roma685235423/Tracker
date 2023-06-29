@@ -1,43 +1,32 @@
 import UIKit
 import CoreData
 
-
-
-protocol TrackerRecordStoreDelegate: AnyObject {
-    func didUpdate(records: Set<TrackerRecord>)
-}
-
-
-
 final class TrackerRecordStore: NSObject {
+    // MARK: - Errors
     enum CategoryStoreError: Error {
         case decodeError
     }
     
-    
-    // MARK: - Properties
+    // MARK: - Public properties
     weak var delegate: TrackerRecordStoreDelegate?
     
+    // MARK: - Private properties
     private let context: NSManagedObjectContext
-    private var completedTrackers: Set<TrackerRecord> = []
     private let trackerStore = TrackerStore()
+    private var completedTrackers: Set<TrackerRecord> = []
     
-    // MARK: - Methods
-    private func createTrackerRecord(from coreData: TrackerRecordCoreData) throws -> TrackerRecord {
-        guard
-            let idString = coreData.recordId,
-            let id = UUID(uuidString: idString),
-            let date = coreData.date,
-            let trackerCoreData = coreData.tracker,
-            let tracker = try? trackerStore.createTracker(from: trackerCoreData)
-        else
-        { throw CategoryStoreError.decodeError }
-        
-        return TrackerRecord(id: id, trackerId: tracker.id, date: date)
+    // MARK: - Life cicle
+    convenience override init() {
+        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        self.init(context: context)
     }
     
+    init(context: NSManagedObjectContext) {
+        self.context = context
+        super.init()
+    }
     
-    // MARK: - Methods
+    // MARK: - Public methods
     func completedTrackers(by date: Date) throws {
         let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
         request.returnsObjectsAsFaults = false
@@ -47,7 +36,6 @@ final class TrackerRecordStore: NSObject {
         completedTrackers = Set(records)
         delegate?.didUpdate(records: completedTrackers)
     }
-    
     
     func add(record: TrackerRecord) throws {
         let trackerCoreData = try trackerStore.getTrackerFromCoreData(id: record.trackerId)
@@ -59,7 +47,6 @@ final class TrackerRecordStore: NSObject {
         completedTrackers.insert(record)
         delegate?.didUpdate(records: completedTrackers)
     }
-    
     
     func remove(record: TrackerRecord) throws {
         let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
@@ -75,17 +62,17 @@ final class TrackerRecordStore: NSObject {
         delegate?.didUpdate(records: completedTrackers)
     }
     
-    
-    // MARK: - Init
-    convenience override init() {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-        self.init(context: context)
+    // MARK: - Private methods
+    private func createTrackerRecord(from coreData: TrackerRecordCoreData) throws -> TrackerRecord {
+        guard
+            let idString = coreData.recordId,
+            let id = UUID(uuidString: idString),
+            let date = coreData.date,
+            let trackerCoreData = coreData.tracker,
+            let tracker = try? trackerStore.createTracker(from: trackerCoreData)
+        else
+        { throw CategoryStoreError.decodeError }
+        
+        return TrackerRecord(id: id, trackerId: tracker.id, date: date)
     }
-    
-    
-    init(context: NSManagedObjectContext) {
-        self.context = context
-        super.init()
-    }
-    
 }

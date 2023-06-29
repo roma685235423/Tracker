@@ -1,6 +1,5 @@
 import Foundation
 
-
 struct Offsets {
     let textToTable: CGFloat = 24
     let tableToCollection: CGFloat = 32

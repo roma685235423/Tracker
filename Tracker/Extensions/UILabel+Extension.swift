@@ -1,6 +1,7 @@
 import UIKit
 
 extension UILabel {
+    // MARK: - Public methods
     func configureLabel(text: String, addToView: UIView, ofSize: CGFloat, weight: UIFont.Weight) {
         self.translatesAutoresizingMaskIntoConstraints = false
         addToView.addSubview(self)

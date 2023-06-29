@@ -1,13 +1,12 @@
 import UIKit
 
 final class CategoryCreationViewController: UIViewController {
-    // MARK: - UIElements
+    // MARK: - Properties
     private let textField = CustomTextField()
     private let screenTopLabel = UILabel()
     private let createNewCategoryButton = UIButton(label: "Готово")
     
     private var newCategoryName: String = ""
-    
     
     // MARK: - Lifecicle
     override func viewDidLoad() {
@@ -25,7 +24,7 @@ final class CategoryCreationViewController: UIViewController {
         layoutConfigure()
     }
     
-    // MARK: - Layout configuraion
+    // MARK: - Private methods
     private func addingUIElements() {
         view.addSubview(textField)
         view.addSubview(screenTopLabel)
@@ -51,7 +50,6 @@ final class CategoryCreationViewController: UIViewController {
         ])
     }
     
-    // MARK: - Helpers
     private func configureTextField() {
         textField.delegate = self
         textField.translatesAutoresizingMaskIntoConstraints = false

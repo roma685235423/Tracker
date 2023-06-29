@@ -1,7 +1,10 @@
 import UIKit
 
 final class CategorySelectionCell: UITableViewCell {
-    // MARK: - UI
+    // MARK: - Puplic properties
+    static let identifier = "CategoryCell"
+    
+    // MARK: - Private properties
     private let categoryLabel = UILabel()
     private let background = UIView()
     private let separatorView = UIView()
@@ -14,9 +17,6 @@ final class CategorySelectionCell: UITableViewCell {
         imageView.clipsToBounds = true
         return imageView
     }()
-    
-    // MARK: - Properties
-    static let identifier = "CategoryCell"
     
     // MARK: - Lifecycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -44,7 +44,7 @@ final class CategorySelectionCell: UITableViewCell {
         checkmarkImage.isHidden = visible
     }
     
-    // MARK: - Layout Configuration
+    // MARK: - Private methods
     private func addingUIElements() {
         contentView.addSubview(background)
         background.addSubview(separatorView)
@@ -78,7 +78,6 @@ final class CategorySelectionCell: UITableViewCell {
         ])
     }
     
-    // MARK: - Helpers
     private func configureLabel(with text: String) {
         categoryLabel.configureLabel(
             text: text,

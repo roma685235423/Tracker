@@ -1,7 +1,7 @@
 import UIKit
 
 final class CategoryAndSchedulerTableCell: UITableViewCell {
-    // MARK: - UI
+    // MARK: - Private properties
     private let titleLabel = UILabel()
     private let subTitleLabel = UILabel()
     private let stackView = UIStackView()
@@ -21,7 +21,13 @@ final class CategoryAndSchedulerTableCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Layout configuraion
+    // MARK: - Public methods
+    func configure(title: String, subTitle: String) {
+        configureTitleLabel(with: title)
+        configureSubitleLabel(with: subTitle)
+    }
+    
+    // MARK: - Private methods
     private func addingUIElements() {
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(subTitleLabel)
@@ -36,12 +42,6 @@ final class CategoryAndSchedulerTableCell: UITableViewCell {
             contentView.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: 16),
             contentView.bottomAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 14)
         ])
-    }
-    
-    // MARK: - Helpers
-    func configure(title: String, subTitle: String) {
-        configureTitleLabel(with: title)
-        configureSubitleLabel(with: subTitle)
     }
     
     private func configureTitleLabel(with text: String) {

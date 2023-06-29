@@ -1,10 +1,9 @@
 import UIKit
 
 final class NewTrackerViewController: UIViewController {
-    // MARK: - UIElements
+    // MARK: - Private properties
     private let goToCreateHabitScreenButton = UIButton(label: "Привычка")
     private let goToCreateIrregularEventScreenButton = UIButton(label: "Нерегулярные событие")
-    
     private let buttonsStackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
@@ -24,13 +23,13 @@ final class NewTrackerViewController: UIViewController {
         
     }
     
-    // MARK: - Layout configuraion
+    // MARK: - Private methods
     private func configureButtons() {
         goToCreateHabitScreenButton.addTarget(
-        self,
-        action: #selector(didTapGoToCreateHabitScreenButton),
-        for: .touchUpInside
-    )
+            self,
+            action: #selector(didTapGoToCreateHabitScreenButton),
+            for: .touchUpInside
+        )
         goToCreateIrregularEventScreenButton.addTarget(
             self,
             action: #selector(didTapGoToCreateIrregularEventScreenButton),
@@ -38,7 +37,6 @@ final class NewTrackerViewController: UIViewController {
         )
     }
     
-    //MARK: - Helpers
     private func configureStackView() {
         view.addSubview(buttonsStackView)
         

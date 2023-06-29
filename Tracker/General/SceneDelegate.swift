@@ -1,14 +1,6 @@
-//
-//  SceneDelegate.swift
-//  Tracker
-//
-//  Created by Роман Бойко on 3/24/23.
-//
-
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-    
     var window: UIWindow?
     private let isOnboardingShown = UserDefaultsBacked<Bool>(key: "isOnboardingShown", defaultValue: false)
     

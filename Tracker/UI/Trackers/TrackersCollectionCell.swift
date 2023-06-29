@@ -1,18 +1,18 @@
 import UIKit
 
-// MARK: - TrackersCollectinCell
 final class TrackersCollectionCell: UICollectionViewCell {
-    // MARK: - UI
+    // MARK: - Public properties
+    weak var delegate: TrackersCollectinCellDelegate?
+    
+    // MARK: - Private properties
     private let trackerBackgroundLabel = UILabel()
     private let emojieLabel = UILabel()
     private let trackerTextLabel = UILabel()
     private let counterLabel = UILabel()
     private let taskIsDoneButton = UIButton()
+    
     private var tracker: Tracker?
     
-    
-    // MARK: - Properties
-    weak var delegate: TrackersCollectinCellDelegate?
     private let spaceFromEdge: CGFloat = 12
     private var daysCounter = 0 {
         willSet {
@@ -21,13 +21,6 @@ final class TrackersCollectionCell: UICollectionViewCell {
     }
     
     // MARK: - Life cicle
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        tracker = nil
-        setTaskIsDoneButton(equalTo: false)
-        daysCounter = 0
-    }
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         tracker = nil
@@ -35,12 +28,48 @@ final class TrackersCollectionCell: UICollectionViewCell {
         layoutConfigure()
     }
     
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Layout configuraion
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        tracker = nil
+        setTaskIsDoneButton(equalTo: false)
+        daysCounter = 0
+    }
+    
+    // MARK: - Public methods
+    func configureCellContent(prototype: Tracker, daysCounter: Int, isDone: Bool) {
+        self.tracker = prototype
+        self.daysCounter = daysCounter
+        configureBackground(color: prototype.color)
+        configureEmojiLabel(with: prototype.emoji)
+        configureTextLabel(with: prototype.label)
+        configureTaskIsDoneButton(color: prototype.color)
+        configureCounterLabel()
+        setTaskIsDoneButton(equalTo: isDone)
+    }
+    
+    func setTaskIsDoneButton(equalTo: Bool) {
+        if equalTo {
+            taskIsDoneButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
+            taskIsDoneButton.layer.opacity = 0.3
+        } else {
+            taskIsDoneButton.setImage(UIImage(systemName: "plus"), for: .normal)
+            taskIsDoneButton.layer.opacity = 1
+        }
+    }
+    
+    func counterAdd() {
+        daysCounter += 1
+    }
+    
+    func counterSub() {
+        daysCounter -= 1
+    }
+    
+    // MARK: - Private methods
     private func addingUIElements() {
         [trackerBackgroundLabel, emojieLabel, trackerTextLabel, counterLabel, taskIsDoneButton].forEach{
             contentView.addSubview($0)
@@ -75,41 +104,9 @@ final class TrackersCollectionCell: UICollectionViewCell {
         ])
     }
     
-    
-    // MARK: - Helpers
-    func configureCellContent(prototype: Tracker, daysCounter: Int, isDone: Bool) {
-        self.tracker = prototype
-        self.daysCounter = daysCounter
-        configureBackground(color: prototype.color)
-        configureEmojiLabel(with: prototype.emoji)
-        configureTextLabel(with: prototype.label)
-        configureTaskIsDoneButton(color: prototype.color)
-        configureCounterLabel()
-        setTaskIsDoneButton(equalTo: isDone)
-    }
-    
-    func setTaskIsDoneButton(equalTo: Bool) {
-        if equalTo {
-            taskIsDoneButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
-            taskIsDoneButton.layer.opacity = 0.3
-        } else {
-            taskIsDoneButton.setImage(UIImage(systemName: "plus"), for: .normal)
-            taskIsDoneButton.layer.opacity = 1
-        }
-    }
-    
-    func counterAdd() {
-        daysCounter += 1
-    }
-    
-    func counterSub() {
-        daysCounter -= 1
-    }
-    
     private func getCorrectRussianWordDay(days: Int) -> String {
         let mod10 = days % 10
         let mod100 = days % 100
-        
         switch mod10 {
         case 1 where mod100 != 11:
             return "\(days) день"
@@ -148,10 +145,12 @@ final class TrackersCollectionCell: UICollectionViewCell {
     }
     
     private func configureTextLabel(with text: String) {
-        trackerTextLabel.configureLabel(text: text,
-                                        addToView: trackerBackgroundLabel,
-                                        ofSize: 12,
-                                        weight: .medium)
+        trackerTextLabel.configureLabel(
+            text: text,
+            addToView: trackerBackgroundLabel,
+            ofSize: 12,
+            weight: .medium
+        )
         trackerTextLabel.textAlignment = .left
         trackerTextLabel.numberOfLines = 0
         trackerTextLabel.layer.borderColor = UIColor.clear.cgColor
@@ -168,7 +167,6 @@ final class TrackersCollectionCell: UICollectionViewCell {
         taskIsDoneButton.tintColor = .ypWhiteDay
         taskIsDoneButton.addTarget(self, action: #selector(didTapTaskIsDoneButton), for: .touchUpInside)
     }
-    
     
     // MARK: - Actions
     @objc

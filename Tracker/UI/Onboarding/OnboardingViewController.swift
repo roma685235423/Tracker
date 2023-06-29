@@ -1,22 +1,12 @@
 import UIKit
 
-
 final class OnboardingViewController: UIViewController {
-    // MARK: - UIElements
+    // MARK: - Private properties
     private let imageView = UIImageView()
     private let textLabel = UILabel()
-    
-    // MARK: - Properties
     private let page: OnboardingPage
     
     // MARK: - Life cicle
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        configureContent(for: page)
-        addingUIElements()
-        layoutConfigure()
-    }
-    
     init(page: OnboardingPage) {
         self.page = page
         super.init(nibName: nil, bundle: nil)
@@ -26,7 +16,14 @@ final class OnboardingViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Layout configuraion
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        configureContent(for: page)
+        addingUIElements()
+        layoutConfigure()
+    }
+    
+    // MARK: - Private methods
     private func addingUIElements() {
         view.addSubview(imageView)
         imageView.addSubview(textLabel)
@@ -51,7 +48,6 @@ final class OnboardingViewController: UIViewController {
         ])
     }
     
-    // MARK: - Helpers
     private func configureContent(for page: OnboardingPage) {
         let text: String
         switch page {
@@ -73,7 +69,6 @@ final class OnboardingViewController: UIViewController {
         textLabel.lineBreakMode = .byWordWrapping
     }
 }
-
 
 
 enum OnboardingPage: CaseIterable {

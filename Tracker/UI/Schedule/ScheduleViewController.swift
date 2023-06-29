@@ -1,22 +1,21 @@
 import UIKit
 
 final class ScheduleViewController: UIViewController {
-    // MARK: - UIElements
-    private let scrollView = UIScrollView()
-    private let schedulerTable = UITableView()
-    private lazy var readyButton = UIButton()
-    
-    // MARK: - Properties
-    private let weekDaysStringForTable = DayOfWeek.allCases.map { $0.rawValue }
-    private var daysOfWeekForSceduler: [DayOfWeek]
-    
+    // MARK: - Public properties
     var scheduleVCCallback: (([DayOfWeek], String) -> Void)?
     
+    // MARK: - Private properties
+    private let scrollView = UIScrollView()
+    private let schedulerTable = UITableView()
+    
+    private lazy var readyButton = UIButton()
+    
+    private let weekDaysStringForTable = DayOfWeek.allCases.map { $0.rawValue }
     private let tableHeight = CGFloat(524)
     private let buttonHeight = CGFloat(60)
+    
     private var spacing = CGFloat()
-    
-    
+    private var daysOfWeekForSceduler: [DayOfWeek]
     
     // MARK: - Life cicle
     override func viewDidLoad() {
@@ -40,7 +39,7 @@ final class ScheduleViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Layout configuraion
+    // MARK: - Private methods
     private func addingUIElements() {
         [scrollView, schedulerTable, readyButton].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
@@ -68,8 +67,6 @@ final class ScheduleViewController: UIViewController {
         scrollView.layoutIfNeeded()
     }
     
-    
-    // MARK: - Helpers
     private func configurenavigationController() {
         title = "Расписание"
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
@@ -110,7 +107,6 @@ final class ScheduleViewController: UIViewController {
         readyButton.addTarget(self, action: #selector(didTapReadyButton), for: .touchUpInside)
     }
     
-    // MARK: - Methods
     private func shortWeekDaysNamesCreation() -> String {
         var shortDaysOfWeekNames: [String] = []
         for day in daysOfWeekForSceduler {
@@ -192,7 +188,6 @@ final class ScheduleViewController: UIViewController {
         dismiss(animated: true)
     }
 }
-
 
 
 // MARK: - UITableViewDelegate Extension

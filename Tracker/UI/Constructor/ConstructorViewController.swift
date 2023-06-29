@@ -1,15 +1,26 @@
 import UIKit
 
 final class ConstructorViewController: UIViewController {
-    // MARK: - UI
+    // MARK: - Public properties
+    let scrollViewInterElementOffsets: Offsets
+    
+    var scheduleVCCallback: (([DayOfWeek], String) -> Void)?
+    
+    // MARK: - Private properties
     private let contentView = UIView()
     private let scrollView = UIScrollView()
     private let tableView = UITableView()
     private let cancelButton = UIButton(label: "Отменить")
     private let createButton = UIButton(label: "Создать")
     private let textField = CustomTextField()
+    private let textFieldStackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.distribution = .fill
+        stack.spacing = 8
+        return stack
+    }()
     
-    // MARK: - UI Lazy
     private lazy var buttonsStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [cancelButton, createButton])
         stackView.axis = .horizontal
@@ -17,7 +28,6 @@ final class ConstructorViewController: UIViewController {
         stackView.distribution = .fillEqually
         return stackView
     }()
-    
     private lazy var textLimitLabel: UILabel = {
         let label = UILabel()
         label.text = "Ограничение 38 символов"
@@ -27,15 +37,6 @@ final class ConstructorViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
-    private let textFieldStackView: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.distribution = .fill
-        stack.spacing = 8
-        return stack
-    }()
-    
     private lazy var collectionView: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collection.dataSource = self
@@ -50,27 +51,23 @@ final class ConstructorViewController: UIViewController {
         return collection
     }()
     
-    // MARK: - Properties
-    var scheduleVCCallback: (([DayOfWeek], String) -> Void)?
+    private let isRegularEvent: Bool
+    private let collectionViewSectionHeaders = ["Emoji", "Цвет"]
+    private let emojies = [ "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
+    private let trackerStore = TrackerStore()
+    
     private var trackerNameString: String = ""
     private var trackerEmogieString: String = ""
     private var trackerColor: UIColor?
     private var emojiSelectedItem: Int?
     private var colorSelectedItem: Int?
     private var selectedItem: IndexPath?
-    private let isRegularEvent: Bool
-    
     private var actionsArray: [TrackerConstructorTableViewActions] = [.init(titleLabelText: "Категория", subTitleLabel: "")]
-    private let collectionViewSectionHeaders = ["Emoji", "Цвет"]
-    private let emojies = [ "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
-    private let trackerStore = TrackerStore()
-    
     private lazy var currentSelectedCateory: TrackerCategory? = nil {
         didSet {
             checkIsCreateButtonActive()
         }
     }
-    let scrollViewInterElementOffsets: Offsets
     private lazy var daysOfWeekForSceduler: [DayOfWeek] = {
         var sceduler: [DayOfWeek] = []
         if !isRegularEvent {
@@ -85,6 +82,16 @@ final class ConstructorViewController: UIViewController {
     }()
     
     // MARK: - Lifecicle
+    init(isRegularEvent: Bool) {
+        self.isRegularEvent = isRegularEvent
+        self.scrollViewInterElementOffsets = .init()
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .ypWhiteDay
@@ -97,16 +104,6 @@ final class ConstructorViewController: UIViewController {
         checkIsCreateButtonActive()
         isNeedToAddSchedulerAction()
         layoutConfigure()
-    }
-    
-    init(isRegularEvent: Bool) {
-        self.isRegularEvent = isRegularEvent
-        self.scrollViewInterElementOffsets = .init()
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     // MARK: - Layout configuraion
@@ -123,7 +120,6 @@ final class ConstructorViewController: UIViewController {
     
     private func layoutConfigure() {
         contentView.translatesAutoresizingMaskIntoConstraints = false
-        
         NSLayoutConstraint.activate([
             scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -149,7 +145,7 @@ final class ConstructorViewController: UIViewController {
             collectionView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 32),
             collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 18),
             collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -18),
-            collectionView.heightAnchor.constraint(equalToConstant: 500),
+            collectionView.heightAnchor.constraint(equalToConstant: 510),
             
             buttonsStackView.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 21),
             buttonsStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
@@ -183,7 +179,6 @@ final class ConstructorViewController: UIViewController {
         cancelButton.backgroundColor = .ypBackgroundDay
         cancelButton.layer.borderWidth = 1
         cancelButton.layer.borderColor = UIColor.ypRed.cgColor
-        
         createButton.addTarget(self, action: #selector(didTapCreateButton), for: .touchUpInside)
     }
     
@@ -193,7 +188,6 @@ final class ConstructorViewController: UIViewController {
         scrollView.showsVerticalScrollIndicator = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.isScrollEnabled = true
-        
         let tapToHideKeyboardGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboardAndSaveTextFieldValue))
         tapToHideKeyboardGesture.cancelsTouchesInView = false
         scrollView.addGestureRecognizer(tapToHideKeyboardGesture)
@@ -290,7 +284,6 @@ final class ConstructorViewController: UIViewController {
 }
 
 
-
 // MARK: - UITableViewDataSource Extension
 extension ConstructorViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -335,7 +328,6 @@ extension ConstructorViewController: UITableViewDataSource, UITableViewDelegate 
         }
     }
 }
-
 
 
 // MARK: - UICollectionViewDataSource Extension
@@ -392,7 +384,6 @@ extension ConstructorViewController: UICollectionViewDataSource {
 }
 
 
-
 // MARK: - UICollectionViewDelegateFlowLayout Extension
 extension ConstructorViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -421,7 +412,6 @@ extension ConstructorViewController: UICollectionViewDelegateFlowLayout {
         )
     }
 }
-
 
 
 // MARK: - UICollectionViewDelegate Extension

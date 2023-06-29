@@ -1,21 +1,16 @@
 import Foundation
 
-protocol CategorySelectionViewModelDelegate: AnyObject {
-    func categoriesDidUpdate()
-    func didSelect(category: TrackerCategory)
-}
-
 final class CategorySelectionViewModel {
-    // MARK: - Properties
+    // MARK: - Public properties
     weak var delegate: CategorySelectionViewModelDelegate?
     
+    // MARK: - Private properties
     private let trackerCategoryStore = TrackerCategoryStore()
     private (set) var categories: [TrackerCategory] = [] {
         didSet {
             delegate?.categoriesDidUpdate()
         }
     }
-    
     private (set) var selectedCategory: TrackerCategory? = nil {
         didSet {
             guard let selectedCategory = selectedCategory else { return }

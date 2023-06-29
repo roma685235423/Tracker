@@ -1,10 +1,9 @@
 import UIKit
 
 extension UIStackView {
-    
+    // MARK: - Life cicle
     convenience init(imageName: String, text: String) {
         self.init(frame: .zero)
-        
         self.contentMode = .scaleAspectFit
         self.layer.masksToBounds = true
         let imageView = UIImageView(image: UIImage(named: imageName))
