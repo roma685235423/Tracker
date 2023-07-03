@@ -42,6 +42,7 @@
 		BA8289EC29D62E6B00879101 /* StatisticViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8289EB29D62E6B00879101 /* StatisticViewController.swift */; };
 		BA8289F229D740DA00879101 /* NewTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8289F129D740DA00879101 /* NewTrackerViewController.swift */; };
 		BA9F0A572A44CAA200FBB08D /* Offsets.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9F0A562A44CAA200FBB08D /* Offsets.swift */; };
+		BAA1E2942A5326A500350D8C /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = BAA1E2962A5326A500350D8C /* Localizable.stringsdict */; };
 		BABB692C29E4A42F005DBCBA /* UIStack+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BABB692B29E4A42F005DBCBA /* UIStack+Extension.swift */; };
 		BAC0FFF42A16B220000E83E0 /* Collection+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC0FFF32A16B220000E83E0 /* Collection+Extension.swift */; };
 		BAC3C2F929E0673D00B3159A /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC3C2F829E0673D00B3159A /* Date+Extension.swift */; };
@@ -86,7 +87,6 @@
 		BA1AD35429CDF1E200DCFB4B /* TrackersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersViewController.swift; sourceTree = "<group>"; };
 		BA1AD35A29CDF1E200DCFB4B /* Tracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Tracker.xcdatamodel; sourceTree = "<group>"; };
 		BA1AD35C29CDF1E500DCFB4B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		BA1AD35F29CDF1E500DCFB4B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BA1AD36129CDF1E500DCFB4B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BA1AD36629CDF1E700DCFB4B /* TrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA1AD36A29CDF1E700DCFB4B /* TrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerTests.swift; sourceTree = "<group>"; };
@@ -94,6 +94,7 @@
 		BA1AD37429CDF1E700DCFB4B /* TrackerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerUITests.swift; sourceTree = "<group>"; };
 		BA1AD37629CDF1E700DCFB4B /* TrackerUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		BA1F3A9F29E33CCB00AAA9C6 /* UICollectionView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+Extension.swift"; sourceTree = "<group>"; };
+		BA23F3162A5322D30056CC71 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BA2428A72A49E4BF0090F1D3 /* TrackersCollectinCellDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersCollectinCellDelegate.swift; sourceTree = "<group>"; };
 		BA3B5CCF29D75B52000C53FC /* ConstructorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstructorViewController.swift; sourceTree = "<group>"; };
 		BA3B5CD129D75BBD000C53FC /* UILabel+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Extension.swift"; sourceTree = "<group>"; };
@@ -118,6 +119,9 @@
 		BA8289EB29D62E6B00879101 /* StatisticViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticViewController.swift; sourceTree = "<group>"; };
 		BA8289F129D740DA00879101 /* NewTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTrackerViewController.swift; sourceTree = "<group>"; };
 		BA9F0A562A44CAA200FBB08D /* Offsets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Offsets.swift; sourceTree = "<group>"; };
+		BAA1E2952A5326A500350D8C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
+		BAA1E2972A5326D400350D8C /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		BAA1E2982A5326D500350D8C /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = ru; path = ru.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		BABB692B29E4A42F005DBCBA /* UIStack+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStack+Extension.swift"; sourceTree = "<group>"; };
 		BAC0FFF32A16B220000E83E0 /* Collection+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Extension.swift"; sourceTree = "<group>"; };
 		BAC3C2F829E0673D00B3159A /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
@@ -212,6 +216,7 @@
 		BA1AD34F29CDF1E200DCFB4B /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				BA1AD35E29CDF1E500DCFB4B /* LaunchScreen.storyboard */,
 				BA2428A62A49E4780090F1D3 /* Protocols */,
 				BA2428A52A49D44D0090F1D3 /* General */,
 				BA1838092A02D7DD00968CAB /* Domain */,
@@ -243,9 +248,9 @@
 		BA1AD38329CE100F00DCFB4B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				BA1AD35E29CDF1E500DCFB4B /* LaunchScreen.storyboard */,
 				BA1AD36129CDF1E500DCFB4B /* Info.plist */,
 				BA1AD35C29CDF1E500DCFB4B /* Assets.xcassets */,
+				BAA1E2962A5326A500350D8C /* Localizable.stringsdict */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -486,6 +491,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ru,
 			);
 			mainGroup = BA1AD34429CDF1E200DCFB4B;
 			productRefGroup = BA1AD34E29CDF1E200DCFB4B /* Products */;
@@ -505,6 +511,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BA1AD36029CDF1E500DCFB4B /* LaunchScreen.storyboard in Resources */,
+				BAA1E2942A5326A500350D8C /* Localizable.stringsdict in Resources */,
 				BA1AD35D29CDF1E500DCFB4B /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -616,10 +623,21 @@
 		BA1AD35E29CDF1E500DCFB4B /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				BA1AD35F29CDF1E500DCFB4B /* Base */,
+				BA23F3162A5322D30056CC71 /* Base */,
+				BAA1E2972A5326D400350D8C /* ru */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
+		};
+		BAA1E2962A5326A500350D8C /* Localizable.stringsdict */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BAA1E2952A5326A500350D8C /* en */,
+				BAA1E2982A5326D500350D8C /* ru */,
+			);
+			name = Localizable.stringsdict;
+			path = /Users/romanboyko/Documents/Swift/MyApplications/Tracker/Tracker/Resources;
+			sourceTree = "<absolute>";
 		};
 /* End PBXVariantGroup section */
 
@@ -628,6 +646,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -674,7 +693,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -688,6 +707,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -728,7 +748,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

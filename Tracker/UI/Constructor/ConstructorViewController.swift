@@ -116,6 +116,8 @@ final class ConstructorViewController: UIViewController {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         textFieldStackView.addArrangedSubview(textField)
+        textFieldStackView.addArrangedSubview(textLimitLabel)
+        textLimitLabel.isHidden = true
     }
     
     private func layoutConfigure() {
@@ -136,6 +138,8 @@ final class ConstructorViewController: UIViewController {
             textFieldStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
             textFieldStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             textFieldStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
+            textLimitLabel.bottomAnchor.constraint(equalTo: textFieldStackView.bottomAnchor, constant: -8),
             
             tableView.topAnchor.constraint(equalTo: textFieldStackView.bottomAnchor, constant: 24),
             tableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
@@ -194,16 +198,8 @@ final class ConstructorViewController: UIViewController {
     }
     
     private func textLimitLabelIs(visible: Bool) {
-        UIView.animate(withDuration: 0.3) {
-            if visible {
-                self.textFieldStackView.addArrangedSubview(self.textLimitLabel)
-                self.textLimitLabel.alpha = 1
-            } else {
-                self.textLimitLabel.alpha = 0
-                self.textFieldStackView.removeArrangedSubview(self.textLimitLabel)
-                self.textLimitLabel.removeFromSuperview()
-            }
-        }
+        textLimitLabel.alpha = visible ? 1.0 : 0.0
+        textLimitLabel.isHidden = !visible
     }
     
     private func configureTextField() {
@@ -479,12 +475,10 @@ extension ConstructorViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let textFieldText = textField.text ?? ""
         let newLength = textFieldText.count + string.count - range.length
+        let limitLabelVisibility = newLength > 38
         checkIsCreateButtonActive()
-        if newLength > 38 {
-            textLimitLabelIs(visible: true)
-        } else {
-            textLimitLabelIs(visible: false)
-        }
+        textLimitLabelIs(visible: limitLabelVisibility)
+        
         return newLength <= 38
     }
 }

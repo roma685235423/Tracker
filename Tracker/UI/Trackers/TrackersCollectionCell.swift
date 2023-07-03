@@ -105,16 +105,15 @@ final class TrackersCollectionCell: UICollectionViewCell {
     }
     
     private func getCorrectRussianWordDay(days: Int) -> String {
-        let mod10 = days % 10
-        let mod100 = days % 100
-        switch mod10 {
-        case 1 where mod100 != 11:
-            return "\(days) день"
-        case 2...4 where mod100 < 12 || mod100 > 14:
-            return "\(days) дня"
-        default:
-            return "\(days) дней"
-        }
+        let formatString : String = NSLocalizedString(
+            "number of days",
+            comment: "Days count string format to be found in Localized.stringsdict"
+        )
+        let daysCounterString = String.localizedStringWithFormat(
+            formatString,
+            days
+        )
+        return daysCounterString
     }
     
     private func configureCounterLabel() {
