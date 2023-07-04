@@ -52,10 +52,10 @@ final class OnboardingViewController: UIViewController {
         let text: String
         switch page {
         case .first:
-            text = "Отслеживайте только то, что хотите"
+            text = NSLocalizedString("firstOnboarding.text", comment: "")
             imageView.image = UIImage(named: "back1")
         case .second:
-            text = "Даже если это не литры воды и йога"
+            text = NSLocalizedString("secondOnboarding.text", comment: "")
             imageView.image = UIImage(named: "back2")
         }
         textLabel.configureLabel(

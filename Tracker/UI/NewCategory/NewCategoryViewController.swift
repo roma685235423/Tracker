@@ -1,10 +1,16 @@
 import UIKit
 
-final class CategoryCreationViewController: UIViewController {
+final class NewCategoryViewController: UIViewController {
     // MARK: - Properties
     private let textField = CustomTextField()
     private let screenTopLabel = UILabel()
-    private let createNewCategoryButton = UIButton(label: "Готово")
+    private let createNewCategoryButton = UIButton(
+        label:
+            NSLocalizedString(
+                "newCategory.ready",
+                comment: ""
+            )
+    )
     
     private var newCategoryName: String = ""
     
@@ -13,7 +19,7 @@ final class CategoryCreationViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .ypWhiteDay
         screenTopLabel.configureLabel(
-            text: "Новая категория",
+            text: NSLocalizedString("newCategory.categoryName", comment: ""),
             addToView: view,
             ofSize: 16,
             weight: .medium)
@@ -58,7 +64,7 @@ final class CategoryCreationViewController: UIViewController {
         textField.layer.masksToBounds = true
         textField.keyboardType = .default
         textField.attributedPlaceholder = NSAttributedString(
-            string: "Введите название категории",
+            string: NSLocalizedString("newCategory.categoryName", comment: ""),
             attributes: [
                 NSAttributedString.Key.foregroundColor: UIColor.ypGray,
             ]
@@ -83,7 +89,7 @@ final class CategoryCreationViewController: UIViewController {
 
 
 // MARK: - UITextFieldDelegate Extension
-extension CategoryCreationViewController: UITextFieldDelegate {
+extension NewCategoryViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         newCategoryName = textField.text ?? ""
         textField.resignFirstResponder()

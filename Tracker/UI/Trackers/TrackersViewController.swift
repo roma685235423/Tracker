@@ -5,11 +5,17 @@ class TrackersViewController: UIViewController {
     private let trackerLabel = UILabel()
     private let mainSpacePlaceholderStack = UIStackView(
         imageName: "starPlaceholder",
-        text: "Что будем отслеживать?"
+        text: NSLocalizedString(
+            "trackers.mainPlaceholder",
+            comment: ""
+        )
     )
     private let searchSpacePlaceholderStack = UIStackView(
         imageName: "searchPlaceholder",
-        text: "Ничего не найдено"
+        text: NSLocalizedString(
+            "trackers.searchPlaceholder",
+            comment: ""
+        )
     )
     
     private lazy var addTrackerButton: UIButton = {
@@ -26,16 +32,29 @@ class TrackersViewController: UIViewController {
         let bar = UISearchBar()
         bar.layer.masksToBounds = true
         bar.searchBarStyle = .minimal
-        bar.placeholder = "Поиск"
+        bar.placeholder =  NSLocalizedString(
+            "trackers.searchBarPlaceholder",
+            comment: ""
+            )
         bar.delegate = self
         return bar
     }()
     private lazy var collectionView: UICollectionView = {
-        let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        let collection = UICollectionView(
+            frame: .zero,
+            collectionViewLayout: UICollectionViewFlowLayout()
+        )
         collection.dataSource = self
         collection.delegate = self
-        collection.register(TrackersCollectionCell.self, forCellWithReuseIdentifier: "trackersCollectionCell")
-        collection.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
+        collection.register(
+            TrackersCollectionCell.self,
+            forCellWithReuseIdentifier: "trackersCollectionCell"
+        )
+        collection.register(
+            SupplementaryView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: "header"
+        )
         collection.backgroundColor = .ypWhiteDay
         collection.isScrollEnabled = true
         collection.allowsMultipleSelection = false
@@ -45,7 +64,7 @@ class TrackersViewController: UIViewController {
         let picker = UIDatePicker()
         picker.preferredDatePickerStyle = .compact
         picker.datePickerMode = .date
-        picker.locale = Locale(identifier: "ru_RU")
+        picker.locale = Locale.current
         picker.maximumDate = Date()
         picker.tintColor = .ypBlue
         picker.layer.cornerRadius = 8
@@ -84,7 +103,7 @@ class TrackersViewController: UIViewController {
         trackerStore.delegate = self
         trackerRecordStore.delegate = self
         trackerLabel.configureLabel(
-            text: "Трекеры",
+            text: NSLocalizedString("trackers", comment: ""),
             addToView: view,
             ofSize: 34,
             weight: .bold
@@ -291,7 +310,6 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         minimumInteritemSpacingForSectionAt section: Int
     ) -> CGFloat {
-        
         return 9
     }
     
@@ -300,7 +318,6 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         minimumLineSpacingForSectionAt section: Int
     ) -> CGFloat {
-        
         return 0
     }
     
@@ -330,7 +347,6 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         insetForSectionAt section: Int
     ) -> UIEdgeInsets {
-        
         return UIEdgeInsets(top: 8, left: trackerCollectionViewParameters.leftInset,
                             bottom: 16, right: trackerCollectionViewParameters.rightInset)
     }

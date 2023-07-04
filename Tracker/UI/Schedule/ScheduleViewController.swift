@@ -10,7 +10,7 @@ final class ScheduleViewController: UIViewController {
     
     private lazy var readyButton = UIButton()
     
-    private let weekDaysStringForTable = DayOfWeek.allCases.map { $0.rawValue }
+    private let weekDaysForTable = DayOfWeek.allCases
     private let tableHeight = CGFloat(524)
     private let buttonHeight = CGFloat(60)
     
@@ -18,6 +18,15 @@ final class ScheduleViewController: UIViewController {
     private var daysOfWeekForSceduler: [DayOfWeek]
     
     // MARK: - Life cicle
+    init(daysInScedule: [DayOfWeek]) {
+        self.daysOfWeekForSceduler = daysInScedule
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .ypWhiteDay
@@ -28,15 +37,6 @@ final class ScheduleViewController: UIViewController {
         configureSchedulerTable()
         configureReadyButton()
         layoutConfigure()
-    }
-    
-    init(daysOfWeekForSceduler: [DayOfWeek]) {
-        self.daysOfWeekForSceduler = daysOfWeekForSceduler
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     // MARK: - Private methods
@@ -68,7 +68,7 @@ final class ScheduleViewController: UIViewController {
     }
     
     private func configurenavigationController() {
-        title = "Расписание"
+        title = NSLocalizedString("schedule.title", comment: "")
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
         
@@ -99,7 +99,7 @@ final class ScheduleViewController: UIViewController {
     
     private func configureReadyButton() {
         readyButton.backgroundColor = .ypBlackDay
-        readyButton.setTitle("Готово", for: .normal)
+        readyButton.setTitle(NSLocalizedString("schedule.ready", comment: ""), for: .normal)
         readyButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         readyButton.titleLabel?.textColor = .ypWhiteDay
         readyButton.layer.cornerRadius = 16
@@ -110,36 +110,13 @@ final class ScheduleViewController: UIViewController {
     private func shortWeekDaysNamesCreation() -> String {
         var shortDaysOfWeekNames: [String] = []
         for day in daysOfWeekForSceduler {
-            if let shortDayName = weekDaysNamesShorting(day: day.rawValue) {
-                shortDaysOfWeekNames.append(shortDayName)
-            }
+            shortDaysOfWeekNames.append(day.localizedStringShort)
         }
         if shortDaysOfWeekNames.count < 7 {
             let result = daysOfWeekForSceduler.isEmpty ? "" : shortDaysOfWeekNames.joined(separator: ", ")
             return result
         } else {
-            return "Каждый день"
-        }
-    }
-    
-    private func weekDaysNamesShorting(day: String?) -> String? {
-        switch day {
-        case "Понедельник":
-            return "Пн"
-        case "Вторник":
-            return "Вт"
-        case "Среда":
-            return "Ср"
-        case "Четверг":
-            return "Чт"
-        case "Пятница":
-            return "Пт"
-        case "Суббота":
-            return "Сб"
-        case "Воскресенье":
-            return "Вс"
-        default :
-            return nil
+            return NSLocalizedString("schedule.everyDay", comment: "")
         }
     }
     
@@ -199,14 +176,14 @@ extension ScheduleViewController: UITableViewDelegate {
 // MARK: - UITableViewDataSource Extension
 extension ScheduleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return weekDaysStringForTable.count
+        return weekDaysForTable.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
         let switchView = UISwitch(frame: CGRect(x: 0, y: 0, width: 51, height: 31))
-        let currentDay = weekDaysStringForTable[indexPath.row]
-        let isSwitchOn = daysOfWeekForSceduler.first{$0.rawValue == currentDay} != nil
+        let currentDay = weekDaysForTable[indexPath.row].localizedString
+        let isSwitchOn = daysOfWeekForSceduler.first{$0.localizedString == currentDay} != nil
         
         switchView.setOn(isSwitchOn, animated: true)
         switchView.tag = indexPath.row

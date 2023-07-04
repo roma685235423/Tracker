@@ -5,7 +5,7 @@ final class StatisticViewController: UIViewController {
     private let statisticLabel = UILabel()
     private let mainSpacePlaceholderStack = UIStackView(
         imageName: "statisticPlaceholder",
-        text: "Анализировать пока нечего"
+        text: NSLocalizedString("statistics.mainPlaceholder", comment: "")
     )
     
     private var currentDate = Date.getDate(Date())
@@ -19,7 +19,7 @@ final class StatisticViewController: UIViewController {
         setNeedsStatusBarAppearanceUpdate()
         view.backgroundColor = .ypWhiteDay
         statisticLabel.configureLabel(
-            text: "Статистика",
+            text: NSLocalizedString("statistics.title", comment: ""),
             addToView: view,
             ofSize: 34,
             weight: .bold

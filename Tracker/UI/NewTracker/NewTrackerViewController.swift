@@ -2,8 +2,18 @@ import UIKit
 
 final class NewTrackerViewController: UIViewController {
     // MARK: - Private properties
-    private let goToCreateHabitScreenButton = UIButton(label: "Привычка")
-    private let goToCreateIrregularEventScreenButton = UIButton(label: "Нерегулярные событие")
+    private let goToCreateHabitScreenButton = UIButton(
+        label: NSLocalizedString(
+            "newTracker.habitButton",
+            comment: ""
+        )
+    )
+    private let goToCreateIrregularEventScreenButton = UIButton(
+        label: NSLocalizedString(
+            "newTracker.eventButton",
+            comment: ""
+        )
+    )
     private let buttonsStackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
@@ -54,7 +64,7 @@ final class NewTrackerViewController: UIViewController {
     }
     
     private func configurenavigationController() {
-        title = "Создание трекера"
+        title = NSLocalizedString("newTracker.title", comment: "")
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
         

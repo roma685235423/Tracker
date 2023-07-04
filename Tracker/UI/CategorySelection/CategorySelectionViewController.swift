@@ -8,9 +8,14 @@ final class CategorySelectionViewController: UIViewController {
     private let trackerCategoryTable = UITableView()
     private let mainSpacePlaceholderStack = UIStackView(
         imageName: "starPlaceholder",
-        text: "Привычки и события можно объединить по смыслу"
+        text: NSLocalizedString("categorySelection.mainPlaceholder", comment: "")
     )
-    private lazy var addCategoryButton = UIButton(label: "Добавить категорию")
+    private lazy var addCategoryButton = UIButton(
+        label: NSLocalizedString(
+            "categorySelection.addCategory",
+            comment: ""
+        )
+    )
     
     private let viewModel: CategorySelectionViewModel
     
@@ -68,7 +73,7 @@ final class CategorySelectionViewController: UIViewController {
     }
     
     private func configurenavigationController() {
-        title = "Категория"
+        title = NSLocalizedString("categorySelection.category", comment: "")
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
         
@@ -90,7 +95,7 @@ final class CategorySelectionViewController: UIViewController {
     
     // MARK: - Actions
     @objc private func didTapAddCategoryButton() {
-        let trackerCategoryCreationViewController = CategoryCreationViewController()
+        let trackerCategoryCreationViewController = NewCategoryViewController()
         let navigationVC = UINavigationController(rootViewController: trackerCategoryCreationViewController)
         trackerCategoryCreationViewController.modalPresentationStyle = .pageSheet
         present(navigationVC, animated: true)

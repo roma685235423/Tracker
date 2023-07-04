@@ -10,8 +10,17 @@ final class ConstructorViewController: UIViewController {
     private let contentView = UIView()
     private let scrollView = UIScrollView()
     private let tableView = UITableView()
-    private let cancelButton = UIButton(label: "Отменить")
-    private let createButton = UIButton(label: "Создать")
+    private let cancelButton = UIButton(
+        label: NSLocalizedString(
+            "constructor.cancel",
+            comment: ""
+        )
+    )
+    private let createButton = UIButton(
+        label: NSLocalizedString(
+            "constructor.create", comment: ""
+        )
+    )
     private let textField = CustomTextField()
     private let textFieldStackView: UIStackView = {
         let stack = UIStackView()
@@ -30,7 +39,7 @@ final class ConstructorViewController: UIViewController {
     }()
     private lazy var textLimitLabel: UILabel = {
         let label = UILabel()
-        label.text = "Ограничение 38 символов"
+        label.text = NSLocalizedString("constructor.textLimitLabel", comment: "")
         label.textColor = .ypRed
         label.font = UIFont.systemFont(ofSize: 17, weight: .medium)
         label.textAlignment = .center
@@ -41,9 +50,19 @@ final class ConstructorViewController: UIViewController {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collection.dataSource = self
         collection.delegate = self
-        collection.register(CollectionEmojiCell.self, forCellWithReuseIdentifier: "emojieCell")
-        collection.register(CollectionColorCell.self, forCellWithReuseIdentifier: "colorCell")
-        collection.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
+        collection.register(
+            CollectionEmojiCell.self,
+            forCellWithReuseIdentifier: "emojieCell"
+        )
+        collection.register(
+            CollectionColorCell.self,
+            forCellWithReuseIdentifier: "colorCell"
+        )
+        collection.register(
+            SupplementaryView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: "header"
+        )
         collection.backgroundColor = .ypWhiteDay
         collection.isScrollEnabled = false
         collection.allowsMultipleSelection = false
@@ -52,7 +71,9 @@ final class ConstructorViewController: UIViewController {
     }()
     
     private let isRegularEvent: Bool
-    private let collectionViewSectionHeaders = ["Emoji", "Цвет"]
+    private let collectionViewSectionHeaders = [
+        NSLocalizedString("constructor.emoji", comment: ""),
+        NSLocalizedString("constructor.colors", comment: "")]
     private let emojies = [ "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
     private let trackerStore = TrackerStore()
     
@@ -62,13 +83,20 @@ final class ConstructorViewController: UIViewController {
     private var emojiSelectedItem: Int?
     private var colorSelectedItem: Int?
     private var selectedItem: IndexPath?
-    private var actionsArray: [TrackerConstructorTableViewActions] = [.init(titleLabelText: "Категория", subTitleLabel: "")]
+    private var actionsArray: [TrackerConstructorTableViewActions] = [.init(
+        titleLabelText:
+            NSLocalizedString(
+                "constructor.category",
+                comment: ""
+            ),
+        subTitleLabel: ""
+    )]
     private lazy var currentSelectedCateory: TrackerCategory? = nil {
         didSet {
             checkIsCreateButtonActive()
         }
     }
-    private lazy var daysOfWeekForSceduler: [DayOfWeek] = {
+    private lazy var scedule: [DayOfWeek] = {
         var sceduler: [DayOfWeek] = []
         if !isRegularEvent {
             for day in DayOfWeek.allCases {
@@ -78,7 +106,11 @@ final class ConstructorViewController: UIViewController {
         return sceduler
     }()
     private lazy var headerText: String = {
-        isRegularEvent == true ? "Новая привычка" : "Новое нерегулярное событие"
+        if isRegularEvent {
+            return NSLocalizedString("constructor.newHabit", comment: "")
+        } else {
+            return NSLocalizedString("constructor.newEvent", comment: "")
+        }
     }()
     
     // MARK: - Lifecicle
@@ -169,7 +201,7 @@ final class ConstructorViewController: UIViewController {
     }
     
     private func navigationControllerConfiguration() {
-        title = "Новая привычка"
+        title = headerText
         navigationController?.navigationBar.titleTextAttributes = [
             .font: UIFont.systemFont(ofSize: 16, weight: .medium),
             .foregroundColor: UIColor.ypBlackDay
@@ -210,7 +242,7 @@ final class ConstructorViewController: UIViewController {
         textField.layer.masksToBounds = true
         textField.keyboardType = .default
         textField.attributedPlaceholder = NSAttributedString(
-            string: "Введите название трекера",
+            string: NSLocalizedString("constructor.trackerName", comment: ""),
             attributes: [
                 NSAttributedString.Key.foregroundColor: UIColor.ypGray,
             ]
@@ -231,7 +263,14 @@ final class ConstructorViewController: UIViewController {
     
     private func isNeedToAddSchedulerAction() {
         if isRegularEvent == true {
-            actionsArray.append(.init(titleLabelText: "Расписание", subTitleLabel: ""))
+            actionsArray.append(.init(
+                titleLabelText:
+                    NSLocalizedString(
+                        "constructor.schedule",
+                        comment: ""
+                    ),
+                subTitleLabel: ""
+            ))
         }
     }
     
@@ -270,7 +309,7 @@ final class ConstructorViewController: UIViewController {
             label: trackerNameString,
             color: color,
             emoji: trackerEmogieString,
-            schedule: daysOfWeekForSceduler,
+            schedule: scedule,
             daysComplitedCount: 0
         )
         guard let unwrapCategory = currentSelectedCateory else { return }
@@ -310,12 +349,12 @@ extension ConstructorViewController: UITableViewDataSource, UITableViewDelegate 
             }
             present(navigatonVC, animated: true)
         } else {
-            let scheduleViewController = ScheduleViewController(daysOfWeekForSceduler: daysOfWeekForSceduler)
+            let scheduleViewController = ScheduleViewController(daysInScedule: scedule)
             let navigatonVC = UINavigationController(rootViewController: scheduleViewController)
             scheduleViewController.scheduleVCCallback = { [ weak self ] schedule, cellSubviewText in
                 guard let self = self else { return }
                 self.scheduleVCCallback?(schedule, cellSubviewText)
-                self.daysOfWeekForSceduler = schedule
+                self.scedule = schedule
                 self.actionsArray[1].subTitleLabel = cellSubviewText
                 self.checkIsCreateButtonActive()
                 self.tableView.reloadData()

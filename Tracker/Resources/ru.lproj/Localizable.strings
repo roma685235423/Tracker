@@ -1,0 +1,105 @@
+// MARK: - Onboarding
+// First onboarding screen text
+"firstOnboarding.text" = "Отслеживайте только то, что хотите";
+// Second onboarding screen text
+"secondOnboarding.text" = "Даже если это не литры воды и йога";
+// Onboarding button text
+"onboarding.button" = "Вот это технологии!";
+
+
+// MARK: - TabBar
+// Trackers tab bar and TrackersViewController.trackerLabeltext
+"trackers" = "Трекеры";
+// Trackers tab bar and statistics
+"statistics" = "Статистика";
+
+
+// MARK: - Trackers
+// Text displayed on empty schedule
+"trackers.mainPlaceholder" = "Что будем отслеживать?";
+// Text displayed on empty search
+"trackers.searchPlaceholder" = "Ничего не найдено";
+// Search bar placeholder text
+"trackers.searchBarPlaceholder" = "Поиск";
+
+
+// MARK: - NewTracker
+// Tracker creation page name
+"newTracker.title" = "Создание трекера";
+// Event button title
+"newTracker.eventButton" = "Нерегулярное событие";
+// Habit button title
+"newTracker.habitButton" = "Привычка";
+
+
+// MARK: - Constructor
+// New event
+"constructor.newEvent" = "Новое нерегулярное событие";
+// New habit
+"constructor.newHabit" = "Новая привычка";
+// Tracker name text field placeholder
+"constructor.trackerName" = "Введите название трекера";
+// Limit on tracker name length
+"constructor.textLimitLabel" = "Ограничение 38 символов";
+// Categories
+"constructor.category" = "Категория";
+// Schedule
+"constructor.schedule" = "Расписание";
+// Emoji section label
+"constructor.emoji" = "Emoji";
+// Colors section label
+"constructor.colors" = "Цвета";
+// Cancel button title
+"constructor.cancel" = "Отмена";
+// Create button title
+"constructor.create" = "Создать";
+
+
+// MARK: - CategorySelection
+// Category
+"categorySelection.category" = "Категория";
+//Empty category label text
+"categorySelection.mainPlaceholder" = "Привычки и события можно объединить по смыслу";
+// Add category button text
+"categorySelection.addCategory" = "Добавить категорию";
+
+
+// MARK: - NewCategory
+// New category page name
+"newCategory.title" = "Новая категория";
+// Enter category name placeholder
+"newCategory.categoryName" = "Введите название категории";
+// Ready button title
+"newCategory.ready" = "Готово";
+
+
+// MARK: - Statistic
+// Title
+"statistics.title" = "Статистика";
+// Empty Statistics
+"statistics.mainPlaceholder" = "Анализировать пока нечего";
+
+
+
+// MARK: - Shedule
+"schedule.title" = "Расписание";
+// Every day
+"schedule.everyDay" = "Каждый день";
+// Weekdays long
+"schedule.monday" = "Понедельник";
+"schedule.tuesday" = "Вторник";
+"schedule.wednesday" = "Среда";
+"schedule.thursday" = "Четверг";
+"schedule.friday" = "Пятница";
+"schedule.saturday" = "Суббота";
+"schedule.sunday" = "Воскресенье";
+// Weekdays short
+"schedule.mondayShort" = "Пн";
+"schedule.tuesdayShort" = "Вт";
+"schedule.wednesdayShort" = "Ср";
+"schedule.thursdayShort" = "Чт";
+"schedule.fridayShort" = "Пт";
+"schedule.saturdayShort" = "Сб";
+"schedule.sundayShort" = "Вс";
+// Ready button title
+"schedule.ready" = "Готово";

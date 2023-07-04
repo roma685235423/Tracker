@@ -1,0 +1,104 @@
+
+// First onboarding screen text
+"firstOnboarding.text" = "Track only what you want";
+// Second onboarding screen text
+"secondOnboarding.text" = "Even if it's not liters of water or yoga";
+// Onboarding button text
+"onboarding.button" = "This is technology!";
+
+
+// MARK: - TabBar
+// Trackers tab bar and TrackersViewController.trackerLabeltext
+"trackers" = "Trackers";
+// Trackers tab bar and statistics
+"statistics" = "Statistics";
+
+
+// MARK: - Trackers
+// Text displayed on empty schedule
+"trackers.mainPlaceholder" = "What will we track?";
+// Text displayed on empty search
+"trackers.searchPlaceholder" = "Nothing found";
+// Search bar placeholder text
+"trackers.searchBarPlaceholder" = "Search";
+
+
+// MARK: - NewTracker
+// Tracker creation page name
+"newTracker.title" = "Tracker creation";
+// Event button title
+"newTracker.eventButton" = "Irregular event";
+// Habit button title
+"newTracker.habitButton" = "Habit";
+
+
+// MARK: - Constructor
+// New event
+"constructor.newEvent" = "New event";
+// New habit
+"constructor.newHabit" = "New habit";
+// Tracker name text field placeholder
+"constructor.trackerName" = "Enter tracker name";
+// Limit on tracker name length
+"constructor.textLimitLabel" = "38 character limit";
+// Categories
+"constructor.category" = "Category";
+// Schedule
+"constructor.schedule" = "Schedule";
+// Emoji section label
+"constructor.emoji" = "Emoji";
+// Colors section label
+"constructor.colors" = "Colors";
+// Cancel button title
+"constructor.cancel" = "Cancel";
+// Create button title
+"constructor.create" = "Create";
+
+
+// MARK: - CategorySelection
+// Category
+"categorySelection.category" = "Category";
+//Empty category label text
+"categorySelection.mainPlaceholder" = "Habits and events can be combined in meaning";
+// Add category button text
+"categorySelection.addCategory" = "Add category";
+
+
+// MARK: - NewCategory
+// New category page name
+"newCategory.title" = "New Category";
+// Enter category name placeholder
+"newCategory.categoryName" = "Enter category name";
+// Ready button title
+"newCategory.ready" = "Ready";
+
+
+// MARK: - Statistics
+// Title
+"statistics.title" = "Statistics";
+// Empty Statistics
+"statistics.mainPlaceholder" = "Nothing to analyze";
+
+
+// MARK: - Shedule
+"schedule.title" = "Shedule";
+// Every day
+"schedule.everyDay" = "Every day";
+// Weekdays
+"schedule.monday" = "Monday";
+"schedule.tuesday" = "Tuesday";
+"schedule.wednesday" = "Wednesday";
+"schedule.thursday" = "Thursday";
+"schedule.friday" = "Friday";
+"schedule.saturday" = "Saturday";
+"schedule.sunday" = "Sunday";
+// Weekdays short
+"schedule.mondayShort" = "Mo";
+"schedule.tuesdayShort" = "Tu";
+"schedule.wednesdayShort" = "We";
+"schedule.thursdayShort" = "Th";
+"schedule.fridayShort" = "Fr";
+"schedule.saturdayShort" = "Sa";
+"schedule.sundayShort" = "Su";
+// Ready button title
+"schedule.ready" = "Ready";
