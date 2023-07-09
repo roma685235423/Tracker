@@ -2,7 +2,6 @@ import UIKit
 
 final class CollectionEmojiCell: UICollectionViewCell {
     // MARK: - Private properties
-    private let framelabel = UILabel()
     private let emojiLabel = UILabel()
     
     // MARK: - Life cicle
@@ -45,7 +44,7 @@ final class CollectionEmojiCell: UICollectionViewCell {
     }
     
     private func configureContentView() {
-        contentView.layer.cornerRadius = 52/5
+        contentView.layer.cornerRadius = 16
         contentView.layer.masksToBounds = true
     }
 }

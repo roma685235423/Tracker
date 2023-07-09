@@ -19,14 +19,14 @@ class TrackersViewController: UIViewController {
     )
     
     private lazy var addTrackerButton: UIButton = {
-        let button = UIButton()
-        let image = UIImage(named: "plus")
-        button.setImage(image, for: .normal)
-        button.imageView?.tintColor = .ypBlackDay
-        button.imageView?.contentMode = .scaleAspectFit
-        button.layer.masksToBounds = true
-        button.addTarget(self, action: #selector(didTapAddTrackerButton), for: .touchUpInside)
+        let button = UIButton.systemButton(
+            with: UIImage(named: "plus")!,
+            target: self,
+            action: #selector(didTapAddTrackerButton)
+        )
+        button.tintColor = .ypBlack
         return button
+        
     }()
     private lazy var trackersSearchBar: UISearchBar = {
         let bar = UISearchBar()
@@ -55,10 +55,21 @@ class TrackersViewController: UIViewController {
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: "header"
         )
-        collection.backgroundColor = .ypWhiteDay
+        collection.backgroundColor = .clear
         collection.isScrollEnabled = true
         collection.allowsMultipleSelection = false
         return collection
+    }()
+    lazy var localizedDateLabel: UILabel = {
+        let label = UILabel()
+        label.backgroundColor = .ypDatePickerBackground
+        label.font = UIFont.systemFont(ofSize: 17, weight: .medium)
+        label.textAlignment = .center
+        label.textColor = .ypBlackDay
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.clipsToBounds = true
+        label.layer.cornerRadius = 8
+        return label
     }()
     private lazy var datePicker: UIDatePicker = {
         let picker = UIDatePicker()
@@ -66,7 +77,6 @@ class TrackersViewController: UIViewController {
         picker.datePickerMode = .date
         picker.locale = Locale.current
         picker.maximumDate = Date()
-        picker.tintColor = .ypBlue
         picker.layer.cornerRadius = 8
         picker.layer.masksToBounds = true
         picker.addTarget(self, action: #selector(didChangedDatePickerValue), for: .valueChanged)
@@ -92,14 +102,10 @@ class TrackersViewController: UIViewController {
     )
     
     // MARK: - Life cicle
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        .darkContent
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate()
-        view.backgroundColor = .ypWhiteDay
+        view.backgroundColor = .ypWhite
         trackerStore.delegate = self
         trackerRecordStore.delegate = self
         trackerLabel.configureLabel(
@@ -112,13 +118,23 @@ class TrackersViewController: UIViewController {
         layoutConfigure()
         try? trackerStore.getFilteredTrackers(date: currentDate, searchedText: searchedText)
         try? trackerRecordStore.completedTrackers(by: currentDate)
+        
+        localizedDateLabel.text = currentDate.getStringFromLocalizedDate()
         checkMainPlaceholderVisability()
         checkPlaceholderVisabilityAfterSearch()
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if #available(iOS 13.0, *),
+           traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            traitCollection.userInterfaceStyle == .dark ? print("🖤") : print("🤍")
+        }
+    }
+    
     // MARK: - Private methods
     private func addingUIElements() {
-        [addTrackerButton, trackerLabel, trackersSearchBar, datePicker,
+        [addTrackerButton, trackerLabel, trackersSearchBar, datePicker, localizedDateLabel,
          collectionView, mainSpacePlaceholderStack, searchSpacePlaceholderStack].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
@@ -130,9 +146,15 @@ class TrackersViewController: UIViewController {
             trackerLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.1083),
             trackerLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 18),
             
-            datePicker.widthAnchor.constraint(equalToConstant: 120),
+            datePicker.widthAnchor.constraint(equalToConstant: 77),
+            datePicker.heightAnchor.constraint(equalToConstant: 34),
             datePicker.centerYAnchor.constraint(equalTo: trackerLabel.centerYAnchor),
             datePicker.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            
+            localizedDateLabel.widthAnchor.constraint(equalTo: datePicker.widthAnchor),
+            localizedDateLabel.heightAnchor.constraint(equalTo: datePicker.heightAnchor),
+            localizedDateLabel.centerYAnchor.constraint(equalTo: datePicker.centerYAnchor),
+            localizedDateLabel.centerXAnchor.constraint(equalTo: datePicker.centerXAnchor),
             
             addTrackerButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 18),
             addTrackerButton.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.07019),
@@ -173,6 +195,7 @@ class TrackersViewController: UIViewController {
             try trackerStore.getFilteredTrackers(date: currentDate, searchedText: searchedText)
             try trackerRecordStore.completedTrackers(by: currentDate)
         } catch {}
+        localizedDateLabel.text = currentDate.getStringFromLocalizedDate()
         collectionView.reloadData()
     }
     
@@ -269,6 +292,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         else { return UICollectionReusableView() }
         view.configoreLayout(leftOffset: 28, topOffset: 15, bottomOffset: 15)
         view.titleLabel.text = trackerStore.getHeaderLabelFor(section: indexPath.section)
+        view.titleLabel.textColor = .ypBlack
         return view
     }
 }

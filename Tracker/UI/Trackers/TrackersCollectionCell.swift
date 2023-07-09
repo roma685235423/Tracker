@@ -119,7 +119,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
     private func configureCounterLabel() {
         counterLabel.textAlignment = .left
         counterLabel.font = UIFont.systemFont(ofSize: 12)
-        counterLabel.textColor = .ypBlackDay
+        counterLabel.textColor = .ypBlack
         counterLabel.text = getCorrectRussianWordDay(days: daysCounter)
     }
     
@@ -163,7 +163,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
         
         taskIsDoneButton.backgroundColor = color
         taskIsDoneButton.setImage(UIImage(systemName: "plus"), for: .normal)
-        taskIsDoneButton.tintColor = .ypWhiteDay
+        taskIsDoneButton.tintColor = .ypWhite
         taskIsDoneButton.addTarget(self, action: #selector(didTapTaskIsDoneButton), for: .touchUpInside)
     }
     

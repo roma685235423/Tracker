@@ -21,7 +21,7 @@ final class ConstructorViewController: UIViewController {
             "constructor.create", comment: ""
         )
     )
-    private let textField = CustomTextField()
+    private let textField = CustomTextField(with: NSLocalizedString("constructor.trackerName", comment: ""))
     private let textFieldStackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
@@ -126,11 +126,10 @@ final class ConstructorViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .ypWhiteDay
+        view.backgroundColor = .ypWhite
         navigationControllerConfiguration()
         addingUIElements()
         configureScrollView()
-        configureTextField()
         configureTableView()
         buttonsConfiguration()
         checkIsCreateButtonActive()
@@ -204,7 +203,7 @@ final class ConstructorViewController: UIViewController {
         title = headerText
         navigationController?.navigationBar.titleTextAttributes = [
             .font: UIFont.systemFont(ofSize: 16, weight: .medium),
-            .foregroundColor: UIColor.ypBlackDay
+            .foregroundColor: UIColor.ypBlack
         ]
         self.navigationItem.setHidesBackButton(true, animated: true)
     }
@@ -212,7 +211,7 @@ final class ConstructorViewController: UIViewController {
     private func buttonsConfiguration() {
         cancelButton.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
         cancelButton.setTitleColor(.ypRed, for: .normal)
-        cancelButton.backgroundColor = .ypBackgroundDay
+        cancelButton.backgroundColor = .clear
         cancelButton.layer.borderWidth = 1
         cancelButton.layer.borderColor = UIColor.ypRed.cgColor
         createButton.addTarget(self, action: #selector(didTapCreateButton), for: .touchUpInside)
@@ -234,27 +233,12 @@ final class ConstructorViewController: UIViewController {
         textLimitLabel.isHidden = !visible
     }
     
-    private func configureTextField() {
-        textField.delegate = self
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.backgroundColor = .ypBackgroundDay
-        textField.layer.cornerRadius = 16
-        textField.layer.masksToBounds = true
-        textField.keyboardType = .default
-        textField.attributedPlaceholder = NSAttributedString(
-            string: NSLocalizedString("constructor.trackerName", comment: ""),
-            attributes: [
-                NSAttributedString.Key.foregroundColor: UIColor.ypGray,
-            ]
-        )
-    }
-    
     private func configureTableView() {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(CategoryAndSchedulerTableCell.self, forCellReuseIdentifier: "tableViewCell")
-        tableView.backgroundColor = .ypBackgroundDay
         tableView.separatorColor = .ypGray
+        tableView.backgroundColor = .clear
         tableView.layer.cornerRadius = 16
         tableView.layer.masksToBounds = true
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
@@ -328,7 +312,10 @@ extension ConstructorViewController: UITableViewDataSource, UITableViewDelegate 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "tableViewCell", for: indexPath) as?
                 CategoryAndSchedulerTableCell else {fatalError("Invalid cell configuration")}
-        cell.configure(title: actionsArray[indexPath.row].titleLabelText, subTitle: actionsArray[indexPath.row].subTitleLabel)
+        cell.configure(
+            title: actionsArray[indexPath.row].titleLabelText,
+            subTitle: actionsArray[indexPath.row].subTitleLabel
+        )
         return cell
     }
     
@@ -414,6 +401,7 @@ extension ConstructorViewController: UICollectionViewDataSource {
         let topOffset: CGFloat = indexPath.section == 0 ? 0 : 40
         view.configoreLayout(leftOffset: 10, topOffset: topOffset, bottomOffset: 24)
         view.titleLabel.text = collectionViewSectionHeaders[indexPath.section]
+        view.titleLabel.textColor = .ypBlack
         return view
     }
 }
@@ -422,7 +410,7 @@ extension ConstructorViewController: UICollectionViewDataSource {
 // MARK: - UICollectionViewDelegateFlowLayout Extension
 extension ConstructorViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.bounds.width/6, height: collectionView.bounds.width/6)
+        return CGSize(width:52, height: 52)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {

@@ -2,7 +2,7 @@ import UIKit
 
 final class NewCategoryViewController: UIViewController {
     // MARK: - Properties
-    private let textField = CustomTextField()
+    private let textField = CustomTextField(with: NSLocalizedString("newCategory.categoryName", comment: ""))
     private let screenTopLabel = UILabel()
     private let createNewCategoryButton = UIButton(
         label:
