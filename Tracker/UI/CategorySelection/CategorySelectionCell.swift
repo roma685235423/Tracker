@@ -32,7 +32,7 @@ final class CategorySelectionCell: UITableViewCell {
     
     // MARK: - Public Methods
     func configureCell(with text: String, isSelected: Bool, cellIndex: Int, totalRowsInTable: Int) {
-        background.backgroundColor = .ypBackgroundDay
+        background.backgroundColor = .ypBackground
         separatorView.backgroundColor = .ypGray
         checkmarkIs(visible: !isSelected)
         configureLabel(with: text)

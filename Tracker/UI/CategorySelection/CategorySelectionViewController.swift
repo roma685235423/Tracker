@@ -64,7 +64,7 @@ final class CategorySelectionViewController: UIViewController {
     
     // MARK: - Private methods
     private func initialSettings() {
-        view.backgroundColor = .ypWhiteDay
+        view.backgroundColor = .ypWhite
         addCategoryButton.addTarget(self, action: #selector(didTapAddCategoryButton), for: .touchUpInside)
         configurenavigationController()
         configureTrackerCategoryTable()
@@ -79,7 +79,7 @@ final class CategorySelectionViewController: UIViewController {
         
         navigationController?.navigationBar.titleTextAttributes = [
             .font: UIFont.systemFont(ofSize: 16, weight: .medium),
-            .foregroundColor: UIColor.ypBlackDay
+            .foregroundColor: UIColor.ypBlack
         ]
     }
     
@@ -88,6 +88,7 @@ final class CategorySelectionViewController: UIViewController {
         trackerCategoryTable.dataSource = self
         trackerCategoryTable.layer.cornerRadius = 16
         trackerCategoryTable.separatorStyle = .none
+        trackerCategoryTable.backgroundColor = .clear
         trackerCategoryTable.layer.masksToBounds = true
         trackerCategoryTable.isDirectionalLockEnabled = true
         trackerCategoryTable.register(CategorySelectionCell.self, forCellReuseIdentifier: CategorySelectionCell.identifier)

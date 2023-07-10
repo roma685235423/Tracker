@@ -2,10 +2,10 @@ import UIKit
 
 extension UIColor {
     // MARK: - Public properties
-    static let ypBlackDay = UIColor(hex: 0x1A1B22)
+    static let ypBlackDay = UIColor(hex: 0x1A1B21)
     static let ypBlackNight = UIColor(hex: 0xFFFFFF)
     static let ypWhiteDay = UIColor(hex: 0xFFFFFF)
-    static let ypWhiteNight = UIColor(hex: 0x1A1B22)
+    static let ypWhiteNight = UIColor(hex: 0x1A1B21)
     static let ypGray = UIColor(hex: 0xAEAFB4)
     static let ypLightGray = UIColor(hex: 0xE6E8EB)
     static let ypBackgroundDay = UIColor(hex: 0xE6E8EB, alpha: 0.3)
@@ -71,6 +71,20 @@ extension UIColor {
             }
         } else {
             return UIColor(hex: 0xB2B2B2)
+        }
+    }
+    
+    static var ypSwitchBackground: UIColor {
+        if #available(iOS 13.0, *) {
+            return UIColor { traits -> UIColor in
+                if traits.userInterfaceStyle == .dark {
+                    return UIColor(hex: 0xE6E8EA)
+                } else {
+                    return .ypLightGray
+                }
+            }
+        } else {
+            return .ypLightGray
         }
     }
 }

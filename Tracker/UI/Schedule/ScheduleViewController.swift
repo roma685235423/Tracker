@@ -5,11 +5,31 @@ final class ScheduleViewController: UIViewController {
     var scheduleVCCallback: (([DayOfWeek], String) -> Void)?
     
     // MARK: - Private properties
-    private let scrollView = UIScrollView()
-    private let schedulerTable = UITableView()
-    
-    private lazy var readyButton = UIButton()
-    
+    private lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.alwaysBounceVertical = true
+        scrollView.decelerationRate = UIScrollView.DecelerationRate.normal
+        scrollView.isScrollEnabled = true
+        scrollView.isUserInteractionEnabled = true
+        scrollView.contentSize = CGSize(width: view.frame.width, height: tableHeight + buttonHeight + (spacing * 2))
+        return scrollView
+    }()
+    private lazy var schedulerTable: UITableView = {
+        let tableView = UITableView()
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.separatorColor = .ypGray
+        tableView.layer.cornerRadius = 16
+        tableView.layer.masksToBounds = true
+        tableView.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+        tableView.isScrollEnabled = false
+        return tableView
+    }()
+    private lazy var readyButton: UIButton = {
+        let button = UIButton(label: NSLocalizedString("schedule.ready", comment: ""))
+        button.addTarget(self, action: #selector(didTapReadyButton), for: .touchUpInside)
+        return button
+    }()
     private let weekDaysForTable = DayOfWeek.allCases
     private let tableHeight = CGFloat(524)
     private let buttonHeight = CGFloat(60)
@@ -29,13 +49,10 @@ final class ScheduleViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .ypWhiteDay
+        view.backgroundColor = .ypWhite
         spacing = self.view.frame.height * 0.0458
         addingUIElements()
         configurenavigationController()
-        configureScrollView()
-        configureSchedulerTable()
-        configureReadyButton()
         layoutConfigure()
     }
     
@@ -74,37 +91,8 @@ final class ScheduleViewController: UIViewController {
         
         navigationController?.navigationBar.titleTextAttributes = [
             .font: UIFont.systemFont(ofSize: 16, weight: .medium),
-            .foregroundColor: UIColor.ypBlackDay
+            .foregroundColor: UIColor.ypBlack
         ]
-    }
-    
-    private func configureScrollView() {
-        scrollView.alwaysBounceVertical = true
-        scrollView.decelerationRate = UIScrollView.DecelerationRate.normal
-        scrollView.isScrollEnabled = true
-        scrollView.isUserInteractionEnabled = true
-        scrollView.contentSize = CGSize(width: view.frame.width, height: tableHeight + buttonHeight + (spacing * 2))
-    }
-    
-    private func configureSchedulerTable() {
-        schedulerTable.delegate = self
-        schedulerTable.dataSource = self
-        schedulerTable.separatorColor = .ypGray
-        schedulerTable.layer.cornerRadius = 16
-        schedulerTable.layer.masksToBounds = true
-        schedulerTable.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        schedulerTable.isScrollEnabled = false
-    }
-    
-    
-    private func configureReadyButton() {
-        readyButton.backgroundColor = .ypBlackDay
-        readyButton.setTitle(NSLocalizedString("schedule.ready", comment: ""), for: .normal)
-        readyButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        readyButton.titleLabel?.textColor = .ypWhiteDay
-        readyButton.layer.cornerRadius = 16
-        readyButton.layer.masksToBounds = true
-        readyButton.addTarget(self, action: #selector(didTapReadyButton), for: .touchUpInside)
     }
     
     private func shortWeekDaysNamesCreation() -> String {
@@ -189,13 +177,15 @@ extension ScheduleViewController: UITableViewDataSource {
         switchView.tag = indexPath.row
         switchView.onTintColor = .ypBlue
         switchView.addTarget(self, action: #selector(self.switchChanged(_:)), for: .valueChanged)
+        switchView.backgroundColor = .ypSwitchBackground
+        switchView.layer.cornerRadius = switchView.frame.height / 2
         
         cell.textLabel?.text = currentDay
-        cell.textLabel?.textColor = .ypBlackDay
+        cell.textLabel?.textColor = .ypBlack
         cell.textLabel?.font = UIFont.systemFont(ofSize: 17)
         cell.accessoryView = switchView
         cell.selectionStyle = .none
-        cell.backgroundColor = .ypBackgroundDay
+        cell.backgroundColor = .ypBackground
         return cell
     }
     

@@ -17,7 +17,7 @@ final class NewCategoryViewController: UIViewController {
     // MARK: - Lifecicle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .ypWhiteDay
+        view.backgroundColor = .ypWhite
         screenTopLabel.configureLabel(
             text: NSLocalizedString("newCategory.categoryName", comment: ""),
             addToView: view,
@@ -59,7 +59,7 @@ final class NewCategoryViewController: UIViewController {
     private func configureTextField() {
         textField.delegate = self
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.backgroundColor = .ypBackgroundDay
+        textField.backgroundColor = .ypBackground
         textField.layer.cornerRadius = 16
         textField.layer.masksToBounds = true
         textField.keyboardType = .default
