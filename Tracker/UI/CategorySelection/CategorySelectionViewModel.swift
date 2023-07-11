@@ -53,7 +53,7 @@ final class CategorySelectionViewModel {
     func add(newCategory: TrackerCategory) {
         do {
             try trackerCategoryStore.add(newCategory: newCategory)
-            categories = getCategoriesFromStore()
+            loadCategories()
         } catch {
             
         }
