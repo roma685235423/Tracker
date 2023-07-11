@@ -38,7 +38,7 @@ final class CategorySelectionViewModel {
     }
     
     func loadCategories() {
-        categories = getCategoriesFromStore()
+        categories = trackerCategoryStore.categories
     }
     
     func isCheckmarkVisible(in row: Int) -> Bool {
@@ -57,13 +57,6 @@ final class CategorySelectionViewModel {
         } catch {
             
         }
-    }
-    
-    // MARK: - Private Methods
-    private func getCategoriesFromStore() -> [TrackerCategory] {
-        var categories: [TrackerCategory] = []
-        categories = trackerCategoryStore.categories
-        return categories
     }
 }
 
