@@ -2,5 +2,6 @@ import Foundation
 
 protocol CategorySelectionViewModelDelegate: AnyObject {
     func categoriesDidUpdate()
-    func didSelect(category: TrackerCategory)
+    func categoryDidSelect()
+    func add(newCategory: TrackerCategory)
 }

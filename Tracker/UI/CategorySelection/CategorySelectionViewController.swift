@@ -36,6 +36,12 @@ final class CategorySelectionViewController: UIViewController {
         viewModel.loadCategories()
     }
     
+    // MARK: - Public methods
+    func refreshTableView() {
+        trackerCategoryTable.reloadData()
+        mainSpacePlaceholderStack.isHidden = viewModel.isCategoriesExist()
+    }
+    
     // MARK: - Layout Configuration
     private func addingUIElements() {
         [trackerCategoryTable, addCategoryButton, mainSpacePlaceholderStack].forEach{
@@ -63,6 +69,16 @@ final class CategorySelectionViewController: UIViewController {
     }
     
     // MARK: - Private methods
+    private func bindViewModel() {
+        viewModel.updateVMCallback = { [weak self] update in
+            guard let self else { return }
+            self.trackerCategoryTable.performBatchUpdates {
+                self.trackerCategoryTable.insertRows(at: update.newIndexes, with: .automatic)
+                self.trackerCategoryTable.deleteRows(at: update.deletedIndexes, with: .automatic)
+            }
+        }
+    }
+    
     private func initialSettings() {
         view.backgroundColor = .ypWhite
         addCategoryButton.addTarget(self, action: #selector(didTapAddCategoryButton), for: .touchUpInside)
@@ -96,7 +112,7 @@ final class CategorySelectionViewController: UIViewController {
     
     // MARK: - Actions
     @objc private func didTapAddCategoryButton() {
-        let trackerCategoryCreationViewController = NewCategoryViewController()
+        let trackerCategoryCreationViewController = NewCategoryViewController(viewModel: viewModel)
         let navigationVC = UINavigationController(rootViewController: trackerCategoryCreationViewController)
         trackerCategoryCreationViewController.modalPresentationStyle = .pageSheet
         present(navigationVC, animated: true)
@@ -157,10 +173,15 @@ extension CategorySelectionViewController: UITableViewDataSource {
 // MARK: - CategorySelectionViewModelDelegate
 extension CategorySelectionViewController: CategorySelectionViewModelDelegate {
     func categoriesDidUpdate() {
+        trackerCategoryTable.reloadData()
         mainSpacePlaceholderStack.isHidden = viewModel.isCategoriesExist()
     }
     
-    func didSelect(category: TrackerCategory) {
+    func categoryDidSelect() {
         dismiss(animated: true, completion: nil)
+    }
+    
+    func add(newCategory: TrackerCategory) {
+        viewModel.add(newCategory: newCategory)
     }
 }

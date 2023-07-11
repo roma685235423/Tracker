@@ -155,14 +155,8 @@ final class ScheduleViewController: UIViewController {
 }
 
 
-// MARK: - UITableViewDelegate Extension
-extension ScheduleViewController: UITableViewDelegate {
-    
-}
-
-
 // MARK: - UITableViewDataSource Extension
-extension ScheduleViewController: UITableViewDataSource {
+extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return weekDaysForTable.count
     }
