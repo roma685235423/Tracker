@@ -35,7 +35,7 @@ class TrackersViewController: UIViewController {
         bar.placeholder =  NSLocalizedString(
             "trackers.searchBarPlaceholder",
             comment: ""
-            )
+        )
         bar.delegate = self
         return bar
     }()
@@ -122,14 +122,6 @@ class TrackersViewController: UIViewController {
         localizedDateLabel.text = currentDate.getStringFromLocalizedDate()
         checkMainPlaceholderVisability()
         checkPlaceholderVisabilityAfterSearch()
-    }
-    
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        if #available(iOS 13.0, *),
-           traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
-            traitCollection.userInterfaceStyle == .dark ? print("🖤") : print("🤍")
-        }
     }
     
     // MARK: - Private methods
@@ -260,20 +252,30 @@ extension TrackersViewController: UICollectionViewDataSource {
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
+        
         guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: "trackersCollectionCell",
             for: indexPath
-        ) as? TrackersCollectionCell
-        else { fatalError("Invalid TrackerCollectionView cell configuration !!!") }
+        ) as? TrackersCollectionCell else {
+            fatalError("Invalid TrackerCollectionView cell configuration !!!")
+        }
         
         guard let tracker = trackerStore.getTrackerAt(indexPath: indexPath)
         else { fatalError("Invalid Tracker creation!!!") }
         
-        let isDone = complitedTrackers.contains { $0.date == currentDate && $0.trackerId == tracker.id }
-        let daysCounter = tracker.daysComplitedCount
-        cell.configureCellContent(prototype: tracker, daysCounter: daysCounter, isDone: isDone)
-        cell.delegate = self
+        let isDone = complitedTrackers.contains {
+            $0.date == currentDate && $0.trackerId == tracker.id
+        }
         
+        let daysCounter = tracker.daysComplitedCount
+        let userInteraction = UIContextMenuInteraction(delegate: self)
+        cell.configureCellContent(
+            prototype: tracker,
+            daysCounter: daysCounter,
+            isDone: isDone,
+            userInteraction: userInteraction
+        )
+        cell.delegate = self
         return cell
     }
     
@@ -373,6 +375,33 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     ) -> UIEdgeInsets {
         return UIEdgeInsets(top: 8, left: trackerCollectionViewParameters.leftInset,
                             bottom: 16, right: trackerCollectionViewParameters.rightInset)
+    }
+}
+
+
+// MARK: - UIContextMenuInteractionDelegate
+extension TrackersViewController: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(
+        _ interaction: UIContextMenuInteraction,
+        configurationForMenuAtLocation location: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        guard
+            let location = interaction.view?.convert(location, to: collectionView),
+            let indexPath = collectionView.indexPathForItem(at: location),
+            let tracker = trackerStore.getTrackerAt(indexPath: indexPath)
+        else { return nil }
+        
+        let menuConfiguration = UIContextMenuConfiguration(
+            identifier: nil,
+            previewProvider: nil,
+            actionProvider:  { _ in
+                UIMenu(children: [
+                    UIAction(title: "Закрепить") { _ in },
+                    UIAction(title: "Редактировать") {_ in },
+                    UIAction(title: "Удалить", attributes: .destructive) { _ in }
+                ])
+            })
+        return menuConfiguration
     }
 }
 

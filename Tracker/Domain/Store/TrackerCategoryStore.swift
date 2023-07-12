@@ -16,16 +16,7 @@ struct CategoryStoreUpdates {
 final class TrackerCategoryStore: NSObject {
     // MARK: - Private properties
     weak var delegate: TrackersCategoriesStoreDelegate?
-    lazy var categories: [TrackerCategory] = {
-        do {
-            let request = TrackerCategoryCoreData.fetchRequest()
-            let result = try context.fetch(request)
-            let resultArray = try result.map { try createCategory(from: $0) }
-            return resultArray
-        } catch {
-            return []
-        }
-    }()
+
     private let context: NSManagedObjectContext
     private var newIndexes: [IndexPath] = []
     private var deletedIndexes: [IndexPath] = []
@@ -57,6 +48,21 @@ final class TrackerCategoryStore: NSObject {
         
         try context.save()
     }
+    
+    func delete(categoty: TrackerCategory) throws {
+        
+    }
+    
+    func getCategoryesFromStore() -> [TrackerCategory]{
+            do {
+                let request = TrackerCategoryCoreData.fetchRequest()
+                let result = try context.fetch(request)
+                let resultArray = try result.map { try createCategory(from: $0) }
+                return resultArray
+            } catch {
+                return []
+            }
+        }
     
     // MARK: - Private methods
     private func resetIndexes() {

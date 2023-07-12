@@ -110,6 +110,24 @@ final class CategorySelectionViewController: UIViewController {
         trackerCategoryTable.register(CategorySelectionCell.self, forCellReuseIdentifier: CategorySelectionCell.identifier)
     }
     
+//    private func showDeleteConfirmationAlert(at indexPath: IndexPath) {
+//        let category = viewModel.categories[indexPath.row]
+//
+//        let alert = UIAlertController(title: "Delete Category", message: "Are you sure you want to delete this category?", preferredStyle: .alert)
+//        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+//        alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { [weak self] _ in
+//            self?.deleteCategory(at: indexPath)
+//        }))
+//
+//        present(alert, animated: true, completion: nil)
+//    }
+    
+//    private func deleteCategory(at indexPath: IndexPath) {
+//        let category = viewModel.categories[indexPath.row]
+//        viewModel.categories.remove(at: indexPath.row)
+//        trackerCategoryTable.deleteRows(at: [indexPath], with: .automatic)
+//    }
+    
     // MARK: - Actions
     @objc private func didTapAddCategoryButton() {
         let trackerCategoryCreationViewController = NewCategoryViewController(viewModel: viewModel)
@@ -152,7 +170,7 @@ extension CategorySelectionViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CategorySelectionCell.identifier) as? CategorySelectionCell else {
             return UITableViewCell()
         }
-        
+        cell.resetSeparatorVisibility()
         let categoryName = viewModel.categories[indexPath.row].title
         let isSelected = viewModel.isCheckmarkVisible(in: indexPath.row)
         cell.configureCell(
@@ -185,3 +203,31 @@ extension CategorySelectionViewController: CategorySelectionViewModelDelegate {
         viewModel.add(newCategory: newCategory)
     }
 }
+
+
+//// MARK: - UIContextMenuInteractionDelegate
+//extension CategorySelectionViewController: UIContextMenuInteractionDelegate {
+//    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+//        guard let indexPath = trackerCategoryTable.indexPathForRow(at: location) else {
+//            return nil
+//        }
+//        
+//        let deleteAction = UIAction(title: "Delete", image: UIImage(systemName: "trash"), identifier: nil) { [weak self] _ in
+//            self?.showDeleteConfirmationAlert(at: indexPath)
+//        }
+//        
+//        let configuration = UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
+//            UIMenu(title: "", children: [deleteAction])
+//        }
+//        
+//        return configuration
+//    }
+//
+//    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, previewForHighlightingMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+//        return nil
+//    }
+//
+//    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, previewForDismissingMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+//        return nil
+//    }
+//}

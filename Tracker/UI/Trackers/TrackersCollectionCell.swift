@@ -40,9 +40,10 @@ final class TrackersCollectionCell: UICollectionViewCell {
     }
     
     // MARK: - Public methods
-    func configureCellContent(prototype: Tracker, daysCounter: Int, isDone: Bool) {
+    func configureCellContent(prototype: Tracker, daysCounter: Int, isDone: Bool, userInteraction: UIInteraction) {
         self.tracker = prototype
         self.daysCounter = daysCounter
+        trackerBackgroundLabel.addInteraction(userInteraction)
         configureBackground(color: prototype.color)
         configureEmojiLabel(with: prototype.emoji)
         configureTextLabel(with: prototype.label)

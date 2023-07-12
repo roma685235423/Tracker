@@ -44,6 +44,10 @@ final class CategorySelectionCell: UITableViewCell {
         checkmarkImage.isHidden = visible
     }
     
+    func resetSeparatorVisibility() {
+        separatorView.isHidden = false
+    }
+    
     // MARK: - Private methods
     private func addingUIElements() {
         contentView.addSubview(background)

@@ -11,6 +11,7 @@ final class CategorySelectionViewModel {
     private (set) var categories: [TrackerCategory] = [] {
         didSet {
             delegate?.categoriesDidUpdate()
+            print(categories)
         }
     }
     private (set) var selectedCategory: TrackerCategory? = nil {
@@ -29,6 +30,9 @@ final class CategorySelectionViewModel {
     
     
     // MARK: - Public Methods
+    func printCategoryes() {
+        print(categories)
+    }
     func isCategoriesExist() -> Bool {
         return categoriesCount() > 0
     }
@@ -38,7 +42,7 @@ final class CategorySelectionViewModel {
     }
     
     func loadCategories() {
-        categories = trackerCategoryStore.categories
+        categories = trackerCategoryStore.getCategoryesFromStore()
     }
     
     func isCheckmarkVisible(in row: Int) -> Bool {
@@ -64,7 +68,7 @@ final class CategorySelectionViewModel {
 // MARK: - TrackersCategoriesStoreDelegate
 extension CategorySelectionViewModel: TrackersCategoriesStoreDelegate {
     func categoriesDidUpdate(update: CategoryStoreUpdates) {
-        categories = trackerCategoryStore.categories
+        categories = trackerCategoryStore.getCategoryesFromStore()
         updateVMCallback?(update)
     }
 }
