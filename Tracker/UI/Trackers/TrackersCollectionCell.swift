@@ -5,7 +5,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
     weak var delegate: TrackersCollectinCellDelegate?
     
     // MARK: - Private properties
-    private let trackerBackgroundLabel = UILabel()
+    private let trackerBackgroundView = UIView()
     private let emojieLabel = UILabel()
     private let trackerTextLabel = UILabel()
     private let counterLabel = UILabel()
@@ -20,6 +20,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
         }
     }
     
+    static let identifier = "TrackersCollectionCell"
     // MARK: - Life cicle
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -40,10 +41,10 @@ final class TrackersCollectionCell: UICollectionViewCell {
     }
     
     // MARK: - Public methods
-    func configureCellContent(prototype: Tracker, daysCounter: Int, isDone: Bool, userInteraction: UIInteraction) {
+    func configureCellContent(prototype: Tracker, daysCounter: Int, isDone: Bool, userInteraction: UIContextMenuInteraction) {
         self.tracker = prototype
         self.daysCounter = daysCounter
-        trackerBackgroundLabel.addInteraction(userInteraction)
+        trackerBackgroundView.addInteraction(userInteraction)
         configureBackground(color: prototype.color)
         configureEmojiLabel(with: prototype.emoji)
         configureTextLabel(with: prototype.label)
@@ -72,30 +73,34 @@ final class TrackersCollectionCell: UICollectionViewCell {
     
     // MARK: - Private methods
     private func addingUIElements() {
-        [trackerBackgroundLabel, emojieLabel, trackerTextLabel, counterLabel, taskIsDoneButton].forEach{
+        [trackerBackgroundView, counterLabel, taskIsDoneButton, ].forEach{
             contentView.addSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        [emojieLabel, trackerTextLabel].forEach{
+            trackerBackgroundView.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
     }
     
     private func layoutConfigure() {
         NSLayoutConstraint.activate([
-            trackerBackgroundLabel.topAnchor.constraint(equalTo: self.topAnchor),
-            trackerBackgroundLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            trackerBackgroundLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            trackerBackgroundLabel.heightAnchor.constraint(equalToConstant: 90),
+            trackerBackgroundView.topAnchor.constraint(equalTo: self.topAnchor),
+            trackerBackgroundView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            trackerBackgroundView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            trackerBackgroundView.heightAnchor.constraint(equalToConstant: 90),
             
             emojieLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: spaceFromEdge),
             emojieLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: spaceFromEdge),
             emojieLabel.heightAnchor.constraint(equalToConstant: 24),
             emojieLabel.widthAnchor.constraint(equalToConstant: 24),
             
-            trackerTextLabel.bottomAnchor.constraint(equalTo: trackerBackgroundLabel.bottomAnchor, constant: -spaceFromEdge),
-            trackerTextLabel.leadingAnchor.constraint(equalTo: trackerBackgroundLabel.leadingAnchor, constant: spaceFromEdge),
-            trackerTextLabel.trailingAnchor.constraint(equalTo: trackerBackgroundLabel.trailingAnchor, constant: -spaceFromEdge),
+            trackerTextLabel.bottomAnchor.constraint(equalTo: trackerBackgroundView.bottomAnchor, constant: -spaceFromEdge),
+            trackerTextLabel.leadingAnchor.constraint(equalTo: trackerBackgroundView.leadingAnchor, constant: spaceFromEdge),
+            trackerTextLabel.trailingAnchor.constraint(equalTo: trackerBackgroundView.trailingAnchor, constant: -spaceFromEdge),
             
             taskIsDoneButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -spaceFromEdge),
-            taskIsDoneButton.topAnchor.constraint(equalTo: trackerBackgroundLabel.bottomAnchor, constant: 8),
+            taskIsDoneButton.topAnchor.constraint(equalTo: trackerBackgroundView.bottomAnchor, constant: 8),
             taskIsDoneButton.heightAnchor.constraint(equalToConstant: 34),
             taskIsDoneButton.widthAnchor.constraint(equalToConstant: 34),
             
@@ -125,12 +130,13 @@ final class TrackersCollectionCell: UICollectionViewCell {
     }
     
     private func configureBackground(color: UIColor) {
-        trackerBackgroundLabel.layer.cornerRadius = 16
+        self.contentView.layer.cornerRadius = 16
+        trackerBackgroundView.layer.cornerRadius = 16
         trackerTextLabel.layer.borderWidth = 1
-        trackerBackgroundLabel.layer.masksToBounds = true
+        trackerBackgroundView.layer.masksToBounds = true
         
-        trackerBackgroundLabel.backgroundColor = color
-        trackerBackgroundLabel.layer.borderColor = color.withAlphaComponent(0.3).cgColor
+        trackerBackgroundView.backgroundColor = color
+        trackerBackgroundView.layer.borderColor = color.withAlphaComponent(0.3).cgColor
     }
     
     private func configureEmojiLabel(with emoji: String) {
@@ -147,7 +153,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
     private func configureTextLabel(with text: String) {
         trackerTextLabel.configureLabel(
             text: text,
-            addToView: trackerBackgroundLabel,
+            addToView: trackerBackgroundView,
             ofSize: 12,
             weight: .medium
         )

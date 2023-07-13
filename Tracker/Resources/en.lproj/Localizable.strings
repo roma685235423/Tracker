@@ -22,6 +22,16 @@
 // Search bar placeholder text
 "trackers.searchBarPlaceholder" = "Search";
 
+// Cellcontextual menu
+"trackers.pinTracker" = "Pin";
+"trackers.unpinTracker" = "Unpin";
+"trackers.editTracker" = "Edit";
+"trackers.deleteTracker" = "Delete";
+
+// Delete tracket alert
+"trackers.deleteTrackerAlertTitle" = "Are you sure you want to delete the tracker?";
+"trackers.deleteTrackerAlertAction" = "Delete";
+"trackers.deleteTrackerAlertCancel" = "Cancel";
 
 // MARK: - NewTracker
 // Tracker creation page name

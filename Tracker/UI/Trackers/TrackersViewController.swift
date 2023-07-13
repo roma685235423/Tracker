@@ -48,7 +48,7 @@ class TrackersViewController: UIViewController {
         collection.delegate = self
         collection.register(
             TrackersCollectionCell.self,
-            forCellWithReuseIdentifier: "trackersCollectionCell"
+            forCellWithReuseIdentifier: TrackersCollectionCell.identifier
         )
         collection.register(
             SupplementaryView.self,
@@ -179,6 +179,29 @@ class TrackersViewController: UIViewController {
         searchSpacePlaceholderStack.isHidden = !isHidden
     }
     
+    private func deleteTrackerAlert(_ tracker: Tracker) {
+        let alert = UIAlertController(
+            title: nil,
+            message: NSLocalizedString("trackers.deleteTrackerAlertTitle", comment: ""),
+            preferredStyle: .actionSheet
+        )
+        
+        let deleteAction = UIAlertAction(
+            title: NSLocalizedString("trackers.deleteTrackerAlertAction", comment: ""),
+            style: .destructive
+        ) {  _ in
+            // TODO: Добавить метод в стор
+        }
+        let cancelAction = UIAlertAction(
+            title: NSLocalizedString("trackers.deleteTrackerAlertCancel", comment: ""),
+            style: .cancel
+        )
+        alert.addAction(cancelAction)
+        alert.addAction(deleteAction)
+        
+        present(alert, animated: true)
+    }
+    
     // MARK: - Actions
     @objc
     private func didChangedDatePickerValue(_ sender: UIDatePicker) {
@@ -235,7 +258,7 @@ extension TrackersViewController: UISearchBarDelegate {
 
 
 //MARK: - UICollectionViewDataSource
-extension TrackersViewController: UICollectionViewDataSource {
+extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         checkMainPlaceholderVisability()
         return trackerStore.numberOfSections
@@ -254,7 +277,7 @@ extension TrackersViewController: UICollectionViewDataSource {
     ) -> UICollectionViewCell {
         
         guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: "trackersCollectionCell",
+            withReuseIdentifier: TrackersCollectionCell.identifier,
             for: indexPath
         ) as? TrackersCollectionCell else {
             fatalError("Invalid TrackerCollectionView cell configuration !!!")
@@ -268,12 +291,12 @@ extension TrackersViewController: UICollectionViewDataSource {
         }
         
         let daysCounter = tracker.daysComplitedCount
-        let userInteraction = UIContextMenuInteraction(delegate: self)
+        let interaction = UIContextMenuInteraction(delegate: self)
         cell.configureCellContent(
             prototype: tracker,
             daysCounter: daysCounter,
             isDone: isDone,
-            userInteraction: userInteraction
+            userInteraction: interaction
         )
         cell.delegate = self
         return cell
@@ -391,17 +414,22 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
             let tracker = trackerStore.getTrackerAt(indexPath: indexPath)
         else { return nil }
         
-        let menuConfiguration = UIContextMenuConfiguration(
-            identifier: nil,
-            previewProvider: nil,
-            actionProvider:  { _ in
-                UIMenu(children: [
-                    UIAction(title: "Закрепить") { _ in },
-                    UIAction(title: "Редактировать") {_ in },
-                    UIAction(title: "Удалить", attributes: .destructive) { _ in }
-                ])
-            })
-        return menuConfiguration
+        return UIContextMenuConfiguration(actionProvider:  { actions in
+            UIMenu(children: [
+                UIAction(title: NSLocalizedString("trackers.pinTracker", comment: "")) { _ in
+                    // TODO: Добавить метод в стор
+                },
+                UIAction(title: NSLocalizedString("trackers.editTracker", comment: "")) { _ in
+                    // TODO: Добавить метод в стор
+                },
+                UIAction(title: NSLocalizedString(
+                    "trackers.deleteTracker",
+                    comment: ""
+                ), attributes: .destructive) { [weak self]_ in
+                    self?.deleteTrackerAlert(tracker)
+                }
+            ])
+        })
     }
 }
 

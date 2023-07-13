@@ -22,6 +22,16 @@
 // Search bar placeholder text
 "trackers.searchBarPlaceholder" = "Поиск";
 
+// Cellcontextual menu
+"trackers.pinTracker" = "Закрепить";
+"trackers.unpinTracker" = "Открепить";
+"trackers.editTracker" = "Редактировать";
+"trackers.deleteTracker" = "Удалить";
+
+// Delete tracket alert
+"trackers.deleteTrackerAlertTitle" = "Уверены что хотите удалить трекер?";
+"trackers.deleteTrackerAlertAction" = "Удалить";
+"trackers.deleteTrackerAlertCancel" = "Отменить";
 
 // MARK: - NewTracker
 // Tracker creation page name
