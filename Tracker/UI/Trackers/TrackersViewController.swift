@@ -83,6 +83,29 @@ class TrackersViewController: UIViewController {
         return picker
     }()
     
+    private lazy var filterButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle(NSLocalizedString(
+            "filters",
+            comment: ""
+        ), for: .normal)
+        button.tintColor = .ypWhiteDay
+        button.backgroundColor = .ypBlue
+        button.titleLabel?.font = UIFont.systemFont(
+            ofSize: 17,
+            weight: .medium
+        )
+        button.addTarget(
+            self,
+            action: #selector(didTapFiltersButton),
+            for: .touchUpInside
+        )
+        button.layer.cornerRadius = 16
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.isHidden = true
+        return button
+    }()
+    
     private let trackerStore = TrackerStore()
     private let trackerRecordStore = TrackerRecordStore()
     
@@ -122,12 +145,13 @@ class TrackersViewController: UIViewController {
         localizedDateLabel.text = currentDate.getStringFromLocalizedDate()
         checkMainPlaceholderVisability()
         checkPlaceholderVisabilityAfterSearch()
+        filterButton.layer.zPosition = 2
     }
     
     // MARK: - Private methods
     private func addingUIElements() {
         [addTrackerButton, trackerLabel, trackersSearchBar, datePicker, localizedDateLabel,
-         collectionView, mainSpacePlaceholderStack, searchSpacePlaceholderStack].forEach{
+         collectionView, mainSpacePlaceholderStack, searchSpacePlaceholderStack, filterButton].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -165,13 +189,19 @@ class TrackersViewController: UIViewController {
             mainSpacePlaceholderStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
             searchSpacePlaceholderStack.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.495),
-            searchSpacePlaceholderStack.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            searchSpacePlaceholderStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
+            filterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -17),
+            filterButton.heightAnchor.constraint(equalToConstant: 50),
+            filterButton.widthAnchor.constraint(equalToConstant: 114),
+            filterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
     
     private func checkMainPlaceholderVisability() {
         let isHidden = trackerStore.numberOfTrackers == 0 && searchSpacePlaceholderStack.isHidden
         mainSpacePlaceholderStack.isHidden = !isHidden
+        filterButton.isHidden = isHidden
     }
     
     private func checkPlaceholderVisabilityAfterSearch() {
@@ -214,11 +244,17 @@ class TrackersViewController: UIViewController {
         collectionView.reloadData()
     }
     
-    
     @objc
     private func didTapAddTrackerButton() {
         let createTrackerViewController = NewTrackerViewController()
         let navigationController = UINavigationController(rootViewController: createTrackerViewController)
+        present(navigationController, animated: true)
+    }
+    
+    @objc
+    private func didTapFiltersButton() {
+        let TrackerFiltersViewController = TrackerFilteringViewController()
+        let navigationController = UINavigationController(rootViewController: TrackerFiltersViewController)
         present(navigationController, animated: true)
     }
 }

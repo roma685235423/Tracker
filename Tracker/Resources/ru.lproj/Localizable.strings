@@ -21,6 +21,8 @@
 "trackers.searchPlaceholder" = "Ничего не найдено";
 // Search bar placeholder text
 "trackers.searchBarPlaceholder" = "Поиск";
+// Filtrs button and TrackerFilteringViewController navigationController text
+"filters" = "Фильтры";
 
 // Cellcontextual menu
 "trackers.pinTracker" = "Закрепить";
@@ -32,6 +34,13 @@
 "trackers.deleteTrackerAlertTitle" = "Уверены что хотите удалить трекер?";
 "trackers.deleteTrackerAlertAction" = "Удалить";
 "trackers.deleteTrackerAlertCancel" = "Отменить";
+
+
+// MARK: - Filters
+"filters.all" = "Все трекеры";
+"filters.today" = "Трекеры на сегодня";
+"filters.completed" = "Завершенные";
+"filters.notCompleted" = "Не завершенные";
 
 // MARK: - NewTracker
 // Tracker creation page name

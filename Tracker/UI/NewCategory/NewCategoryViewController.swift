@@ -2,15 +2,17 @@ import UIKit
 
 final class NewCategoryViewController: UIViewController {
     // MARK: - Properties
-    private let textField = CustomTextField(with: NSLocalizedString("newCategory.categoryName", comment: ""))
+    private let textField = CustomTextField(with: NSLocalizedString(
+        "newCategory.categoryName",
+        comment: ""
+    ))
     private let screenTopLabel = UILabel()
     private let createNewCategoryButton = UIButton(
         label:
             NSLocalizedString(
                 "newCategory.ready",
                 comment: ""
-            )
-    )
+            ))
     
     private let viewModel: CategorySelectionViewModel
     private var newCategoryName: String = ""
@@ -34,7 +36,11 @@ final class NewCategoryViewController: UIViewController {
             ofSize: 16,
             weight: .medium)
         addingUIElements()
-        createNewCategoryButton.addTarget(self, action: #selector(didTapCreateNewCategoryButton), for: .touchUpInside)
+        createNewCategoryButton.addTarget(
+            self,
+            action: #selector(didTapCreateNewCategoryButton),
+            for: .touchUpInside
+        )
         checkIsCreateButtonActive()
         configureTextField()
         layoutConfigure()

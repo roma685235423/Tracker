@@ -354,11 +354,9 @@ extension ConstructorViewController: UITableViewDataSource, UITableViewDelegate 
 
 // MARK: - UICollectionViewDataSource Extension
 extension ConstructorViewController: UICollectionViewDataSource {
-    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return collectionViewSectionHeaders.count
     }
-    
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {

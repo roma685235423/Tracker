@@ -21,6 +21,8 @@
 "trackers.searchPlaceholder" = "Nothing found";
 // Search bar placeholder text
 "trackers.searchBarPlaceholder" = "Search";
+// Filtrs button and TrackerFilteringViewController navigationController text
+"filters" = "Filters";
 
 // Cellcontextual menu
 "trackers.pinTracker" = "Pin";
@@ -32,6 +34,13 @@
 "trackers.deleteTrackerAlertTitle" = "Are you sure you want to delete the tracker?";
 "trackers.deleteTrackerAlertAction" = "Delete";
 "trackers.deleteTrackerAlertCancel" = "Cancel";
+
+
+// MARK: - Filters
+"filters.all" = "All trackers";
+"filters.today" = "Trackers for today";
+"filters.completed" = "Completed";
+"filters.notCompleted" = "Not completed";
 
 // MARK: - NewTracker
 // Tracker creation page name

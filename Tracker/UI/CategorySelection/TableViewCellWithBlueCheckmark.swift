@@ -1,6 +1,6 @@
 import UIKit
 
-final class CategorySelectionCell: UITableViewCell {
+final class TableViewCellWithBlueCheckmark: UITableViewCell {
     // MARK: - Puplic properties
     static let identifier = "CategoryCell"
     
