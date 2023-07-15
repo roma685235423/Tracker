@@ -297,7 +297,7 @@ final class ConstructorViewController: UIViewController {
             daysComplitedCount: 0
         )
         guard let unwrapCategory = currentSelectedCateory else { return }
-        try! trackerStore.addTracker(tracker: tracker, with: unwrapCategory)
+        try? trackerStore.addTracker(tracker: tracker, with: unwrapCategory)
         dismiss(animated: true)
     }
 }

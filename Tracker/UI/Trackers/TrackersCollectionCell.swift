@@ -10,6 +10,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
     private let trackerTextLabel = UILabel()
     private let counterLabel = UILabel()
     private let taskIsDoneButton = UIButton()
+    private let pinImage = UIImageView()
     
     private var tracker: Tracker?
     
@@ -106,7 +107,10 @@ final class TrackersCollectionCell: UICollectionViewCell {
             
             counterLabel.centerYAnchor.constraint(equalTo: taskIsDoneButton.centerYAnchor),
             counterLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: spaceFromEdge),
-            counterLabel.trailingAnchor.constraint(equalTo: taskIsDoneButton.leadingAnchor, constant: -8)
+            counterLabel.trailingAnchor.constraint(equalTo: taskIsDoneButton.leadingAnchor, constant: -8),
+            
+            pinImage.heightAnchor.constraint(equalToConstant: 12),
+            pinImage.widthAnchor.constraint(equalToConstant: 8)
         ])
     }
     
@@ -127,6 +131,12 @@ final class TrackersCollectionCell: UICollectionViewCell {
         counterLabel.font = UIFont.systemFont(ofSize: 12)
         counterLabel.textColor = .ypBlack
         counterLabel.text = getCorrectRussianWordDay(days: daysCounter)
+    }
+    
+    private func configurePinImage() {
+        pinImage.image = UIImage(systemName: "pin.fill")
+        pinImage.tintColor = .ypWhiteDay
+        pinImage.translatesAutoresizingMaskIntoConstraints = false
     }
     
     private func configureBackground(color: UIColor) {

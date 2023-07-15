@@ -67,7 +67,8 @@ final class TrackerStore: NSObject {
             color: color,
             emoji: emoji,
             schedule: schedule,
-            daysComplitedCount: complitedDaysCounter.count
+            daysComplitedCount: complitedDaysCounter.count,
+            isPinned: coreData.isPinned
         )
     }
     
@@ -130,7 +131,22 @@ final class TrackerStore: NSObject {
         trackerCoreData.trackerId = tracker.id.uuidString
         trackerCoreData.label = tracker.label
         trackerCoreData.emoji = tracker.emoji
+        trackerCoreData.isPinned = false
         try context.save()
+    }
+    
+    func deleteTracker(at indexPath: IndexPath) throws {
+        let trackerCoreData = fetchedResultsController.object(at: indexPath)
+        context.delete(trackerCoreData)
+        try context.save()
+    }
+    
+    func togglePin(for tracker: Tracker) throws {
+        do {
+            let trackerToToggle = try getTrackerCoreData(from: tracker)
+            trackerToToggle.isPinned.toggle()
+            try context.save()
+        } catch { }
     }
     
     // MARK: - Private methods
@@ -170,6 +186,14 @@ final class TrackerStore: NSObject {
     
     private func scheduleFromCoreData(_ coreData: TrackerCoreData) -> [DayOfWeek]? {
         return DayOfWeek.decodeFrom(dayCodeString: coreData.schedule)
+    }
+    
+    private func getTrackerCoreData(from tracker: Tracker) throws -> TrackerCoreData {
+        let request: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "trackerId == %@", tracker.id as CVarArg)
+
+        let trackers = try context.fetch(request)
+        return trackers.first ?? TrackerCoreData()
     }
 }
 

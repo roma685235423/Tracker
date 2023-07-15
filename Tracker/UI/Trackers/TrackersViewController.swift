@@ -209,7 +209,7 @@ class TrackersViewController: UIViewController {
         searchSpacePlaceholderStack.isHidden = !isHidden
     }
     
-    private func deleteTrackerAlert(_ tracker: Tracker) {
+    private func deleteTrackerAlert(at indexPath: IndexPath) {
         let alert = UIAlertController(
             title: nil,
             message: NSLocalizedString("trackers.deleteTrackerAlertTitle", comment: ""),
@@ -219,8 +219,13 @@ class TrackersViewController: UIViewController {
         let deleteAction = UIAlertAction(
             title: NSLocalizedString("trackers.deleteTrackerAlertAction", comment: ""),
             style: .destructive
-        ) {  _ in
-            // TODO: Добавить метод в стор
+        ) { [weak self] _ in
+            guard let self = self else { return }
+            do {
+                try self.trackerStore.deleteTracker(at: indexPath)
+            } catch {
+                
+            }
         }
         let cancelAction = UIAlertAction(
             title: NSLocalizedString("trackers.deleteTrackerAlertCancel", comment: ""),
@@ -450,9 +455,17 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
             let tracker = trackerStore.getTrackerAt(indexPath: indexPath)
         else { return nil }
         
+        var isPinnedTitle = ""
+        if tracker.isPinned {
+            isPinnedTitle = NSLocalizedString("trackers.unpinTracker", comment: "")
+        } else {
+            isPinnedTitle = NSLocalizedString("trackers.pinTracker", comment: "")
+        }
+        
         return UIContextMenuConfiguration(actionProvider:  { actions in
             UIMenu(children: [
-                UIAction(title: NSLocalizedString("trackers.pinTracker", comment: "")) { _ in
+                UIAction(title: isPinnedTitle) { [weak self] _ in
+                    
                     // TODO: Добавить метод в стор
                 },
                 UIAction(title: NSLocalizedString("trackers.editTracker", comment: "")) { _ in
@@ -462,7 +475,7 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
                     "trackers.deleteTracker",
                     comment: ""
                 ), attributes: .destructive) { [weak self]_ in
-                    self?.deleteTrackerAlert(tracker)
+                    self?.deleteTrackerAlert(at: indexPath)
                 }
             ])
         })

@@ -53,6 +53,18 @@ final class TrackerCategoryStore: NSObject {
         
     }
     
+    func createPinCategory() throws -> TrackerCategory {
+        let categoryTitle = "Закрепленные"
+        let categories = getCategoryesFromStore()
+        if let existingPinnedCategory = categories.first(where: { $0.title == categoryTitle }) {
+            return existingPinnedCategory
+        } else {
+            let pinnedCategory = TrackerCategory(title: categoryTitle, id: UUID())
+            try add(newCategory: pinnedCategory)
+            return pinnedCategory
+        }
+    }
+    
     func getCategoryesFromStore() -> [TrackerCategory]{
             do {
                 let request = TrackerCategoryCoreData.fetchRequest()
