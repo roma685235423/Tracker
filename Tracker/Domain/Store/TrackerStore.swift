@@ -145,7 +145,8 @@ final class TrackerStore: NSObject {
                 }
             }
         }
-        return sectionTitles[section]
+        let result = section == sectionTitles.count ? "" : sectionTitles[section]
+        return result
     }
     
     func getTrackerAt(indexPath: IndexPath) -> Tracker? {
@@ -189,9 +190,9 @@ final class TrackerStore: NSObject {
         try context.save()
     }
     
-    func deleteTracker(at indexPath: IndexPath) throws {
-        let trackerCoreData = fetchedResultsController.object(at: indexPath)
-        context.delete(trackerCoreData)
+    func deleteTracker(_ tracker: Tracker) throws {
+        guard let trackerToDelete = try getTrackerCoreData(by: tracker.id) else { throw CategoryStoreError.deleteError }
+        context.delete(trackerToDelete)
         try context.save()
     }
     

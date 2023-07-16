@@ -209,7 +209,7 @@ class TrackersViewController: UIViewController {
         searchSpacePlaceholderStack.isHidden = !isHidden
     }
     
-    private func deleteTrackerAlert(at indexPath: IndexPath) {
+    private func deleteAlert(for tracker: Tracker) {
         let alert = UIAlertController(
             title: nil,
             message: NSLocalizedString("trackers.deleteTrackerAlertTitle", comment: ""),
@@ -222,7 +222,7 @@ class TrackersViewController: UIViewController {
         ) { [weak self] _ in
             guard let self = self else { return }
             do {
-                try self.trackerStore.deleteTracker(at: indexPath)
+                try self.trackerStore.deleteTracker(tracker)
             } catch { }
         }
         let cancelAction = UIAlertAction(
@@ -483,7 +483,7 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
                     "trackers.deleteTracker",
                     comment: ""
                 ), attributes: .destructive) { [weak self]_ in
-                    self?.deleteTrackerAlert(at: indexPath)
+                    self?.deleteAlert(for: tracker)
                 }
             ])
         })
