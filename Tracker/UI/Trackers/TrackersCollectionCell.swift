@@ -42,7 +42,13 @@ final class TrackersCollectionCell: UICollectionViewCell {
     }
     
     // MARK: - Public methods
-    func configureCellContent(prototype: Tracker, daysCounter: Int, isDone: Bool, userInteraction: UIContextMenuInteraction) {
+    func configureCellContent(
+        prototype: Tracker,
+        daysCounter: Int,
+        isDone: Bool,
+        isPinned: Bool,
+        userInteraction: UIContextMenuInteraction
+    ) {
         self.tracker = prototype
         self.daysCounter = daysCounter
         trackerBackgroundView.addInteraction(userInteraction)
@@ -51,7 +57,9 @@ final class TrackersCollectionCell: UICollectionViewCell {
         configureTextLabel(with: prototype.label)
         configureTaskIsDoneButton(color: prototype.color)
         configureCounterLabel()
+        pinImageVisibitity(isVisible: isPinned)
         setTaskIsDoneButton(equalTo: isDone)
+        configurePinImage()
     }
     
     func setTaskIsDoneButton(equalTo: Bool) {
@@ -72,13 +80,17 @@ final class TrackersCollectionCell: UICollectionViewCell {
         daysCounter -= 1
     }
     
+    func pinImageVisibitity(isVisible: Bool) {
+        pinImage.isHidden = !isVisible
+    }
+    
     // MARK: - Private methods
     private func addingUIElements() {
         [trackerBackgroundView, counterLabel, taskIsDoneButton, ].forEach{
             contentView.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
-        [emojieLabel, trackerTextLabel].forEach{
+        [emojieLabel, trackerTextLabel, pinImage].forEach{
             trackerBackgroundView.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
@@ -110,7 +122,9 @@ final class TrackersCollectionCell: UICollectionViewCell {
             counterLabel.trailingAnchor.constraint(equalTo: taskIsDoneButton.leadingAnchor, constant: -8),
             
             pinImage.heightAnchor.constraint(equalToConstant: 12),
-            pinImage.widthAnchor.constraint(equalToConstant: 8)
+            pinImage.widthAnchor.constraint(equalToConstant: 8),
+            pinImage.centerYAnchor.constraint(equalTo: emojieLabel.centerYAnchor),
+            pinImage.rightAnchor.constraint(equalTo: trackerBackgroundView.rightAnchor, constant: -12)
         ])
     }
     
@@ -136,7 +150,6 @@ final class TrackersCollectionCell: UICollectionViewCell {
     private func configurePinImage() {
         pinImage.image = UIImage(systemName: "pin.fill")
         pinImage.tintColor = .ypWhiteDay
-        pinImage.translatesAutoresizingMaskIntoConstraints = false
     }
     
     private func configureBackground(color: UIColor) {

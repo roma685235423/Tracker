@@ -4,7 +4,7 @@ import CoreData
 final class TrackerStore: NSObject {
     // MARK: - Errors
     enum CategoryStoreError: Error {
-        case decodeError
+        case decodeError, fetchTrackerError, deleteError, pinError
     }
     
     // MARK: - Public properties
@@ -12,7 +12,7 @@ final class TrackerStore: NSObject {
         fetchedResultsController.fetchedObjects?.count ?? 0
     }
     var numberOfSections: Int {
-        fetchedResultsController.sections?.count ?? 0
+        sections.count
     }
     weak var delegate: TrackerStoreDelegate?
     
@@ -36,7 +36,35 @@ final class TrackerStore: NSObject {
         try? fetchedResultsController.performFetch()
         return fetchedResultsController
     }()
-    
+    private var pinnedTrackers: [Tracker] {
+        guard let fetchedObjects = fetchedResultsController.fetchedObjects else { return [] }
+        let trackers = fetchedObjects.compactMap { try? createTracker(from:$0) }
+        return trackers.filter({ $0.isPinned })
+    }
+    private var sections: [[Tracker]] {
+        guard let sectionsFromCoreData = fetchedResultsController.sections else { return [] }
+        var sections: [[Tracker]] = []
+        
+        if !pinnedTrackers.isEmpty {
+            sections.append(pinnedTrackers)
+        }
+        
+        sectionsFromCoreData.forEach { section in
+            var sectionToAdd = [Tracker]()
+            section.objects?.forEach({ object in
+                guard
+                    let trackerCoreData = object as? TrackerCoreData,
+                    let tracker = try? createTracker(from: trackerCoreData),
+                    !pinnedTrackers.contains(where: { $0.id == tracker.id })
+                else { return }
+                sectionToAdd.append(tracker)
+            })
+            if !sectionToAdd.isEmpty {
+                sections.append(sectionToAdd)
+            }
+        }
+        return sections
+    }
     // MARK: - Life cicle
     convenience override init() {
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -50,13 +78,19 @@ final class TrackerStore: NSObject {
     }
     
     // MARK: - Public methods
+    func numberOfRowsInSection(_ section: Int) -> Int {
+        sections[section].count
+    }
+    
     func createTracker(from coreData: TrackerCoreData) throws -> Tracker {
         guard let idString = coreData.trackerId,
               let id = UUID(uuidString: idString),
               let label = coreData.label,
               let emoji = coreData.emoji,
               let colorHEX = coreData.colorHEX,
-              let complitedDaysCounter = coreData.records
+              let complitedDaysCounter = coreData.records,
+              let categoryCoreData = coreData.category,
+              let category = try? categoresStore.createCategory(from: categoryCoreData)
         else { throw CategoryStoreError.decodeError }
         let color = colorFromHEX(colorHEX)
         let schedule = scheduleFromCoreData(coreData)
@@ -68,8 +102,13 @@ final class TrackerStore: NSObject {
             emoji: emoji,
             schedule: schedule,
             daysComplitedCount: complitedDaysCounter.count,
-            isPinned: coreData.isPinned
+            isPinned: coreData.isPinned,
+            category: category
         )
+    }
+    func tracker(at indexPath: IndexPath) -> Tracker? {
+        let tracker = sections[indexPath.section][indexPath.item]
+        return tracker
     }
     
     func getTrackerFromCoreData(id: UUID) throws -> TrackerCoreData? {
@@ -82,16 +121,31 @@ final class TrackerStore: NSObject {
         return fetchedResultsController.fetchedObjects?.first
     }
     
-    
     func getNumberOfRowsInSection(section: Int) -> Int {
-        fetchedResultsController.sections?[section].numberOfObjects ?? 0
+        sections[section].count
     }
     
-    func getHeaderLabelFor(section: Int) -> String? {
-        guard
-            let trackerCoreData = fetchedResultsController.sections?[section].objects?.first as? TrackerCoreData
-        else { return nil }
-        return trackerCoreData.category?.label ?? nil
+    func getLabelFor(section: Int) -> String? {
+        var sectionTitles = [String]()
+        var trackersLabels = [String]()
+        if !pinnedTrackers.isEmpty {
+            sectionTitles.append("Закрепленные")
+        }
+        for section in sections {
+            trackersLabels = []
+            for tracker in section {
+                if !tracker.isPinned {
+                    trackersLabels.append(tracker.label)
+                }
+            }
+            if !trackersLabels.isEmpty {
+                guard let sectionLabel = section.first?.category.title else { return nil }
+                if !sectionTitles.contains(sectionLabel) {
+                    sectionTitles.append(sectionLabel)
+                }
+            }
+        }
+        return sectionTitles[section]
     }
     
     func getTrackerAt(indexPath: IndexPath) -> Tracker? {
@@ -142,11 +196,9 @@ final class TrackerStore: NSObject {
     }
     
     func togglePin(for tracker: Tracker) throws {
-        do {
-            let trackerToToggle = try getTrackerCoreData(from: tracker)
-            trackerToToggle.isPinned.toggle()
-            try context.save()
-        } catch { }
+        guard let trackerToToggle = try getTrackerCoreData(by: tracker.id) else { throw CategoryStoreError.pinError }
+        trackerToToggle.isPinned.toggle()
+        try context.save()
     }
     
     // MARK: - Private methods
@@ -188,12 +240,16 @@ final class TrackerStore: NSObject {
         return DayOfWeek.decodeFrom(dayCodeString: coreData.schedule)
     }
     
-    private func getTrackerCoreData(from tracker: Tracker) throws -> TrackerCoreData {
-        let request: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
-        request.predicate = NSPredicate(format: "trackerId == %@", tracker.id as CVarArg)
-
-        let trackers = try context.fetch(request)
-        return trackers.first ?? TrackerCoreData()
+    func getTrackerCoreData(by id: UUID) throws -> TrackerCoreData? {
+        fetchedResultsController.fetchRequest.predicate = NSPredicate(
+            format: "%K == %@",
+            #keyPath(TrackerCoreData.trackerId), id.uuidString
+        )
+        try fetchedResultsController.performFetch()
+        guard let tracker = fetchedResultsController.fetchedObjects?.first else { throw CategoryStoreError.fetchTrackerError }
+        fetchedResultsController.fetchRequest.predicate = nil
+        try fetchedResultsController.performFetch()
+        return tracker
     }
 }
 

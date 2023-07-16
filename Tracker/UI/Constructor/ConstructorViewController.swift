@@ -180,7 +180,7 @@ final class ConstructorViewController: UIViewController {
             collectionView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 32),
             collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 18),
             collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -18),
-            collectionView.heightAnchor.constraint(equalToConstant: 510),
+            collectionView.heightAnchor.constraint(equalToConstant: 460),
             
             buttonsStackView.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 21),
             buttonsStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
@@ -288,16 +288,17 @@ final class ConstructorViewController: UIViewController {
     @objc
     private func didTapCreateButton() {
         guard let color = trackerColor else { return }
+        guard let category = currentSelectedCateory else { return }
         let tracker = Tracker(
             id: UUID.init(),
             label: trackerNameString,
             color: color,
             emoji: trackerEmogieString,
             schedule: scedule,
-            daysComplitedCount: 0
+            daysComplitedCount: 0,
+            category: category
         )
-        guard let unwrapCategory = currentSelectedCateory else { return }
-        try? trackerStore.addTracker(tracker: tracker, with: unwrapCategory)
+        try? trackerStore.addTracker(tracker: tracker, with: category)
         dismiss(animated: true)
     }
 }

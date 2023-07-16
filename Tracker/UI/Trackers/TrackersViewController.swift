@@ -223,9 +223,7 @@ class TrackersViewController: UIViewController {
             guard let self = self else { return }
             do {
                 try self.trackerStore.deleteTracker(at: indexPath)
-            } catch {
-                
-            }
+            } catch { }
         }
         let cancelAction = UIAlertAction(
             title: NSLocalizedString("trackers.deleteTrackerAlertCancel", comment: ""),
@@ -235,6 +233,14 @@ class TrackersViewController: UIViewController {
         alert.addAction(deleteAction)
         
         present(alert, animated: true)
+    }
+    
+    private func togglePin(for tracker: Tracker) {
+        try? trackerStore.togglePin(for: tracker)
+    }
+    
+    private func togglePinImage(visibility: Bool, for cell: TrackersCollectionCell) {
+        cell.pinImageVisibitity(isVisible: visibility)
     }
     
     // MARK: - Actions
@@ -324,7 +330,7 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
             fatalError("Invalid TrackerCollectionView cell configuration !!!")
         }
         
-        guard let tracker = trackerStore.getTrackerAt(indexPath: indexPath)
+        guard let tracker = trackerStore.tracker(at: indexPath)
         else { fatalError("Invalid Tracker creation!!!") }
         
         let isDone = complitedTrackers.contains {
@@ -337,6 +343,7 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
             prototype: tracker,
             daysCounter: daysCounter,
             isDone: isDone,
+            isPinned: tracker.isPinned,
             userInteraction: interaction
         )
         cell.delegate = self
@@ -357,7 +364,7 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
             ) as? SupplementaryView
         else { return UICollectionReusableView() }
         view.configoreLayout(leftOffset: 28, topOffset: 15, bottomOffset: 15)
-        view.titleLabel.text = trackerStore.getHeaderLabelFor(section: indexPath.section)
+        view.titleLabel.text = trackerStore.getLabelFor(section: indexPath.section)
         view.titleLabel.textColor = .ypBlack
         return view
     }
@@ -452,7 +459,8 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
         guard
             let location = interaction.view?.convert(location, to: collectionView),
             let indexPath = collectionView.indexPathForItem(at: location),
-            let tracker = trackerStore.getTrackerAt(indexPath: indexPath)
+            let tracker = trackerStore.tracker(at: indexPath),
+            let cell = collectionView.cellForItem(at: indexPath) as? TrackersCollectionCell
         else { return nil }
         
         var isPinnedTitle = ""
@@ -465,8 +473,8 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
         return UIContextMenuConfiguration(actionProvider:  { actions in
             UIMenu(children: [
                 UIAction(title: isPinnedTitle) { [weak self] _ in
-                    
-                    // TODO: Добавить метод в стор
+                    self?.togglePin(for: tracker)
+                    self?.togglePinImage(visibility: tracker.isPinned, for: cell)
                 },
                 UIAction(title: NSLocalizedString("trackers.editTracker", comment: "")) { _ in
                     // TODO: Добавить метод в стор

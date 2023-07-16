@@ -1,6 +1,11 @@
 import UIKit
 import CoreData
 
+
+protocol TrackerCategoryStoreDelegate: AnyObject {
+    func didUpdate()
+}
+
 // MARK: - Errors
 enum CategoryStoreError: Error {
     case decodeError
@@ -33,11 +38,11 @@ final class TrackerCategoryStore: NSObject {
     }
     
     // MARK: - Public method
-    func getCategoryFromCoreData(id: UUID) throws -> TrackerCategoryCoreData? {
+    func getCategoryFromCoreData(id: UUID) throws -> TrackerCategoryCoreData {
         let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
         request.predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerCategoryCoreData.categoryId), id.uuidString)
-        let category = try context.fetch(request).first
-        return category
+        let category = try context.fetch(request)
+        return category[0]
     }
     
     func add(newCategory: TrackerCategory) throws {
@@ -53,41 +58,29 @@ final class TrackerCategoryStore: NSObject {
         
     }
     
-    func createPinCategory() throws -> TrackerCategory {
-        let categoryTitle = "Закрепленные"
-        let categories = getCategoryesFromStore()
-        if let existingPinnedCategory = categories.first(where: { $0.title == categoryTitle }) {
-            return existingPinnedCategory
-        } else {
-            let pinnedCategory = TrackerCategory(title: categoryTitle, id: UUID())
-            try add(newCategory: pinnedCategory)
-            return pinnedCategory
-        }
-    }
-    
     func getCategoryesFromStore() -> [TrackerCategory]{
-            do {
-                let request = TrackerCategoryCoreData.fetchRequest()
-                let result = try context.fetch(request)
-                let resultArray = try result.map { try createCategory(from: $0) }
-                return resultArray
-            } catch {
-                return []
-            }
+        do {
+            let request = TrackerCategoryCoreData.fetchRequest()
+            let result = try context.fetch(request)
+            let resultArray = try result.map { try createCategory(from: $0) }
+            return resultArray
+        } catch {
+            return []
         }
-    
-    // MARK: - Private methods
-    private func resetIndexes() {
-        newIndexes = []
-        deletedIndexes = []
     }
     
-    private func createCategory(from coreData: TrackerCategoryCoreData) throws -> TrackerCategory {
+    func createCategory(from coreData: TrackerCategoryCoreData) throws -> TrackerCategory {
         guard let idString = coreData.categoryId,
               let title = coreData.label,
               let id = UUID(uuidString: idString)
         else { throw CategoryStoreError.decodeError}
         return TrackerCategory(title: title, id: id)
+    }
+    
+    //     MARK: - Private methods
+    private func resetIndexes() {
+        newIndexes = []
+        deletedIndexes = []
     }
 }
 

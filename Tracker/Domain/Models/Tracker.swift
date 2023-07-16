@@ -8,6 +8,7 @@ struct Tracker {
     let schedule: [DayOfWeek]?
     let daysComplitedCount: Int
     let isPinned: Bool
+    let category: TrackerCategory
     
     init(id: UUID = UUID(),
          label: String,
@@ -15,7 +16,8 @@ struct Tracker {
          emoji: String,
          schedule: [DayOfWeek]?,
          daysComplitedCount: Int,
-         isPinned: Bool = false
+         isPinned: Bool = false,
+         category: TrackerCategory
     ) {
         self.id = id
         self.label = label
@@ -24,5 +26,6 @@ struct Tracker {
         self.schedule = schedule
         self.daysComplitedCount = daysComplitedCount
         self.isPinned = isPinned
+        self.category = category
     }
 }
