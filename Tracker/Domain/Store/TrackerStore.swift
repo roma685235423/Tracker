@@ -190,6 +190,23 @@ final class TrackerStore: NSObject {
         try context.save()
     }
     
+    func editTracker(tracker: Tracker, with values: Tracker.Values) throws {
+        guard
+            let emoji = values.emoji,
+            let color = values.color,
+            let category = values.category
+        else { return }
+        
+        let trackerCoreData = try getTrackerCoreData(by: tracker.id)
+        let categoryCoreData = try categoresStore.getCategoryFromCoreData(id: category.id)
+        trackerCoreData?.colorHEX = colorMarshalling.hexString(from: color)
+        trackerCoreData?.schedule = DayOfWeek.dayCodeString(from: values.schedule)
+        trackerCoreData?.category = categoryCoreData
+        trackerCoreData?.label = values.label
+        trackerCoreData?.emoji = emoji
+        try context.save()
+    }
+    
     func deleteTracker(_ tracker: Tracker) throws {
         guard let trackerToDelete = try getTrackerCoreData(by: tracker.id) else { throw CategoryStoreError.deleteError }
         context.delete(trackerToDelete)

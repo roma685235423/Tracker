@@ -28,4 +28,55 @@ struct Tracker {
         self.isPinned = isPinned
         self.category = category
     }
+    
+    init(tracker: Tracker) {
+        self.id = tracker.id
+        self.label = tracker.label
+        self.emoji = tracker.emoji
+        self.color = tracker.color
+        self.category = tracker.category
+        self.daysComplitedCount = tracker.daysComplitedCount
+        self.schedule = tracker.schedule
+        self.isPinned = tracker.isPinned
+    }
+    
+    init(values: Values) {
+        guard
+            let emoji = values.emoji,
+            let color = values.color,
+            let category = values.category
+        else { fatalError() }
+        
+        self.id = UUID()
+        self.label = values.label
+        self.emoji = emoji
+        self.color = color
+        self.category = category
+        self.daysComplitedCount = values.daysComplitedCount
+        self.schedule = values.schedule
+        self.isPinned = values.isPinned
+    }
+    
+    var values: Values {
+        Values(
+            label: label,
+            emoji: emoji,
+            color: color,
+            category: category,
+            daysComplitedCount: daysComplitedCount,
+            schedule: schedule
+        )
+    }
+}
+
+extension Tracker {
+    struct Values {
+        var label: String = ""
+        var emoji: String? = nil
+        var color: UIColor? = nil
+        var category: TrackerCategory? = nil
+        var daysComplitedCount: Int = 0
+        var schedule: [DayOfWeek]? = nil
+        var isPinned: Bool = false
+    }
 }

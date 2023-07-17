@@ -56,6 +56,8 @@
 "constructor.newEvent" = "New event";
 // New habit
 "constructor.newHabit" = "New habit";
+// Edit tracker
+"constructor.edit" = "Edit habit";
 // Tracker name text field placeholder
 "constructor.trackerName" = "Enter tracker name";
 // Limit on tracker name length

@@ -56,6 +56,8 @@
 "constructor.newEvent" = "Новое нерегулярное событие";
 // New habit
 "constructor.newHabit" = "Новая привычка";
+// Edit tracker
+"constructor.edit" = "Редактирование привычки";
 // Tracker name text field placeholder
 "constructor.trackerName" = "Введите название трекера";
 // Limit on tracker name length

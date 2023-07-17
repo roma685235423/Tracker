@@ -243,6 +243,12 @@ class TrackersViewController: UIViewController {
         cell.pinImageVisibitity(isVisible: visibility)
     }
     
+    private func editTracker(_ tracker: Tracker) {
+        let constructorViewController = ConstructorViewController(editedTracker: tracker, tracker: tracker.values)
+        let navigationController = UINavigationController(rootViewController: constructorViewController)
+        present(navigationController, animated: true)
+    }
+    
     // MARK: - Actions
     @objc
     private func didChangedDatePickerValue(_ sender: UIDatePicker) {
@@ -476,8 +482,8 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
                     self?.togglePin(for: tracker)
                     self?.togglePinImage(visibility: tracker.isPinned, for: cell)
                 },
-                UIAction(title: NSLocalizedString("trackers.editTracker", comment: "")) { _ in
-                    // TODO: Добавить метод в стор
+                UIAction(title: NSLocalizedString("trackers.editTracker", comment: "")) { [weak self]_ in
+                    self?.editTracker(tracker)
                 },
                 UIAction(title: NSLocalizedString(
                     "trackers.deleteTracker",

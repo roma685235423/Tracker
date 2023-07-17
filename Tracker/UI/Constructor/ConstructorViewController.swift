@@ -29,7 +29,6 @@ final class ConstructorViewController: UIViewController {
         stack.spacing = 8
         return stack
     }()
-    
     private lazy var buttonsStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [cancelButton, createButton])
         stackView.axis = .horizontal
@@ -76,10 +75,13 @@ final class ConstructorViewController: UIViewController {
         NSLocalizedString("constructor.colors", comment: "")]
     private let emojies = [ "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
     private let trackerStore = TrackerStore()
-    
-    private var trackerNameString: String = ""
-    private var trackerEmogieString: String = ""
-    private var trackerColor: UIColor?
+    private var tracker: Tracker.Values{
+        didSet {
+            checkIsCreateButtonActive()
+        }
+    }
+    private var editedTracker: Tracker?
+    private var isEdit: Bool = false
     private var emojiSelectedItem: Int?
     private var colorSelectedItem: Int?
     private var selectedItem: IndexPath?
@@ -97,13 +99,13 @@ final class ConstructorViewController: UIViewController {
         }
     }
     private lazy var scedule: [DayOfWeek] = {
-        var sceduler: [DayOfWeek] = []
+        var scedule: [DayOfWeek] = []
         if !isRegularEvent {
             for day in DayOfWeek.allCases {
-                sceduler.append(day)
+                scedule.append(day)
             }
         }
-        return sceduler
+        return scedule
     }()
     private lazy var headerText: String = {
         if isRegularEvent {
@@ -117,7 +119,25 @@ final class ConstructorViewController: UIViewController {
     init(isRegularEvent: Bool) {
         self.isRegularEvent = isRegularEvent
         self.scrollViewInterElementOffsets = .init()
+        self.tracker = Tracker.Values()
         super.init(nibName: nil, bundle: nil)
+    }
+    
+    init(editedTracker: Tracker, tracker: Tracker.Values) {
+        self.isRegularEvent = true
+        self.isEdit = true
+        self.tracker = tracker
+        self.editedTracker = editedTracker
+        self.scrollViewInterElementOffsets = .init()
+        super.init(nibName: nil, bundle: nil)
+        isNeedToAddSchedulerAction()
+        self.headerText = NSLocalizedString("constructor.edit", comment: "")
+        self.actionsArray[0].subTitleLabel = tracker.category?.title ?? ""
+        self.currentSelectedCateory = tracker.category
+        self.textField.text = tracker.label
+        guard let scedule = tracker.schedule else { return }
+        self.scedule = scedule
+        self.actionsArray[1].subTitleLabel = shortWeekDaysNamesCreation(schedule: tracker.schedule)
     }
     
     required init?(coder: NSCoder) {
@@ -189,6 +209,20 @@ final class ConstructorViewController: UIViewController {
         ])
     }
     
+    private func shortWeekDaysNamesCreation(schedule: [DayOfWeek]?) -> String {
+        guard let schedule = schedule else { return "" }
+        var shortDaysOfWeekNames: [String] = []
+        for day in schedule {
+            shortDaysOfWeekNames.append(day.localizedStringShort)
+        }
+        if shortDaysOfWeekNames.count < 7 {
+            let result = shortDaysOfWeekNames.joined(separator: ", ")
+            return result
+        } else {
+            return NSLocalizedString("schedule.everyDay", comment: "")
+        }
+    }
+    
     private func configureTableHeight() -> CGFloat {
         if actionsArray.count == 1 {
             tableView.separatorStyle = .none
@@ -246,7 +280,9 @@ final class ConstructorViewController: UIViewController {
     }
     
     private func isNeedToAddSchedulerAction() {
-        if isRegularEvent == true {
+        if isRegularEvent == true && !actionsArray.contains(where: {
+            $0.titleLabelText == NSLocalizedString("constructor.schedule",comment: "")
+        }) {
             actionsArray.append(.init(
                 titleLabelText:
                     NSLocalizedString(
@@ -258,6 +294,14 @@ final class ConstructorViewController: UIViewController {
         }
     }
     
+    private func isNeedToSelectEmoji(for indexPath: IndexPath) -> Bool {
+        emojies[indexPath.row] == tracker.emoji ? true : false
+    }
+    
+    private func isNeedToSelectColor(for indexPath: IndexPath) -> Bool {
+        cellColors[indexPath.row] == tracker.color ? true : false
+    }
+    
     // MARK: - Actions
     @objc
     private func didTapCancelButton() {
@@ -267,7 +311,7 @@ final class ConstructorViewController: UIViewController {
     @objc
     private func hideKeyboardAndSaveTextFieldValue() {
         if textField.isFirstResponder {
-            trackerNameString = textField.text ?? ""
+            tracker.label = textField.text ?? ""
             textField.resignFirstResponder()
             checkIsCreateButtonActive()
         }
@@ -275,10 +319,11 @@ final class ConstructorViewController: UIViewController {
     
     @objc
     private func checkIsCreateButtonActive() {
-        if self.trackerNameString != "",
-           self.trackerEmogieString != "",
-           self.trackerColor != nil,
-           self.actionsArray.allSatisfy({ $0.subTitleLabel != "" }) {
+        if
+            tracker.label != "",
+            tracker.emoji != "",
+            tracker.color != nil,
+            self.actionsArray.allSatisfy({ $0.subTitleLabel != "" }) {
             createButton.isButtonActive(isActive: true)
         } else {
             createButton.isButtonActive(isActive: false)
@@ -287,19 +332,27 @@ final class ConstructorViewController: UIViewController {
     
     @objc
     private func didTapCreateButton() {
-        guard let color = trackerColor else { return }
-        guard let category = currentSelectedCateory else { return }
+        guard let color = tracker.color,
+              let category = currentSelectedCateory,
+              let emoji = tracker.emoji
+        else { return }
         let tracker = Tracker(
             id: UUID.init(),
-            label: trackerNameString,
+            label: tracker.label,
             color: color,
-            emoji: trackerEmogieString,
+            emoji: emoji,
             schedule: scedule,
-            daysComplitedCount: 0,
+            daysComplitedCount: self.tracker.daysComplitedCount,
             category: category
         )
-        try? trackerStore.addTracker(tracker: tracker, with: category)
-        dismiss(animated: true)
+        if isEdit {
+            guard let editedTracker = editedTracker else { return }
+            try? trackerStore.editTracker(tracker: editedTracker, with: self.tracker)
+            dismiss(animated: true)
+        } else {
+            try? trackerStore.addTracker(tracker: tracker, with: category)
+            dismiss(animated: true)
+        }
     }
 }
 
@@ -332,6 +385,7 @@ extension ConstructorViewController: UITableViewDataSource, UITableViewDelegate 
                 guard let self = self else { return }
                 self.actionsArray[0].subTitleLabel = selectedCategory.title
                 self.currentSelectedCateory = selectedCategory
+                self.tracker.category = selectedCategory
                 self.checkIsCreateButtonActive()
                 self.tableView.reloadData()
             }
@@ -343,6 +397,7 @@ extension ConstructorViewController: UITableViewDataSource, UITableViewDelegate 
                 guard let self = self else { return }
                 self.scheduleVCCallback?(schedule, cellSubviewText)
                 self.scedule = schedule
+                self.tracker.schedule = schedule
                 self.actionsArray[1].subTitleLabel = cellSubviewText
                 self.checkIsCreateButtonActive()
                 self.tableView.reloadData()
@@ -375,11 +430,15 @@ extension ConstructorViewController: UICollectionViewDataSource {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "emojieCell", for: indexPath) as? CollectionEmojiCell
             else { fatalError("Cell configure error!") }
             cell.setEmojieLabel(emojie: emojies[indexPath.row])
+            let isSelected = isNeedToSelectEmoji(for: indexPath)
+            cell.cellIsSelected(state: isSelected)
             return cell
         } else {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "colorCell", for: indexPath) as? CollectionColorCell
             else { fatalError("Cell configure error!") }
             cell.setCellColor(color: cellColors[indexPath.row])
+            let isSelected = isNeedToSelectColor(for: indexPath)
+            cell.cellIsSelected(state: isSelected)
             return cell
         }
         
@@ -446,17 +505,31 @@ extension ConstructorViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch indexPath.section {
         case 0:
-            let cell = collectionView.cellForItem(at: indexPath) as? CollectionEmojiCell
-            cell?.cellIsSelected(state: true)
-            trackerEmogieString = emojies[indexPath.row]
-            emojiSelectedItem = indexPath.item
-            checkIsCreateButtonActive()
+            for item in 0..<collectionView.numberOfItems(inSection: 0) {
+                if item != indexPath.row {
+                    let indexPath = IndexPath(item: item, section: 0)
+                    let cell = collectionView.cellForItem(at: indexPath) as? CollectionEmojiCell
+                    cell?.cellIsSelected(state: false)
+                }
+                let cell = collectionView.cellForItem(at: indexPath) as? CollectionEmojiCell
+                cell?.cellIsSelected(state: true)
+                tracker.emoji = emojies[indexPath.row]
+                emojiSelectedItem = indexPath.item
+                checkIsCreateButtonActive()
+            }
         case 1:
-            let cell = collectionView.cellForItem(at: indexPath) as? CollectionColorCell
-            cell?.cellIsSelected(state: true)
-            trackerColor = cellColors[indexPath.row]
-            colorSelectedItem = indexPath.item
-            checkIsCreateButtonActive()
+            for item in 0..<collectionView.numberOfItems(inSection: 1) {
+                if item != indexPath.row {
+                    let indexPath = IndexPath(item: item, section: 1)
+                    let cell = collectionView.cellForItem(at: indexPath) as? CollectionColorCell
+                    cell?.cellIsSelected(state: false)
+                }
+                let cell = collectionView.cellForItem(at: indexPath) as? CollectionColorCell
+                cell?.cellIsSelected(state: true)
+                tracker.color = cellColors[indexPath.row]
+                colorSelectedItem = indexPath.item
+                checkIsCreateButtonActive()
+            }
         default:
             break
         }
@@ -486,14 +559,14 @@ extension ConstructorViewController: UICollectionViewDelegate {
 // MARK: - UITextFieldDelegate Extension
 extension ConstructorViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        trackerNameString = textField.text ?? ""
+        tracker.label = textField.text ?? ""
         textField.resignFirstResponder()
         checkIsCreateButtonActive()
         return true
     }
     
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
-        trackerNameString = textField.text ?? ""
+        tracker.label = textField.text ?? ""
         checkIsCreateButtonActive()
         return true
     }
