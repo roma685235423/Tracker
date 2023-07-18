@@ -11,6 +11,8 @@ final class TabBarViewController: UITabBarController {
         super.awakeFromNib()
         let trackerViewController = TrackersViewController()
         let statisticViewController = StatisticViewController()
+        let statisticsViewModel = StatisticsViewModel()
+        statisticViewController.statisticsViewModel = statisticsViewModel
         
         trackerViewController.tabBarItem = UITabBarItem(
             title: NSLocalizedString("trackers", comment: ""),

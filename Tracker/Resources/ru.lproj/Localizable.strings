@@ -99,8 +99,8 @@
 "statistics.title" = "Статистика";
 // Empty Statistics
 "statistics.mainPlaceholder" = "Анализировать пока нечего";
-
-
+// Trackers completed
+"statistics.trackersCompleted" = "Трекеров завершено";
 
 // MARK: - Shedule
 "schedule.title" = "Расписание";

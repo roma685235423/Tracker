@@ -15,6 +15,11 @@ extension UIColor {
     static let ypSearchBarDay = UIColor(hex: 0x767680, alpha: 0.12)
     static let ypBlackDayTint = UIColor(hex: 0x1A1B22,alpha: 0.3)
     static let ypDatePickerBackground = UIColor(hex: 0xF0F0F0)
+    static let gradientColors = [
+    UIColor(hex: 0x007BFA),
+    UIColor(hex: 0x46E69D),
+    UIColor(hex: 0xFD4C49)
+    ]
     
     // MARK: - Life cicle
     convenience init(hex: Int, alpha: CGFloat = 1.0) {

@@ -99,7 +99,8 @@
 "statistics.title" = "Statistics";
 // Empty Statistics
 "statistics.mainPlaceholder" = "Nothing to analyze";
-
+// Trackers completed
+"statistics.trackersCompleted" = "Trackers completed";
 
 // MARK: - Shedule
 "schedule.title" = "Shedule";
