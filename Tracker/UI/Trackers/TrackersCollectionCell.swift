@@ -13,6 +13,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
     private let pinImage = UIImageView()
     
     private var tracker: Tracker?
+    private let analyticsService = AnalyticsService()
     
     private let spaceFromEdge: CGFloat = 12
     private var daysCounter = 0 {
@@ -201,6 +202,11 @@ final class TrackersCollectionCell: UICollectionViewCell {
     @objc
     private func didTapTaskIsDoneButton() {
         guard let tracker else { return }
+        analyticsService.report(event: "click", params: [
+            "screen": "Main",
+            "item": "track"
+        ])
+        
         delegate?.didTapTaskIsDoneButton(cell: self, tracker: tracker)
     }
 }

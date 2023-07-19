@@ -108,6 +108,7 @@ class TrackersViewController: UIViewController {
     
     private let trackerStore = TrackerStore()
     private let trackerRecordStore = TrackerRecordStore()
+    private let analyticsService = AnalyticsService()
     
     private var currentDate: Date = Date().getDate()!
     private var complitedTrackers: Set<TrackerRecord> = []
@@ -146,6 +147,16 @@ class TrackersViewController: UIViewController {
         checkMainPlaceholderVisability()
         checkPlaceholderVisabilityAfterSearch()
         filterButton.layer.zPosition = 2
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        analyticsService.report(event: "open", params: ["screen": "Main"])
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        analyticsService.report(event: "close", params: ["screen": "Main"])
     }
     
     // MARK: - Private methods
@@ -263,6 +274,11 @@ class TrackersViewController: UIViewController {
     
     @objc
     private func didTapAddTrackerButton() {
+        analyticsService.report(event: "click", params: [
+            "screen": "Main",
+            "item": "add_track"
+        ])
+
         let createTrackerViewController = NewTrackerViewController()
         let navigationController = UINavigationController(rootViewController: createTrackerViewController)
         present(navigationController, animated: true)
@@ -270,6 +286,11 @@ class TrackersViewController: UIViewController {
     
     @objc
     private func didTapFiltersButton() {
+        analyticsService.report(event: "click", params: [
+            "screen": "Main",
+            "item": "filter"
+        ])
+        
         let TrackerFiltersViewController = TrackerFilteringViewController()
         let navigationController = UINavigationController(rootViewController: TrackerFiltersViewController)
         present(navigationController, animated: true)
@@ -479,17 +500,28 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
         return UIContextMenuConfiguration(actionProvider:  { actions in
             UIMenu(children: [
                 UIAction(title: isPinnedTitle) { [weak self] _ in
-                    self?.togglePin(for: tracker)
-                    self?.togglePinImage(visibility: tracker.isPinned, for: cell)
+                    guard let self else { return }
+                    self.togglePin(for: tracker)
+                    self.togglePinImage(visibility: tracker.isPinned, for: cell)
                 },
                 UIAction(title: NSLocalizedString("trackers.editTracker", comment: "")) { [weak self]_ in
-                    self?.editTracker(tracker)
+                    guard let self else { return }
+                    analyticsService.report(event: "click", params: [
+                        "screen": "Main",
+                        "item": "edit"
+                    ])
+                    self.editTracker(tracker)
                 },
                 UIAction(title: NSLocalizedString(
                     "trackers.deleteTracker",
                     comment: ""
-                ), attributes: .destructive) { [weak self]_ in
-                    self?.deleteAlert(for: tracker)
+                ), attributes: .destructive) { [weak self] _ in
+                    guard let self else { return }
+                    self.analyticsService.report(event: "click", params: [
+                        "screen": "Main",
+                        "item": "delete"
+                    ])
+                    self.deleteAlert(for: tracker)
                 }
             ])
         })

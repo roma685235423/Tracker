@@ -6,6 +6,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         UITabBar.appearance().tintColor = .ypBlue
         UITabBar.appearance().unselectedItemTintColor = .ypGray
+        AnalyticsService.activate()
         return true
     }
     
