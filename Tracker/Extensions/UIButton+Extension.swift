@@ -1,6 +1,7 @@
 import UIKit
 
 extension UIButton {
+    // MARK: - Life cicle
     convenience init(label: String, size: CGFloat = 16, cornerRadius: CGFloat = 16) {
         self.init(frame: .zero)
         
@@ -13,6 +14,7 @@ extension UIButton {
         self.layer.masksToBounds = true
     }
     
+    // MARK: - Public properties
     func addToSuperview(_ superview: UIView) {
         superview.addSubview(self)
     }
@@ -23,5 +25,10 @@ extension UIButton {
         let textColor = isActive ?  UIColor.ypWhite : UIColor.ypWhiteDay
         self.setTitleColor(textColor, for: .normal)
         self.backgroundColor = backgroundColor
+    }
+    
+    func setStaticColors() {
+        backgroundColor = .ypBlackDay
+        setTitleColor(.ypWhiteDay, for: .normal)
     }
 }

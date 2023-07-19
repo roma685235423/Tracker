@@ -37,6 +37,7 @@ final class OnboardingPageController: UIPageViewController {
         addingUIElements()
         goToTrackerScreenButton.addTarget(self, action: #selector(didTapGoToTrackerScreenButton), for: .touchUpInside)
         layoutConfigure()
+        goToTrackerScreenButton.setStaticColors()
     }
     
     override func viewWillAppear(_ animated: Bool) {

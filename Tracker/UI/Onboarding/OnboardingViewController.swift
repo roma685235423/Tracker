@@ -67,6 +67,7 @@ final class OnboardingViewController: UIViewController {
         
         textLabel.numberOfLines = 0
         textLabel.lineBreakMode = .byWordWrapping
+        textLabel.textColor = .ypBlackDay
     }
 }
 
