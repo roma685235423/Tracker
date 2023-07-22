@@ -2,7 +2,7 @@ import UIKit
 
 final class TabBarViewController: UITabBarController {
     // MARK: - Private properties
-    private let border = UIView()
+    private let borderView = UIView()
     
     private var tabBarHeight: CGFloat = 0
     
@@ -11,13 +11,15 @@ final class TabBarViewController: UITabBarController {
         super.awakeFromNib()
         let trackerViewController = TrackersViewController()
         let statisticViewController = StatisticViewController()
+        let statisticsViewModel = StatisticsViewModel()
+        statisticViewController.statisticsViewModel = statisticsViewModel
         
         trackerViewController.tabBarItem = UITabBarItem(
-            title: "Трекеры",
+            title: NSLocalizedString("trackers", comment: ""),
             image: UIImage(named: "circle"),
             selectedImage: nil)
         statisticViewController.tabBarItem = UITabBarItem(
-            title: "Статистика",
+            title: NSLocalizedString("statistics", comment: ""),
             image: UIImage(named: "hare"),
             selectedImage: nil)
         
@@ -34,14 +36,14 @@ final class TabBarViewController: UITabBarController {
     
     // MARK: - Private properties
     private func borderConfigure() {
-        border.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(border)
-        border.backgroundColor = .ypGray
+        borderView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(borderView)
+        borderView.backgroundColor = .ypTabBarBorder
         
         NSLayoutConstraint.activate([
-            border.topAnchor.constraint(equalTo: view.bottomAnchor, constant: -tabBarHeight),
-            border.widthAnchor.constraint(equalTo: view.widthAnchor),
-            border.heightAnchor.constraint(equalToConstant: 1)
+            borderView.topAnchor.constraint(equalTo: view.bottomAnchor, constant: -tabBarHeight),
+            borderView.widthAnchor.constraint(equalTo: view.widthAnchor),
+            borderView.heightAnchor.constraint(equalToConstant: 1)
         ])
     }
 }

@@ -2,7 +2,9 @@ import UIKit
 
 final class OnboardingPageController: UIPageViewController {
     // MARK: - Private properties
-    private let goToTrackerScreenButton = UIButton(label: "Вот это технологии!")
+    private let goToTrackerScreenButton = UIButton(
+        label: NSLocalizedString("onboarding.button", comment: "")
+    )
     
     private lazy var pageControl: UIPageControl = {
         let pageControl = UIPageControl()
@@ -35,6 +37,7 @@ final class OnboardingPageController: UIPageViewController {
         addingUIElements()
         goToTrackerScreenButton.addTarget(self, action: #selector(didTapGoToTrackerScreenButton), for: .touchUpInside)
         layoutConfigure()
+        goToTrackerScreenButton.setStaticColors()
     }
     
     override func viewWillAppear(_ animated: Bool) {

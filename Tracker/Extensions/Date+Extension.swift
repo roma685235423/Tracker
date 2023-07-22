@@ -13,4 +13,17 @@ extension Date {
         dateComponents.year = year
         return calendar.date(from: dateComponents) ?? nil
     }
+    
+    func getStringFromLocalizedDate() -> String {
+        let dateFormatter = DateFormatter()
+        let locale = Locale.current.identifier
+        
+        if locale.hasPrefix("ru") {
+            dateFormatter.dateFormat = "dd.MM.yy"
+        } else {
+            dateFormatter.dateFormat = "MM/dd/yy"
+        }
+        
+        return dateFormatter.string(from: self)
+    }
 }

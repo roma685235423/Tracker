@@ -5,13 +5,15 @@ final class TrackersCollectionCell: UICollectionViewCell {
     weak var delegate: TrackersCollectinCellDelegate?
     
     // MARK: - Private properties
-    private let trackerBackgroundLabel = UILabel()
+    private let trackerBackgroundView = UIView()
     private let emojieLabel = UILabel()
     private let trackerTextLabel = UILabel()
     private let counterLabel = UILabel()
     private let taskIsDoneButton = UIButton()
+    private let pinImage = UIImageView()
     
     private var tracker: Tracker?
+    private let analyticsService = AnalyticsService()
     
     private let spaceFromEdge: CGFloat = 12
     private var daysCounter = 0 {
@@ -20,6 +22,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
         }
     }
     
+    static let identifier = "TrackersCollectionCell"
     // MARK: - Life cicle
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -40,15 +43,24 @@ final class TrackersCollectionCell: UICollectionViewCell {
     }
     
     // MARK: - Public methods
-    func configureCellContent(prototype: Tracker, daysCounter: Int, isDone: Bool) {
+    func configureCellContent(
+        prototype: Tracker,
+        daysCounter: Int,
+        isDone: Bool,
+        isPinned: Bool,
+        userInteraction: UIContextMenuInteraction
+    ) {
         self.tracker = prototype
         self.daysCounter = daysCounter
+        trackerBackgroundView.addInteraction(userInteraction)
         configureBackground(color: prototype.color)
         configureEmojiLabel(with: prototype.emoji)
         configureTextLabel(with: prototype.label)
         configureTaskIsDoneButton(color: prototype.color)
         configureCounterLabel()
+        pinImageVisibitity(isVisible: isPinned)
         setTaskIsDoneButton(equalTo: isDone)
+        configurePinImage()
     }
     
     func setTaskIsDoneButton(equalTo: Bool) {
@@ -69,68 +81,86 @@ final class TrackersCollectionCell: UICollectionViewCell {
         daysCounter -= 1
     }
     
+    func pinImageVisibitity(isVisible: Bool) {
+        pinImage.isHidden = !isVisible
+    }
+    
     // MARK: - Private methods
     private func addingUIElements() {
-        [trackerBackgroundLabel, emojieLabel, trackerTextLabel, counterLabel, taskIsDoneButton].forEach{
+        [trackerBackgroundView, counterLabel, taskIsDoneButton, ].forEach{
             contentView.addSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        [emojieLabel, trackerTextLabel, pinImage].forEach{
+            trackerBackgroundView.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
     }
     
     private func layoutConfigure() {
         NSLayoutConstraint.activate([
-            trackerBackgroundLabel.topAnchor.constraint(equalTo: self.topAnchor),
-            trackerBackgroundLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            trackerBackgroundLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            trackerBackgroundLabel.heightAnchor.constraint(equalToConstant: 90),
+            trackerBackgroundView.topAnchor.constraint(equalTo: self.topAnchor),
+            trackerBackgroundView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            trackerBackgroundView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            trackerBackgroundView.heightAnchor.constraint(equalToConstant: 90),
             
             emojieLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: spaceFromEdge),
             emojieLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: spaceFromEdge),
             emojieLabel.heightAnchor.constraint(equalToConstant: 24),
             emojieLabel.widthAnchor.constraint(equalToConstant: 24),
             
-            trackerTextLabel.bottomAnchor.constraint(equalTo: trackerBackgroundLabel.bottomAnchor, constant: -spaceFromEdge),
-            trackerTextLabel.leadingAnchor.constraint(equalTo: trackerBackgroundLabel.leadingAnchor, constant: spaceFromEdge),
-            trackerTextLabel.trailingAnchor.constraint(equalTo: trackerBackgroundLabel.trailingAnchor, constant: -spaceFromEdge),
+            trackerTextLabel.bottomAnchor.constraint(equalTo: trackerBackgroundView.bottomAnchor, constant: -spaceFromEdge),
+            trackerTextLabel.leadingAnchor.constraint(equalTo: trackerBackgroundView.leadingAnchor, constant: spaceFromEdge),
+            trackerTextLabel.trailingAnchor.constraint(equalTo: trackerBackgroundView.trailingAnchor, constant: -spaceFromEdge),
             
             taskIsDoneButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -spaceFromEdge),
-            taskIsDoneButton.topAnchor.constraint(equalTo: trackerBackgroundLabel.bottomAnchor, constant: 8),
+            taskIsDoneButton.topAnchor.constraint(equalTo: trackerBackgroundView.bottomAnchor, constant: 8),
             taskIsDoneButton.heightAnchor.constraint(equalToConstant: 34),
             taskIsDoneButton.widthAnchor.constraint(equalToConstant: 34),
             
             counterLabel.centerYAnchor.constraint(equalTo: taskIsDoneButton.centerYAnchor),
             counterLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: spaceFromEdge),
-            counterLabel.trailingAnchor.constraint(equalTo: taskIsDoneButton.leadingAnchor, constant: -8)
+            counterLabel.trailingAnchor.constraint(equalTo: taskIsDoneButton.leadingAnchor, constant: -8),
+            
+            pinImage.heightAnchor.constraint(equalToConstant: 12),
+            pinImage.widthAnchor.constraint(equalToConstant: 8),
+            pinImage.centerYAnchor.constraint(equalTo: emojieLabel.centerYAnchor),
+            pinImage.rightAnchor.constraint(equalTo: trackerBackgroundView.rightAnchor, constant: -12)
         ])
     }
     
     private func getCorrectRussianWordDay(days: Int) -> String {
-        let mod10 = days % 10
-        let mod100 = days % 100
-        switch mod10 {
-        case 1 where mod100 != 11:
-            return "\(days) день"
-        case 2...4 where mod100 < 12 || mod100 > 14:
-            return "\(days) дня"
-        default:
-            return "\(days) дней"
-        }
+        let formatString : String = NSLocalizedString(
+            "number of days",
+            comment: "Days count string format to be found in Localized.stringsdict"
+        )
+        let daysCounterString = String.localizedStringWithFormat(
+            formatString,
+            days
+        )
+        return daysCounterString
     }
     
     private func configureCounterLabel() {
         counterLabel.textAlignment = .left
         counterLabel.font = UIFont.systemFont(ofSize: 12)
-        counterLabel.textColor = .ypBlackDay
+        counterLabel.textColor = .ypBlack
         counterLabel.text = getCorrectRussianWordDay(days: daysCounter)
     }
     
+    private func configurePinImage() {
+        pinImage.image = UIImage(systemName: "pin.fill")
+        pinImage.tintColor = .ypWhiteDay
+    }
+    
     private func configureBackground(color: UIColor) {
-        trackerBackgroundLabel.layer.cornerRadius = 16
+        self.contentView.layer.cornerRadius = 16
+        trackerBackgroundView.layer.cornerRadius = 16
         trackerTextLabel.layer.borderWidth = 1
-        trackerBackgroundLabel.layer.masksToBounds = true
+        trackerBackgroundView.layer.masksToBounds = true
         
-        trackerBackgroundLabel.backgroundColor = color
-        trackerBackgroundLabel.layer.borderColor = color.withAlphaComponent(0.3).cgColor
+        trackerBackgroundView.backgroundColor = color
+        trackerBackgroundView.layer.borderColor = color.withAlphaComponent(0.3).cgColor
     }
     
     private func configureEmojiLabel(with emoji: String) {
@@ -147,7 +177,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
     private func configureTextLabel(with text: String) {
         trackerTextLabel.configureLabel(
             text: text,
-            addToView: trackerBackgroundLabel,
+            addToView: trackerBackgroundView,
             ofSize: 12,
             weight: .medium
         )
@@ -164,7 +194,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
         
         taskIsDoneButton.backgroundColor = color
         taskIsDoneButton.setImage(UIImage(systemName: "plus"), for: .normal)
-        taskIsDoneButton.tintColor = .ypWhiteDay
+        taskIsDoneButton.tintColor = .ypWhite
         taskIsDoneButton.addTarget(self, action: #selector(didTapTaskIsDoneButton), for: .touchUpInside)
     }
     
@@ -172,6 +202,11 @@ final class TrackersCollectionCell: UICollectionViewCell {
     @objc
     private func didTapTaskIsDoneButton() {
         guard let tracker else { return }
+        analyticsService.report(event: "click", params: [
+            "screen": "Main",
+            "item": "track"
+        ])
+        
         delegate?.didTapTaskIsDoneButton(cell: self, tracker: tracker)
     }
 }

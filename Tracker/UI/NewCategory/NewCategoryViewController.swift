@@ -1,24 +1,46 @@
 import UIKit
 
-final class CategoryCreationViewController: UIViewController {
+final class NewCategoryViewController: UIViewController {
     // MARK: - Properties
-    private let textField = CustomTextField()
+    private let textField = CustomTextField(with: NSLocalizedString(
+        "newCategory.categoryName",
+        comment: ""
+    ))
     private let screenTopLabel = UILabel()
-    private let createNewCategoryButton = UIButton(label: "Готово")
+    private let createNewCategoryButton = UIButton(
+        label:
+            NSLocalizedString(
+                "newCategory.ready",
+                comment: ""
+            ))
     
+    private let viewModel: CategorySelectionViewModel
     private var newCategoryName: String = ""
     
     // MARK: - Lifecicle
+    init(viewModel: CategorySelectionViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .ypWhiteDay
+        view.backgroundColor = .ypWhite
         screenTopLabel.configureLabel(
-            text: "Новая категория",
+            text: NSLocalizedString("newCategory.categoryName", comment: ""),
             addToView: view,
             ofSize: 16,
             weight: .medium)
         addingUIElements()
-        createNewCategoryButton.addTarget(self, action: #selector(didTapCreateNewCategoryButton), for: .touchUpInside)
+        createNewCategoryButton.addTarget(
+            self,
+            action: #selector(didTapCreateNewCategoryButton),
+            for: .touchUpInside
+        )
         checkIsCreateButtonActive()
         configureTextField()
         layoutConfigure()
@@ -53,12 +75,14 @@ final class CategoryCreationViewController: UIViewController {
     private func configureTextField() {
         textField.delegate = self
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.backgroundColor = .ypBackgroundDay
+        textField.backgroundColor = .ypBackground
         textField.layer.cornerRadius = 16
         textField.layer.masksToBounds = true
         textField.keyboardType = .default
+        textField.text = newCategoryName
+        textField.addTarget(self, action: #selector(checkIsCreateButtonActive), for: .editingChanged)
         textField.attributedPlaceholder = NSAttributedString(
-            string: "Введите название категории",
+            string: NSLocalizedString("newCategory.categoryName", comment: ""),
             attributes: [
                 NSAttributedString.Key.foregroundColor: UIColor.ypGray,
             ]
@@ -68,7 +92,8 @@ final class CategoryCreationViewController: UIViewController {
     // MARK: - Actions
     @objc
     private func checkIsCreateButtonActive() {
-        if self.newCategoryName != "" {
+        if let text = textField.text, !text.isEmpty {
+            newCategoryName = text
             createNewCategoryButton.isButtonActive(isActive: true)
         } else {
             createNewCategoryButton.isButtonActive(isActive: false)
@@ -77,29 +102,21 @@ final class CategoryCreationViewController: UIViewController {
     
     @objc
     private func didTapCreateNewCategoryButton() {
+        let newCategory = TrackerCategory(title: newCategoryName)
+        viewModel.add(newCategory: newCategory)
         dismiss(animated: true)
     }
 }
 
 
 // MARK: - UITextFieldDelegate Extension
-extension CategoryCreationViewController: UITextFieldDelegate {
+extension NewCategoryViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        newCategoryName = textField.text ?? ""
         textField.resignFirstResponder()
-        checkIsCreateButtonActive()
         return true
     }
     
-    func textFieldShouldClear(_ textField: UITextField) -> Bool {
-        newCategoryName = textField.text ?? ""
-        checkIsCreateButtonActive()
-        return true
-    }
-    
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        newCategoryName = textField.text ?? ""
-        checkIsCreateButtonActive()
-        return true
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
     }
 }

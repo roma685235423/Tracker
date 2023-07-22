@@ -8,9 +8,14 @@ final class CategorySelectionViewController: UIViewController {
     private let trackerCategoryTable = UITableView()
     private let mainSpacePlaceholderStack = UIStackView(
         imageName: "starPlaceholder",
-        text: "Привычки и события можно объединить по смыслу"
+        text: NSLocalizedString("categorySelection.mainPlaceholder", comment: "")
     )
-    private lazy var addCategoryButton = UIButton(label: "Добавить категорию")
+    private lazy var addCategoryButton = UIButton(
+        label: NSLocalizedString(
+            "categorySelection.addCategory",
+            comment: ""
+        )
+    )
     
     private let viewModel: CategorySelectionViewModel
     
@@ -29,6 +34,12 @@ final class CategorySelectionViewController: UIViewController {
         super.viewDidLoad()
         initialSettings()
         viewModel.loadCategories()
+    }
+    
+    // MARK: - Public methods
+    func refreshTableView() {
+        trackerCategoryTable.reloadData()
+        mainSpacePlaceholderStack.isHidden = viewModel.isCategoriesExist()
     }
     
     // MARK: - Layout Configuration
@@ -58,8 +69,18 @@ final class CategorySelectionViewController: UIViewController {
     }
     
     // MARK: - Private methods
+    private func bindViewModel() {
+        viewModel.updateVMCallback = { [weak self] update in
+            guard let self else { return }
+            self.trackerCategoryTable.performBatchUpdates {
+                self.trackerCategoryTable.insertRows(at: update.newIndexes, with: .automatic)
+                self.trackerCategoryTable.deleteRows(at: update.deletedIndexes, with: .automatic)
+            }
+        }
+    }
+    
     private func initialSettings() {
-        view.backgroundColor = .ypWhiteDay
+        view.backgroundColor = .ypWhite
         addCategoryButton.addTarget(self, action: #selector(didTapAddCategoryButton), for: .touchUpInside)
         configurenavigationController()
         configureTrackerCategoryTable()
@@ -68,13 +89,13 @@ final class CategorySelectionViewController: UIViewController {
     }
     
     private func configurenavigationController() {
-        title = "Категория"
+        title = NSLocalizedString("categorySelection.category", comment: "")
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
         
         navigationController?.navigationBar.titleTextAttributes = [
             .font: UIFont.systemFont(ofSize: 16, weight: .medium),
-            .foregroundColor: UIColor.ypBlackDay
+            .foregroundColor: UIColor.ypBlack
         ]
     }
     
@@ -83,14 +104,15 @@ final class CategorySelectionViewController: UIViewController {
         trackerCategoryTable.dataSource = self
         trackerCategoryTable.layer.cornerRadius = 16
         trackerCategoryTable.separatorStyle = .none
+        trackerCategoryTable.backgroundColor = .clear
         trackerCategoryTable.layer.masksToBounds = true
         trackerCategoryTable.isDirectionalLockEnabled = true
-        trackerCategoryTable.register(CategorySelectionCell.self, forCellReuseIdentifier: CategorySelectionCell.identifier)
+        trackerCategoryTable.register(TableViewCellWithBlueCheckmark.self, forCellReuseIdentifier: TableViewCellWithBlueCheckmark.identifier)
     }
     
     // MARK: - Actions
     @objc private func didTapAddCategoryButton() {
-        let trackerCategoryCreationViewController = CategoryCreationViewController()
+        let trackerCategoryCreationViewController = NewCategoryViewController(viewModel: viewModel)
         let navigationVC = UINavigationController(rootViewController: trackerCategoryCreationViewController)
         trackerCategoryCreationViewController.modalPresentationStyle = .pageSheet
         present(navigationVC, animated: true)
@@ -103,7 +125,7 @@ extension CategorySelectionViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedCategory = viewModel.categories[indexPath.row]
         for cell in tableView.visibleCells {
-            guard let categoryCell = cell as? CategorySelectionCell,
+            guard let categoryCell = cell as? TableViewCellWithBlueCheckmark,
                   let cellIndexPath = tableView.indexPath(for: categoryCell) else { continue }
             let category = viewModel.categories[cellIndexPath.row]
             let isCheckmarkVisible = category.id != selectedCategory.id
@@ -127,10 +149,10 @@ extension CategorySelectionViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: CategorySelectionCell.identifier) as? CategorySelectionCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCellWithBlueCheckmark.identifier) as? TableViewCellWithBlueCheckmark else {
             return UITableViewCell()
         }
-        
+        cell.resetSeparatorVisibility()
         let categoryName = viewModel.categories[indexPath.row].title
         let isSelected = viewModel.isCheckmarkVisible(in: indexPath.row)
         cell.configureCell(
@@ -151,10 +173,15 @@ extension CategorySelectionViewController: UITableViewDataSource {
 // MARK: - CategorySelectionViewModelDelegate
 extension CategorySelectionViewController: CategorySelectionViewModelDelegate {
     func categoriesDidUpdate() {
+        trackerCategoryTable.reloadData()
         mainSpacePlaceholderStack.isHidden = viewModel.isCategoriesExist()
     }
     
-    func didSelect(category: TrackerCategory) {
+    func categoryDidSelect() {
         dismiss(animated: true, completion: nil)
+    }
+    
+    func add(newCategory: TrackerCategory) {
+        viewModel.add(newCategory: newCategory)
     }
 }

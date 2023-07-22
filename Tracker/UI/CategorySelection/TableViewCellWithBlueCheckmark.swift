@@ -1,6 +1,6 @@
 import UIKit
 
-final class CategorySelectionCell: UITableViewCell {
+final class TableViewCellWithBlueCheckmark: UITableViewCell {
     // MARK: - Puplic properties
     static let identifier = "CategoryCell"
     
@@ -32,7 +32,7 @@ final class CategorySelectionCell: UITableViewCell {
     
     // MARK: - Public Methods
     func configureCell(with text: String, isSelected: Bool, cellIndex: Int, totalRowsInTable: Int) {
-        background.backgroundColor = .ypBackgroundDay
+        background.backgroundColor = .ypBackground
         separatorView.backgroundColor = .ypGray
         checkmarkIs(visible: !isSelected)
         configureLabel(with: text)
@@ -42,6 +42,10 @@ final class CategorySelectionCell: UITableViewCell {
     
     func checkmarkIs(visible: Bool) {
         checkmarkImage.isHidden = visible
+    }
+    
+    func resetSeparatorVisibility() {
+        separatorView.isHidden = false
     }
     
     // MARK: - Private methods

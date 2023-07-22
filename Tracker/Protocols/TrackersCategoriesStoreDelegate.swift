@@ -1,5 +1,5 @@
 import Foundation
 
 protocol TrackersCategoriesStoreDelegate: AnyObject {
-    func categoriesDidUpdate()
+    func categoriesDidUpdate(update: CategoryStoreUpdates)
 }

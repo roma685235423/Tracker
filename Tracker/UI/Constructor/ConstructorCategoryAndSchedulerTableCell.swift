@@ -11,7 +11,7 @@ final class CategoryAndSchedulerTableCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.accessoryType = .disclosureIndicator
         self.selectionStyle = .none
-        self.backgroundColor = .ypBackgroundDay
+        self.backgroundColor = .ypBackground
         configureStackView()
         addingUIElements()
         layoutConfigure()
@@ -46,8 +46,8 @@ final class CategoryAndSchedulerTableCell: UITableViewCell {
     
     private func configureTitleLabel(with text: String) {
         titleLabel.text = text
-        titleLabel.font = UIFont.systemFont(ofSize: 17)
-        titleLabel.textColor = .ypBlackDay
+        titleLabel.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        titleLabel.textColor = .ypBlack
         titleLabel.textAlignment = .left
     }
     

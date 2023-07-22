@@ -5,6 +5,8 @@ final class CategorySelectionViewModel {
     weak var delegate: CategorySelectionViewModelDelegate?
     
     // MARK: - Private properties
+    var updateVMCallback: ((CategoryStoreUpdates) -> Void)?
+    
     private let trackerCategoryStore = TrackerCategoryStore()
     private (set) var categories: [TrackerCategory] = [] {
         didSet {
@@ -13,8 +15,9 @@ final class CategorySelectionViewModel {
     }
     private (set) var selectedCategory: TrackerCategory? = nil {
         didSet {
-            guard let selectedCategory = selectedCategory else { return }
-            delegate?.didSelect(category: selectedCategory)
+            if selectedCategory != nil {
+                delegate?.categoryDidSelect()
+            } else { return }
         }
     }
     
@@ -27,15 +30,15 @@ final class CategorySelectionViewModel {
     
     // MARK: - Public Methods
     func isCategoriesExist() -> Bool {
-            return categoriesCount() > 0
-        }
+        return categoriesCount() > 0
+    }
     
     func selectCategory(row: Int) {
         selectedCategory = categories[row]
     }
     
     func loadCategories() {
-        categories = getCategoriesFromStore()
+        categories = sortCategoryes()
     }
     
     func isCheckmarkVisible(in row: Int) -> Bool {
@@ -47,18 +50,25 @@ final class CategorySelectionViewModel {
         return categories.count
     }
     
-    // MARK: - Private Methods
-    private func getCategoriesFromStore() -> [TrackerCategory] {
-        var categories: [TrackerCategory] = []
-        categories = trackerCategoryStore.categories
-        return categories
+    func add(newCategory: TrackerCategory) {
+        do {
+            try trackerCategoryStore.add(newCategory: newCategory)
+            loadCategories()
+        } catch {
+            
+        }
+    }
+    
+    private func sortCategoryes() -> [TrackerCategory] {
+        categories = trackerCategoryStore.getCategoryesFromStore()
+        return categories.sorted(by: { $0.title < $1.title })
     }
 }
 
-
 // MARK: - TrackersCategoriesStoreDelegate
 extension CategorySelectionViewModel: TrackersCategoriesStoreDelegate {
-    func categoriesDidUpdate() {
-        categories = trackerCategoryStore.categories
+    func categoriesDidUpdate(update: CategoryStoreUpdates) {
+        categories = trackerCategoryStore.getCategoryesFromStore()
+        updateVMCallback?(update)
     }
 }

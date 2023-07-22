@@ -5,12 +5,32 @@ final class ScheduleViewController: UIViewController {
     var scheduleVCCallback: (([DayOfWeek], String) -> Void)?
     
     // MARK: - Private properties
-    private let scrollView = UIScrollView()
-    private let schedulerTable = UITableView()
-    
-    private lazy var readyButton = UIButton()
-    
-    private let weekDaysStringForTable = DayOfWeek.allCases.map { $0.rawValue }
+    private lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.alwaysBounceVertical = true
+        scrollView.decelerationRate = UIScrollView.DecelerationRate.normal
+        scrollView.isScrollEnabled = true
+        scrollView.isUserInteractionEnabled = true
+        scrollView.contentSize = CGSize(width: view.frame.width, height: tableHeight + buttonHeight + (spacing * 2))
+        return scrollView
+    }()
+    private lazy var schedulerTable: UITableView = {
+        let tableView = UITableView()
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.separatorColor = .ypGray
+        tableView.layer.cornerRadius = 16
+        tableView.layer.masksToBounds = true
+        tableView.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+        tableView.isScrollEnabled = false
+        return tableView
+    }()
+    private lazy var readyButton: UIButton = {
+        let button = UIButton(label: NSLocalizedString("schedule.ready", comment: ""))
+        button.addTarget(self, action: #selector(didTapReadyButton), for: .touchUpInside)
+        return button
+    }()
+    private let weekDaysForTable = DayOfWeek.allCases
     private let tableHeight = CGFloat(524)
     private let buttonHeight = CGFloat(60)
     
@@ -18,25 +38,22 @@ final class ScheduleViewController: UIViewController {
     private var daysOfWeekForSceduler: [DayOfWeek]
     
     // MARK: - Life cicle
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .ypWhiteDay
-        spacing = self.view.frame.height * 0.0458
-        addingUIElements()
-        configurenavigationController()
-        configureScrollView()
-        configureSchedulerTable()
-        configureReadyButton()
-        layoutConfigure()
-    }
-    
-    init(daysOfWeekForSceduler: [DayOfWeek]) {
-        self.daysOfWeekForSceduler = daysOfWeekForSceduler
+    init(daysInScedule: [DayOfWeek]) {
+        self.daysOfWeekForSceduler = daysInScedule
         super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .ypWhite
+        spacing = self.view.frame.height * 0.0458
+        addingUIElements()
+        configurenavigationController()
+        layoutConfigure()
     }
     
     // MARK: - Private methods
@@ -68,78 +85,26 @@ final class ScheduleViewController: UIViewController {
     }
     
     private func configurenavigationController() {
-        title = "Расписание"
+        title = NSLocalizedString("schedule.title", comment: "")
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
         
         navigationController?.navigationBar.titleTextAttributes = [
             .font: UIFont.systemFont(ofSize: 16, weight: .medium),
-            .foregroundColor: UIColor.ypBlackDay
+            .foregroundColor: UIColor.ypBlack
         ]
-    }
-    
-    private func configureScrollView() {
-        scrollView.alwaysBounceVertical = true
-        scrollView.decelerationRate = UIScrollView.DecelerationRate.normal
-        scrollView.isScrollEnabled = true
-        scrollView.isUserInteractionEnabled = true
-        scrollView.contentSize = CGSize(width: view.frame.width, height: tableHeight + buttonHeight + (spacing * 2))
-    }
-    
-    private func configureSchedulerTable() {
-        schedulerTable.delegate = self
-        schedulerTable.dataSource = self
-        schedulerTable.separatorColor = .ypGray
-        schedulerTable.layer.cornerRadius = 16
-        schedulerTable.layer.masksToBounds = true
-        schedulerTable.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        schedulerTable.isScrollEnabled = false
-    }
-    
-    
-    private func configureReadyButton() {
-        readyButton.backgroundColor = .ypBlackDay
-        readyButton.setTitle("Готово", for: .normal)
-        readyButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        readyButton.titleLabel?.textColor = .ypWhiteDay
-        readyButton.layer.cornerRadius = 16
-        readyButton.layer.masksToBounds = true
-        readyButton.addTarget(self, action: #selector(didTapReadyButton), for: .touchUpInside)
     }
     
     private func shortWeekDaysNamesCreation() -> String {
         var shortDaysOfWeekNames: [String] = []
         for day in daysOfWeekForSceduler {
-            if let shortDayName = weekDaysNamesShorting(day: day.rawValue) {
-                shortDaysOfWeekNames.append(shortDayName)
-            }
+            shortDaysOfWeekNames.append(day.localizedStringShort)
         }
         if shortDaysOfWeekNames.count < 7 {
             let result = daysOfWeekForSceduler.isEmpty ? "" : shortDaysOfWeekNames.joined(separator: ", ")
             return result
         } else {
-            return "Каждый день"
-        }
-    }
-    
-    private func weekDaysNamesShorting(day: String?) -> String? {
-        switch day {
-        case "Понедельник":
-            return "Пн"
-        case "Вторник":
-            return "Вт"
-        case "Среда":
-            return "Ср"
-        case "Четверг":
-            return "Чт"
-        case "Пятница":
-            return "Пт"
-        case "Суббота":
-            return "Сб"
-        case "Воскресенье":
-            return "Вс"
-        default :
-            return nil
+            return NSLocalizedString("schedule.everyDay", comment: "")
         }
     }
     
@@ -190,35 +155,31 @@ final class ScheduleViewController: UIViewController {
 }
 
 
-// MARK: - UITableViewDelegate Extension
-extension ScheduleViewController: UITableViewDelegate {
-    
-}
-
-
 // MARK: - UITableViewDataSource Extension
-extension ScheduleViewController: UITableViewDataSource {
+extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return weekDaysStringForTable.count
+        return weekDaysForTable.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
         let switchView = UISwitch(frame: CGRect(x: 0, y: 0, width: 51, height: 31))
-        let currentDay = weekDaysStringForTable[indexPath.row]
-        let isSwitchOn = daysOfWeekForSceduler.first{$0.rawValue == currentDay} != nil
+        let currentDay = weekDaysForTable[indexPath.row].localizedString
+        let isSwitchOn = daysOfWeekForSceduler.first{$0.localizedString == currentDay} != nil
         
         switchView.setOn(isSwitchOn, animated: true)
         switchView.tag = indexPath.row
         switchView.onTintColor = .ypBlue
         switchView.addTarget(self, action: #selector(self.switchChanged(_:)), for: .valueChanged)
+        switchView.backgroundColor = .ypSwitchBackground
+        switchView.layer.cornerRadius = switchView.frame.height / 2
         
         cell.textLabel?.text = currentDay
-        cell.textLabel?.textColor = .ypBlackDay
+        cell.textLabel?.textColor = .ypBlack
         cell.textLabel?.font = UIFont.systemFont(ofSize: 17)
         cell.accessoryView = switchView
         cell.selectionStyle = .none
-        cell.backgroundColor = .ypBackgroundDay
+        cell.backgroundColor = .ypBackground
         return cell
     }
     
