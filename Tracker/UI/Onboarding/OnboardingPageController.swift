@@ -1,7 +1,9 @@
 import UIKit
 
 final class OnboardingPageController: UIPageViewController {
-    // MARK: - Private properties
+    
+    // MARK: Private properties
+    
     private let goToTrackerScreenButton = UIButton(
         label: NSLocalizedString("onboarding.button", comment: "")
     )
@@ -24,7 +26,8 @@ final class OnboardingPageController: UIPageViewController {
         OnboardingViewController(page: .second)
     ]
     
-    // MARK: - Life cycle
+    // MARK: Life cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         dataSource = self
@@ -45,60 +48,10 @@ final class OnboardingPageController: UIPageViewController {
         currentIndex = 0
         pageControl.currentPage = 0
     }
-    
-    // MARK: - Private methods
-    private func addingUIElements() {
-        goToTrackerScreenButton.addToSuperview(view)
-        view.addSubview(goToTrackerScreenButton)
-        view.addSubview(pageControl)
-    }
-    
-    private func layoutConfigure() {
-        goToTrackerScreenButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            goToTrackerScreenButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            goToTrackerScreenButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            goToTrackerScreenButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -84),
-            goToTrackerScreenButton.heightAnchor.constraint(equalToConstant: 60),
-            
-            pageControl.bottomAnchor.constraint(equalTo: goToTrackerScreenButton.topAnchor, constant: -24),
-            pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-        ])
-    }
-    
-    private func showTabBar() {
-        let tabBarViewController = TabBarViewController()
-        tabBarViewController.awakeFromNib()
-        let window = UIApplication.shared.windows.first
-        window?.rootViewController = tabBarViewController
-    }
-    
-    // MARK: - Action
-    @objc
-    private func didTapGoToTrackerScreenButton() {
-        showTabBar()
-        isOnboardingShown = true
-    }
-    
-    @objc private func pageControlValueChanged() {
-        guard let currentViewController = viewControllers?.first,
-              let currentIndex = pages.firstIndex(of: currentViewController),
-              currentIndex != pageControl.currentPage else {
-            return
-        }
-        
-        let selectedViewController = pages[pageControl.currentPage]
-        let direction: UIPageViewController.NavigationDirection = currentIndex < pageControl.currentPage ? .forward : .reverse
-        setViewControllers([selectedViewController], direction: direction, animated: true, completion: nil)
-        
-        self.currentIndex = pageControl.currentPage
-    }
-    
 }
 
-
 // MARK: - UIPageViewControllerDataSource
+
 extension OnboardingPageController: UIPageViewControllerDataSource {
     func pageViewController(
         _ pageViewController: UIPageViewController,
@@ -107,7 +60,6 @@ extension OnboardingPageController: UIPageViewControllerDataSource {
         guard let viewControllerIndex = pages.firstIndex(of: viewController) else {
             return nil
         }
-        
         let previousIndex = viewControllerIndex - 1
         guard previousIndex >= 0 else {
             return pages[pages.count - 1]
@@ -126,19 +78,76 @@ extension OnboardingPageController: UIPageViewControllerDataSource {
         guard nextIndex < pages.count else {
             return pages[0]
         }
-        
         return pages[nextIndex]
     }
 }
 
-
 // MARK: - UIPageViewControllerDelegate
+
 extension OnboardingPageController: UIPageViewControllerDelegate {
-    func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+    func pageViewController(
+        _ pageViewController: UIPageViewController,
+        didFinishAnimating finished: Bool,
+        previousViewControllers: [UIViewController],
+        transitionCompleted completed: Bool
+    ) {
         if let currentViewController = pageViewController.viewControllers?.first,
            let currentIndex = pages.firstIndex(of: currentViewController) {
             pageControl.currentPage = currentIndex
             self.currentIndex = currentIndex
         }
+    }
+}
+
+// MARK: - Private methods
+
+private extension OnboardingPageController {
+    func addingUIElements() {
+        goToTrackerScreenButton.addToSuperview(view)
+        view.addSubview(goToTrackerScreenButton)
+        view.addSubview(pageControl)
+    }
+    
+    func layoutConfigure() {
+        goToTrackerScreenButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            goToTrackerScreenButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            goToTrackerScreenButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            goToTrackerScreenButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -84),
+            goToTrackerScreenButton.heightAnchor.constraint(equalToConstant: 60),
+            
+            pageControl.bottomAnchor.constraint(equalTo: goToTrackerScreenButton.topAnchor, constant: -24),
+            pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+    }
+    
+    func showTabBar() {
+        let tabBarViewController = TabBarViewController()
+        tabBarViewController.awakeFromNib()
+        let window = UIApplication.shared.windows.first
+        window?.rootViewController = tabBarViewController
+    }
+    
+    // MARK: Action
+    
+    @objc
+    func didTapGoToTrackerScreenButton() {
+        showTabBar()
+        isOnboardingShown = true
+    }
+    
+    @objc
+    func pageControlValueChanged() {
+        guard let currentViewController = viewControllers?.first,
+              let currentIndex = pages.firstIndex(of: currentViewController),
+              currentIndex != pageControl.currentPage else {
+            return
+        }
+        let selectedViewController = pages[pageControl.currentPage]
+        let direction: UIPageViewController.NavigationDirection = currentIndex < pageControl.currentPage ? .forward : .reverse
+        setViewControllers([selectedViewController], direction: direction, animated: true, completion: nil)
+        
+        self.currentIndex = pageControl.currentPage
     }
 }

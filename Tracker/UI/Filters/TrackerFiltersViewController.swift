@@ -1,14 +1,18 @@
 import UIKit
 
 final class TrackerFilteringViewController: UIViewController {
-    //MARK: - Private properties
+    
+    // MARK: Private properties
+    
     private let tableView = UITableView()
     private let filters = [
-    NSLocalizedString("filters.all", comment: ""),
-    NSLocalizedString("filters.today", comment: ""),
-    NSLocalizedString("filters.completed", comment: ""),
-    NSLocalizedString("filters.notCompleted", comment: "")
+        NSLocalizedString("filters.all", comment: ""),
+        NSLocalizedString("filters.today", comment: ""),
+        NSLocalizedString("filters.completed", comment: ""),
+        NSLocalizedString("filters.notCompleted", comment: "")
     ]
+    
+    // MARK: Life cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -17,7 +21,36 @@ final class TrackerFilteringViewController: UIViewController {
         configurenavigationController()
         configureTableView()
     }
-    private func layoutConfigure() {
+}
+
+// MARK: - UITableViewDelegate, UITableViewDataSource
+
+extension TrackerFilteringViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        filters.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCellWithBlueCheckmark.identifier, for: indexPath) as?
+                TableViewCellWithBlueCheckmark else {fatalError("Invalid cell configuration")}
+        cell.configureCell(
+            with: filters[indexPath.row],
+            isSelected: false,
+            cellIndex: indexPath.row,
+            totalRowsInTable: filters.count
+        )
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        75
+    }
+}
+
+// MARK: - Private methods
+
+private extension TrackerFilteringViewController {
+    func layoutConfigure() {
         view.addSubview(tableView)
         
         NSLayoutConstraint.activate([
@@ -28,7 +61,7 @@ final class TrackerFilteringViewController: UIViewController {
         ])
     }
     
-    private func configureTableView() {
+    func configureTableView() {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -48,7 +81,7 @@ final class TrackerFilteringViewController: UIViewController {
         tableView.tableHeaderView?.backgroundColor = .ypWhite
     }
     
-    private func configurenavigationController() {
+    func configurenavigationController() {
         title = NSLocalizedString("filters", comment: "")
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
@@ -57,27 +90,5 @@ final class TrackerFilteringViewController: UIViewController {
             .font: UIFont.systemFont(ofSize: 16, weight: .medium),
             .foregroundColor: UIColor.ypBlack
         ]
-    }
-}
-
-extension TrackerFilteringViewController: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        filters.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCellWithBlueCheckmark.identifier, for: indexPath) as?
-        TableViewCellWithBlueCheckmark else {fatalError("Invalid cell configuration")}
-        cell.configureCell(
-            with: filters[indexPath.row],
-            isSelected: false,
-            cellIndex: indexPath.row,
-            totalRowsInTable: filters.count
-        )
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        75
     }
 }

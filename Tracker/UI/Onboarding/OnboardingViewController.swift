@@ -1,12 +1,15 @@
 import UIKit
 
 final class OnboardingViewController: UIViewController {
-    // MARK: - Private properties
+    
+    // MARK: Private properties
+    
     private let imageView = UIImageView()
     private let textLabel = UILabel()
     private let page: OnboardingPage
     
-    // MARK: - Life cycle
+    // MARK: Life cycle
+    
     init(page: OnboardingPage) {
         self.page = page
         super.init(nibName: nil, bundle: nil)
@@ -23,13 +26,18 @@ final class OnboardingViewController: UIViewController {
         layoutConfigure()
     }
     
-    // MARK: - Private methods
-    private func addingUIElements() {
+    
+}
+
+// MARK: - Private methods
+
+private extension OnboardingViewController {
+    func addingUIElements() {
         view.addSubview(imageView)
         imageView.addSubview(textLabel)
     }
     
-    private func layoutConfigure() {
+    func layoutConfigure() {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         textLabel.translatesAutoresizingMaskIntoConstraints = false
         
@@ -48,7 +56,7 @@ final class OnboardingViewController: UIViewController {
         ])
     }
     
-    private func configureContent(for page: OnboardingPage) {
+    func configureContent(for page: OnboardingPage) {
         let text: String
         switch page {
         case .first:
@@ -69,10 +77,4 @@ final class OnboardingViewController: UIViewController {
         textLabel.lineBreakMode = .byWordWrapping
         textLabel.textColor = .ypBlackDay
     }
-}
-
-
-enum OnboardingPage: CaseIterable {
-    case first
-    case second
 }

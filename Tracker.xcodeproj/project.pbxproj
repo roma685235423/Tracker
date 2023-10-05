@@ -21,6 +21,7 @@
 		BA1D77A82ACECD5B000FD621 /* TrackerCategoryStoreDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1D77A72ACECD5B000FD621 /* TrackerCategoryStoreDelegate.swift */; };
 		BA1D77AA2ACED05A000FD621 /* CategoryStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1D77A92ACED05A000FD621 /* CategoryStoreError.swift */; };
 		BA1D77AC2ACED07C000FD621 /* CategoryStoreUpdates.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1D77AB2ACED07C000FD621 /* CategoryStoreUpdates.swift */; };
+		BA1D77AE2ACED865000FD621 /* OnboardingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1D77AD2ACED865000FD621 /* OnboardingPage.swift */; };
 		BA1F3AA029E33CCB00AAA9C6 /* UICollectionView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1F3A9F29E33CCB00AAA9C6 /* UICollectionView+Extension.swift */; };
 		BA2428A82A49E4BF0090F1D3 /* TrackersCollectinCellDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA2428A72A49E4BF0090F1D3 /* TrackersCollectinCellDelegate.swift */; };
 		BA3B5CD029D75B52000C53FC /* ConstructorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA3B5CCF29D75B52000C53FC /* ConstructorViewController.swift */; };
@@ -109,6 +110,7 @@
 		BA1D77A72ACECD5B000FD621 /* TrackerCategoryStoreDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStoreDelegate.swift; sourceTree = "<group>"; };
 		BA1D77A92ACED05A000FD621 /* CategoryStoreError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryStoreError.swift; sourceTree = "<group>"; };
 		BA1D77AB2ACED07C000FD621 /* CategoryStoreUpdates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryStoreUpdates.swift; sourceTree = "<group>"; };
+		BA1D77AD2ACED865000FD621 /* OnboardingPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPage.swift; sourceTree = "<group>"; };
 		BA1F3A9F29E33CCB00AAA9C6 /* UICollectionView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+Extension.swift"; sourceTree = "<group>"; };
 		BA23F3162A5322D30056CC71 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BA2428A72A49E4BF0090F1D3 /* TrackersCollectinCellDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersCollectinCellDelegate.swift; sourceTree = "<group>"; };
@@ -471,6 +473,7 @@
 			children = (
 				BAD42ABC2A2890F20019A3E7 /* OnboardingViewController.swift */,
 				BAD42ABF2A289AE40019A3E7 /* OnboardingPageController.swift */,
+				BA1D77AD2ACED865000FD621 /* OnboardingPage.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -687,6 +690,7 @@
 				BA69EE6C29DDD98C00E65C92 /* ConstructorTableViewActions.swift in Sources */,
 				BA1D77AC2ACED07C000FD621 /* CategoryStoreUpdates.swift in Sources */,
 				BAC3C2F929E0673D00B3159A /* Date+Extension.swift in Sources */,
+				BA1D77AE2ACED865000FD621 /* OnboardingPage.swift in Sources */,
 				BA418D5929DA0D1300080EB0 /* Tracker.swift in Sources */,
 				BA3B5CD229D75BBD000C53FC /* UILabel+Extension.swift in Sources */,
 				BA1F3AA029E33CCB00AAA9C6 /* UICollectionView+Extension.swift in Sources */,
