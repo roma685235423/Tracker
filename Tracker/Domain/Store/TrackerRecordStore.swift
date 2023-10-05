@@ -81,7 +81,7 @@ final class TrackerRecordStore: NSObject {
     }
 }
 
-// MARK: Private methods
+// MARK: - Private methods
 
 private extension TrackerRecordStore {
     func createTrackerRecord(from coreData: TrackerRecordCoreData) throws -> TrackerRecord {

@@ -1,8 +1,13 @@
 import UIKit
 
 extension UIView {
+    
+    // MARK: Private properties
+    
     private static let gradientBorderLayerName = "GradientBorderLayer"
-    // MARK: - Puplic methods
+    
+    // MARK: Puplic methods
+    
     func createGradientBorder(
         width: CGFloat,
         cornerRadius: CGFloat = 0,
@@ -45,8 +50,11 @@ extension UIView {
             layer.addSublayer(border)
         }
     }
-    
-    // MARK: - Private methods
+}
+
+// MARK: - Private methods
+
+private extension UIView {
     private func createGradientBorderLayer() -> CAGradientLayer? {
         let borderLayers = layer.sublayers?.filter {
             $0.name == UIView.gradientBorderLayerName

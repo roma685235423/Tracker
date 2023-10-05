@@ -2,7 +2,7 @@ import UIKit
 
 extension UIStackView {
     
-    // MARK: - Life cycle
+    // MARK: Life cycle
     
     convenience init(imageName: String, text: String) {
         self.init(frame: .zero)

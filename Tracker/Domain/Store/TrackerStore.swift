@@ -245,6 +245,7 @@ final class TrackerStore: NSObject {
 
 
 // MARK: - NSFetchedResultsControllerDelegate
+
 extension TrackerStore: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         delegate?.updateTrackers()

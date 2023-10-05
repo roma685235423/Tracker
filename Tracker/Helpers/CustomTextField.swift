@@ -1,13 +1,16 @@
 import UIKit
 
 final class CustomTextField: UITextField {
-    // MARK: - Private properties
+    
+    // MARK: Private properties
+    
     private let leftInset: CGFloat = 16
     private let rightInset: CGFloat = 46
     private let topInset: CGFloat = 27
     private let bottomInset: CGFloat = 26
     
-    //MARK: - Lifecycle
+    //MARK: Lifecycle
+    
     init(with text: String) {
         super.init(frame: .zero)
         uiConfiguration(with: text)
@@ -18,7 +21,7 @@ final class CustomTextField: UITextField {
     }
     
     // MARK: - Public methods
-    // placeholder position
+    
     override func textRect(forBounds bounds: CGRect) -> CGRect {
         return bounds.inset(by: UIEdgeInsets(
             top: topInset,
@@ -28,7 +31,6 @@ final class CustomTextField: UITextField {
         ))
     }
     
-    // text position
     override func editingRect(forBounds bounds: CGRect) -> CGRect {
         return bounds.inset(by: UIEdgeInsets(
             top: topInset,
@@ -46,8 +48,11 @@ final class CustomTextField: UITextField {
             right: rightInset
         ))
     }
-    
-    // MARK: - Private methods
+}
+
+// MARK: - Private methods
+
+private extension CustomTextField {
     private func uiConfiguration(with text: String) {
         font = UIFont.systemFont(ofSize: 17, weight: .regular)
         textColor = .ypBlack

@@ -1,7 +1,9 @@
 import UIKit
 
 extension UIButton {
-    // MARK: - Life cycle
+    
+    // MARK: Life cycle
+    
     convenience init(label: String, size: CGFloat = 16, cornerRadius: CGFloat = 16) {
         self.init(frame: .zero)
         
@@ -14,7 +16,8 @@ extension UIButton {
         self.layer.masksToBounds = true
     }
     
-    // MARK: - Public properties
+    // MARK: Public methods
+    
     func addToSuperview(_ superview: UIView) {
         superview.addSubview(self)
     }

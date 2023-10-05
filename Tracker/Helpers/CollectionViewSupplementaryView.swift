@@ -1,10 +1,13 @@
 import UIKit
 
 final class SupplementaryView: UICollectionReusableView {
-    // MARK: - Public properties
+    
+    // MARK: Public properties
+    
     var titleLabel = UILabel()
     
-    // MARK: - Life cycle
+    // MARK: Life cycle
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.addSubview(titleLabel)
@@ -17,7 +20,8 @@ final class SupplementaryView: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Public methods
+    // MARK: Public methods
+    
     func configoreLayout(leftOffset: CGFloat, topOffset: CGFloat, bottomOffset: CGFloat) {
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: leftOffset),

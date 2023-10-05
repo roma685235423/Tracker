@@ -25,7 +25,7 @@ final class TrackerCategoryStore: NSObject {
         super.init()
     }
     
-    // MARK:  Public method
+    // MARK: Public method
     
     func getCategoryFromCoreData(id: UUID) throws -> TrackerCategoryCoreData {
         let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")

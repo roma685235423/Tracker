@@ -46,7 +46,7 @@ enum DayOfWeek: String, CaseIterable, Comparable {
             return NSLocalizedString("schedule.sundayShort", comment: "")
         }
     }
-
+    
     static func < (lhs: DayOfWeek, rhs: DayOfWeek) -> Bool {
         return lhs.rawValue < rhs.rawValue
     }

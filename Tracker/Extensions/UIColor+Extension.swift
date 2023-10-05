@@ -1,7 +1,9 @@
 import UIKit
 
 extension UIColor {
-    // MARK: - Public properties
+    
+    // MARK: Public properties
+    
     static let ypBlackDay = UIColor(hex: 0x1A1B21)
     static let ypBlackNight = UIColor(hex: 0xFFFFFF)
     static let ypWhiteDay = UIColor(hex: 0xFFFFFF)
@@ -15,13 +17,12 @@ extension UIColor {
     static let ypSearchBarDay = UIColor(hex: 0x767680, alpha: 0.12)
     static let ypBlackDayTint = UIColor(hex: 0x1A1B22,alpha: 0.3)
     static let ypDatePickerBackground = UIColor(hex: 0xF0F0F0)
-    static let gradientColors = [
-    UIColor(hex: 0x007BFA),
-    UIColor(hex: 0x46E69D),
-    UIColor(hex: 0xFD4C49)
-    ]
+    static let gradientColors = [UIColor(hex: 0x007BFA),
+                                 UIColor(hex: 0x46E69D),
+                                 UIColor(hex: 0xFD4C49)]
     
-    // MARK: - Life cycle
+    // MARK: Life cycle
+    
     convenience init(hex: Int, alpha: CGFloat = 1.0) {
         self.init(
             red: CGFloat((hex & 0xFF0000) >> 16) / 255.0,
@@ -32,7 +33,7 @@ extension UIColor {
     }
 }
 
-
+// MARK: - Dynamic colors
 
 extension UIColor {
     static var ypBlack: UIColor {
