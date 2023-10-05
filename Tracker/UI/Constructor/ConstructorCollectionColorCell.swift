@@ -5,7 +5,7 @@ final class CollectionColorCell: UICollectionViewCell {
     private let framelabel = UILabel()
     private let colorLabel = UILabel()
     
-    // MARK: - Life cicle
+    // MARK: - Life cycle
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.addSubview(framelabel)

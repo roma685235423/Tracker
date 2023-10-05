@@ -1,11 +1,6 @@
 import UIKit
 import CoreData
 
-
-protocol TrackerCategoryStoreDelegate: AnyObject {
-    func didUpdate()
-}
-
 // MARK: - Errors
 enum CategoryStoreError: Error {
     case decodeError
@@ -26,7 +21,7 @@ final class TrackerCategoryStore: NSObject {
     private var newIndexes: [IndexPath] = []
     private var deletedIndexes: [IndexPath] = []
     
-    // MARK: - Life cicle
+    // MARK: - Life cycle
     convenience override init() {
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
         try! self.init(context: context)

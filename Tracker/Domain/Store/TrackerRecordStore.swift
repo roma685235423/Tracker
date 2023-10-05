@@ -15,7 +15,7 @@ final class TrackerRecordStore: NSObject {
     private let trackerStore = TrackerStore()
     private var completedTrackers: Set<TrackerRecord> = []
     
-    // MARK: - Life cicle
+    // MARK: - Life cycle
     convenience override init() {
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
         self.init(context: context)

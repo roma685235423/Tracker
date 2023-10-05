@@ -1,7 +1,7 @@
 import UIKit
 
 extension UIButton {
-    // MARK: - Life cicle
+    // MARK: - Life cycle
     convenience init(label: String, size: CGFloat = 16, cornerRadius: CGFloat = 16) {
         self.init(frame: .zero)
         

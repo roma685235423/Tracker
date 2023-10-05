@@ -1,6 +1,6 @@
 import UIKit
 
-class CustomTextField: UITextField {
+final class CustomTextField: UITextField {
     // MARK: - Private properties
     private let leftInset: CGFloat = 16
     private let rightInset: CGFloat = 46
@@ -19,8 +19,7 @@ class CustomTextField: UITextField {
     
     // MARK: - Public methods
     // placeholder position
-    override func textRect(forBounds bounds: CGRect) -> CGRect
-    {
+    override func textRect(forBounds bounds: CGRect) -> CGRect {
         return bounds.inset(by: UIEdgeInsets(
             top: topInset,
             left: leftInset,
@@ -30,8 +29,7 @@ class CustomTextField: UITextField {
     }
     
     // text position
-    override func editingRect(forBounds bounds: CGRect) -> CGRect
-    {
+    override func editingRect(forBounds bounds: CGRect) -> CGRect {
         return bounds.inset(by: UIEdgeInsets(
             top: topInset,
             left: leftInset,
@@ -40,8 +38,7 @@ class CustomTextField: UITextField {
         ))
     }
     
-    override func placeholderRect(forBounds bounds: CGRect) -> CGRect
-    {
+    override func placeholderRect(forBounds bounds: CGRect) -> CGRect {
         return bounds.inset(by: UIEdgeInsets(
             top: topInset,
             left: leftInset,

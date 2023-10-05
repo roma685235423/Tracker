@@ -17,7 +17,7 @@ final class NewCategoryViewController: UIViewController {
     private let viewModel: CategorySelectionViewModel
     private var newCategoryName: String = ""
     
-    // MARK: - Lifecicle
+    // MARK: - Lifecycle
     init(viewModel: CategorySelectionViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)

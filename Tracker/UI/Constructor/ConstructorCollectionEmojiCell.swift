@@ -4,7 +4,7 @@ final class CollectionEmojiCell: UICollectionViewCell {
     // MARK: - Private properties
     private let emojiLabel = UILabel()
     
-    // MARK: - Life cicle
+    // MARK: - Life cycle
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureContentView()

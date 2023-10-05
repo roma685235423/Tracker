@@ -23,7 +23,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
     }
     
     static let identifier = "TrackersCollectionCell"
-    // MARK: - Life cicle
+    // MARK: - Life cycle
     override init(frame: CGRect) {
         super.init(frame: frame)
         tracker = nil

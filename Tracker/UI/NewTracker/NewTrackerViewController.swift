@@ -23,7 +23,7 @@ final class NewTrackerViewController: UIViewController {
         return stack
     }()
     
-    // MARK: - Lifecicle
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .ypWhite

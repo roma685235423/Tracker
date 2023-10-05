@@ -1,14 +1,17 @@
 import UIKit
 
 struct CollectionParameters {
-    // MARK: - Public proprties
+    
+    // MARK: Public proprties
+    
     let cellCount: Int
     let leftInset: CGFloat
     let rightInset: CGFloat
     let cellSpacing: CGFloat
     let paddingWidth: CGFloat
     
-    // MARK: - Life cicle
+    // MARK: Life cycle
+    
     init(cellCount: Int, leftInset: CGFloat, rightInset: CGFloat, cellSpacing: CGFloat) {
         self.cellCount = cellCount
         self.leftInset = leftInset

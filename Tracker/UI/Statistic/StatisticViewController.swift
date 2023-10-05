@@ -21,7 +21,7 @@ final class StatisticViewController: UIViewController {
     )
     private var currentDate = Date.getDate(Date())
     
-    // MARK: - Life cicle
+    // MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .ypWhite

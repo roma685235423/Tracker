@@ -4,7 +4,7 @@ final class SupplementaryView: UICollectionReusableView {
     // MARK: - Public properties
     var titleLabel = UILabel()
     
-    // MARK: - Life cicle
+    // MARK: - Life cycle
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.addSubview(titleLabel)
