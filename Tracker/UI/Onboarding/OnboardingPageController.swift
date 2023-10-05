@@ -24,7 +24,7 @@ final class OnboardingPageController: UIPageViewController {
         OnboardingViewController(page: .second)
     ]
     
-    // MARK: - Life cicle
+    // MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         dataSource = self

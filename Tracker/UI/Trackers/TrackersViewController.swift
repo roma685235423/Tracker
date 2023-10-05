@@ -118,14 +118,14 @@ class TrackersViewController: UIViewController {
             try? trackerRecordStore.completedTrackers(by: currentDate)
         }
     }
-    private var trackerCollectionViewParameters = CollectionParameters(
+    private let trackerCollectionViewParameters = CollectionParameters(
         cellCount: 2,
         leftInset: 16,
         rightInset: 16,
         cellSpacing: 9
     )
     
-    // MARK: - Life cicle
+    // MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate()

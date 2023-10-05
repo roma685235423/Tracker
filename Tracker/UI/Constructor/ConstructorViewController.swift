@@ -115,7 +115,7 @@ final class ConstructorViewController: UIViewController {
         }
     }()
     
-    // MARK: - Lifecicle
+    // MARK: - Lifecycle
     init(isRegularEvent: Bool) {
         self.isRegularEvent = isRegularEvent
         self.scrollViewInterElementOffsets = .init()
@@ -557,6 +557,7 @@ extension ConstructorViewController: UICollectionViewDelegate {
 
 
 // MARK: - UITextFieldDelegate Extension
+
 extension ConstructorViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         tracker.label = textField.text ?? ""

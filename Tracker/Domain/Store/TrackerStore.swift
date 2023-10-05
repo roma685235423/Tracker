@@ -1,13 +1,20 @@
 import UIKit
 import CoreData
 
-final class TrackerStore: NSObject {
-    // MARK: - Errors
+// MARK: - CategoryStoreError
+
+private extension TrackerStore {
     enum CategoryStoreError: Error {
         case decodeError, fetchTrackerError, deleteError, pinError
     }
+}
+
+// MARK: - TrackerStore
+
+final class TrackerStore: NSObject {
     
-    // MARK: - Public properties
+    // MARK: Public properties
+    
     var numberOfTrackers: Int {
         fetchedResultsController.fetchedObjects?.count ?? 0
     }
@@ -16,7 +23,8 @@ final class TrackerStore: NSObject {
     }
     weak var delegate: TrackerStoreDelegate?
     
-    // MARK: - Private properties
+    // MARK: Private properties
+    
     private let categoresStore = TrackerCategoryStore()
     private let context: NSManagedObjectContext
     private let colorMarshalling = UIColorMarshalling()
@@ -65,19 +73,21 @@ final class TrackerStore: NSObject {
         }
         return sections
     }
-    // MARK: - Life cicle
+    
+    // MARK: Life cycle
+    
     convenience override init() {
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
         self.init(context: context)
     }
-    
     
     init(context: NSManagedObjectContext) {
         self.context = context
         super.init()
     }
     
-    // MARK: - Public methods
+    // MARK: Public methods
+    
     func numberOfRowsInSection(_ section: Int) -> Int {
         sections[section].count
     }
@@ -106,6 +116,7 @@ final class TrackerStore: NSObject {
             category: category
         )
     }
+    
     func tracker(at indexPath: IndexPath) -> Tracker? {
         let tracker = sections[indexPath.section][indexPath.item]
         return tracker
@@ -219,45 +230,6 @@ final class TrackerStore: NSObject {
         try context.save()
     }
     
-    // MARK: - Private methods
-    private func createWeekdayRegex(_ iso860DayOfWeekIndex: Int) -> String {
-        var weekdayPattern = ""
-        for index in 0..<7 {
-            if index == iso860DayOfWeekIndex {
-                weekdayPattern += "1"
-            } else {
-                weekdayPattern += "."
-            }
-        }
-        return weekdayPattern
-    }
-    
-    private func createSchedulePredicate(_ weekdayPattern: String) -> NSPredicate {
-        return NSPredicate(
-            format: "%K == nil OR (%K != nil AND %K MATCHES[c] %@)",
-            #keyPath(TrackerCoreData.schedule),
-            #keyPath(TrackerCoreData.schedule),
-            #keyPath(TrackerCoreData.schedule), weekdayPattern
-        )
-    }
-    
-    private func createSearchPredicate(_ searchedText: String) -> NSPredicate {
-        return NSPredicate(format: "%K CONTAINS[cd] %@",
-                           #keyPath(TrackerCoreData.label), searchedText)
-    }
-    
-    private func colorFromHEX(_ hexString: String) -> UIColor {
-        return colorMarshalling.color(from: hexString)
-    }
-    
-    private func colorToHEX(_ color: UIColor) -> String {
-        return colorMarshalling.hexString(from: color)
-    }
-    
-    private func scheduleFromCoreData(_ coreData: TrackerCoreData) -> [DayOfWeek]? {
-        return DayOfWeek.decodeFrom(dayCodeString: coreData.schedule)
-    }
-    
     func getTrackerCoreData(by id: UUID) throws -> TrackerCoreData? {
         fetchedResultsController.fetchRequest.predicate = NSPredicate(
             format: "%K == %@",
@@ -276,5 +248,47 @@ final class TrackerStore: NSObject {
 extension TrackerStore: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         delegate?.updateTrackers()
+    }
+}
+
+// MARK: - Private methods
+
+private extension TrackerStore {
+    func createWeekdayRegex(_ iso860DayOfWeekIndex: Int) -> String {
+        var weekdayPattern = ""
+        for index in 0..<7 {
+            if index == iso860DayOfWeekIndex {
+                weekdayPattern += "1"
+            } else {
+                weekdayPattern += "."
+            }
+        }
+        return weekdayPattern
+    }
+    
+    func createSchedulePredicate(_ weekdayPattern: String) -> NSPredicate {
+        return NSPredicate(
+            format: "%K == nil OR (%K != nil AND %K MATCHES[c] %@)",
+            #keyPath(TrackerCoreData.schedule),
+            #keyPath(TrackerCoreData.schedule),
+            #keyPath(TrackerCoreData.schedule), weekdayPattern
+        )
+    }
+    
+    func createSearchPredicate(_ searchedText: String) -> NSPredicate {
+        return NSPredicate(format: "%K CONTAINS[cd] %@",
+                           #keyPath(TrackerCoreData.label), searchedText)
+    }
+    
+    func colorFromHEX(_ hexString: String) -> UIColor {
+        return colorMarshalling.color(from: hexString)
+    }
+    
+    func colorToHEX(_ color: UIColor) -> String {
+        return colorMarshalling.hexString(from: color)
+    }
+    
+    func scheduleFromCoreData(_ coreData: TrackerCoreData) -> [DayOfWeek]? {
+        return DayOfWeek.decodeFrom(dayCodeString: coreData.schedule)
     }
 }

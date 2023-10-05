@@ -1,21 +1,30 @@
 import UIKit
 import CoreData
 
-final class TrackerRecordStore: NSObject {
-    // MARK: - Errors
+// MARK: - Errors
+
+private extension TrackerRecordStore {
     enum CategoryStoreError: Error {
         case decodeError
     }
+}
+
+// MARK: - TrackerRecordStore
+
+final class TrackerRecordStore: NSObject {
     
-    // MARK: - Public properties
+    // MARK: Public properties
+    
     weak var delegate: TrackerRecordStoreDelegate?
     
-    // MARK: - Private properties
+    // MARK: Private properties
+    
     private let context: NSManagedObjectContext
     private let trackerStore = TrackerStore()
     private var completedTrackers: Set<TrackerRecord> = []
     
-    // MARK: - Life cicle
+    // MARK: Life cycle
+    
     convenience override init() {
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
         self.init(context: context)
@@ -26,7 +35,8 @@ final class TrackerRecordStore: NSObject {
         super.init()
     }
     
-    // MARK: - Public methods
+    // MARK:  Public methods
+    
     func completedTrackers(by date: Date) throws {
         let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
         request.returnsObjectsAsFaults = false
@@ -69,9 +79,12 @@ final class TrackerRecordStore: NSObject {
         completedTrackers.remove(record)
         delegate?.didUpdate(records: completedTrackers)
     }
-    
-    // MARK: - Private methods
-    private func createTrackerRecord(from coreData: TrackerRecordCoreData) throws -> TrackerRecord {
+}
+
+// MARK: Private methods
+
+private extension TrackerRecordStore {
+    func createTrackerRecord(from coreData: TrackerRecordCoreData) throws -> TrackerRecord {
         guard
             let idString = coreData.recordId,
             let id = UUID(uuidString: idString),

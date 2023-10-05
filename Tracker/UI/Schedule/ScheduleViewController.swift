@@ -37,7 +37,7 @@ final class ScheduleViewController: UIViewController {
     private var spacing = CGFloat()
     private var daysOfWeekForSceduler: [DayOfWeek]
     
-    // MARK: - Life cicle
+    // MARK: - Life cycle
     init(daysInScedule: [DayOfWeek]) {
         self.daysOfWeekForSceduler = daysInScedule
         super.init(nibName: nil, bundle: nil)

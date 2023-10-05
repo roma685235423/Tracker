@@ -6,7 +6,7 @@ final class OnboardingViewController: UIViewController {
     private let textLabel = UILabel()
     private let page: OnboardingPage
     
-    // MARK: - Life cicle
+    // MARK: - Life cycle
     init(page: OnboardingPage) {
         self.page = page
         super.init(nibName: nil, bundle: nil)

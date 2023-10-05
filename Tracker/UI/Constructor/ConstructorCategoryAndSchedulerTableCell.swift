@@ -6,7 +6,7 @@ final class CategoryAndSchedulerTableCell: UITableViewCell {
     private let subTitleLabel = UILabel()
     private let stackView = UIStackView()
     
-    // MARK: - Life cicle
+    // MARK: - Life cycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.accessoryType = .disclosureIndicator

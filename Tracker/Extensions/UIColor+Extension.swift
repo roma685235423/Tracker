@@ -21,7 +21,7 @@ extension UIColor {
     UIColor(hex: 0xFD4C49)
     ]
     
-    // MARK: - Life cicle
+    // MARK: - Life cycle
     convenience init(hex: Int, alpha: CGFloat = 1.0) {
         self.init(
             red: CGFloat((hex & 0xFF0000) >> 16) / 255.0,

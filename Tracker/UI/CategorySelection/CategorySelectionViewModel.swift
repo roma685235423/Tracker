@@ -21,7 +21,7 @@ final class CategorySelectionViewModel {
         }
     }
     
-    // MARK: - Life cicle
+    // MARK: - Life cycle
     init(for selectedCategory: TrackerCategory?) {
         self.selectedCategory = selectedCategory
         trackerCategoryStore.delegate = self

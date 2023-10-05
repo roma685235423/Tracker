@@ -6,7 +6,7 @@ final class TabBarViewController: UITabBarController {
     
     private var tabBarHeight: CGFloat = 0
     
-    // MARK: - Lifecicle
+    // MARK: - Lifecycle
     override func awakeFromNib() {
         super.awakeFromNib()
         let trackerViewController = TrackersViewController()
