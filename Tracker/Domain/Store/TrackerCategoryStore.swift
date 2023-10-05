@@ -1,27 +1,20 @@
 import UIKit
 import CoreData
 
-// MARK: - Errors
-enum CategoryStoreError: Error {
-    case decodeError
-}
-
-
-struct CategoryStoreUpdates {
-    let newIndexes: [IndexPath]
-    var deletedIndexes: [IndexPath]
-}
-
-
 final class TrackerCategoryStore: NSObject {
-    // MARK: - Private properties
+    
+    // MARK: Public properties
+    
     weak var delegate: TrackersCategoriesStoreDelegate?
-
+    
+    // MARK: Private properties
+    
     private let context: NSManagedObjectContext
     private var newIndexes: [IndexPath] = []
     private var deletedIndexes: [IndexPath] = []
     
-    // MARK: - Life cycle
+    // MARK: Life cycle
+    
     convenience override init() {
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
         try! self.init(context: context)
@@ -32,7 +25,8 @@ final class TrackerCategoryStore: NSObject {
         super.init()
     }
     
-    // MARK: - Public method
+    // MARK:  Public method
+    
     func getCategoryFromCoreData(id: UUID) throws -> TrackerCategoryCoreData {
         let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
         request.predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerCategoryCoreData.categoryId), id.uuidString)
@@ -47,10 +41,6 @@ final class TrackerCategoryStore: NSObject {
         categoryCoreData.label = newCategory.title
         
         try context.save()
-    }
-    
-    func delete(categoty: TrackerCategory) throws {
-        
     }
     
     func getCategoryesFromStore() -> [TrackerCategory]{
@@ -71,16 +61,10 @@ final class TrackerCategoryStore: NSObject {
         else { throw CategoryStoreError.decodeError}
         return TrackerCategory(title: title, id: id)
     }
-    
-    //     MARK: - Private methods
-    private func resetIndexes() {
-        newIndexes = []
-        deletedIndexes = []
-    }
 }
 
-
 // MARK: - NSFetchedResultsControllerDelegate
+
 extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         delegate?.categoriesDidUpdate(
@@ -90,5 +74,14 @@ extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
             )
         )
         resetIndexes()
+    }
+}
+
+// MARK: - Private methods
+
+private extension TrackerCategoryStore {
+    func resetIndexes() {
+        newIndexes = []
+        deletedIndexes = []
     }
 }
