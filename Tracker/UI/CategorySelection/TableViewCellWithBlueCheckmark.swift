@@ -25,9 +25,10 @@ final class TableViewCellWithBlueCheckmark: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        addingUIElements()
-        layoutConfigure()
         self.selectionStyle = .none
+        contentView.addSubviews([background, checkmarkImage, categoryLabel])
+        background.addSubview(separatorView)
+        layoutConfigure()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -60,13 +61,6 @@ extension TableViewCellWithBlueCheckmark {
 // MARK: - Private methods
 
 private extension TableViewCellWithBlueCheckmark {
-    
-    func addingUIElements() {
-        contentView.addSubview(background)
-        background.addSubview(separatorView)
-        contentView.addSubview(checkmarkImage)
-        contentView.addSubview(categoryLabel)
-    }
     
     func layoutConfigure() {
         background.translatesAutoresizingMaskIntoConstraints = false

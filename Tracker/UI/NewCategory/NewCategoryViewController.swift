@@ -69,8 +69,7 @@ extension NewCategoryViewController: UITextFieldDelegate {
 private extension NewCategoryViewController {
     
     func addingUIElements() {
-        view.addSubview(textField)
-        view.addSubview(screenTopLabel)
+        view.addSubviews([textField, screenTopLabel])
         createNewCategoryButton.addToSuperview(view)
     }
     

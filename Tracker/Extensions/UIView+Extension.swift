@@ -11,6 +11,13 @@ extension UIView {
 
 extension UIView {
     
+    func addSubviews(_ subviews: [UIView]) {
+        subviews.forEach { subview in
+            subview.translatesAutoresizingMaskIntoConstraints = false
+            self.addSubview(subview)
+        }
+    }
+    
     func createGradientBorder(
         width: CGFloat,
         cornerRadius: CGFloat = 0,

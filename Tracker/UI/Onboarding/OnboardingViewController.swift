@@ -22,7 +22,8 @@ final class OnboardingViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureContent(for: page)
-        addingUIElements()
+        view.addSubview(imageView)
+        imageView.addSubview(textLabel)
         layoutConfigure()
     }
 }
@@ -30,11 +31,6 @@ final class OnboardingViewController: UIViewController {
 // MARK: - Private methods
 
 private extension OnboardingViewController {
-    
-    func addingUIElements() {
-        view.addSubview(imageView)
-        imageView.addSubview(textLabel)
-    }
     
     func layoutConfigure() {
         imageView.translatesAutoresizingMaskIntoConstraints = false

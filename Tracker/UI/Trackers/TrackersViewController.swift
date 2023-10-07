@@ -138,7 +138,7 @@ class TrackersViewController: UIViewController {
             ofSize: 34,
             weight: .bold
         )
-        addingUIElements()
+        view.addSubviews([addTrackerButton, trackerLabel, trackersSearchBar, datePicker, localizedDateLabel, collectionView, mainSpacePlaceholderStack, searchSpacePlaceholderStack, filterButton])
         layoutConfigure()
         try? trackerStore.getFilteredTrackers(date: currentDate, searchedText: searchedText)
         try? trackerRecordStore.completedTrackers(by: currentDate)
@@ -338,8 +338,12 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         insetForSectionAt section: Int
     ) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 8, left: trackerCollectionViewParameters.leftInset,
-                            bottom: 16, right: trackerCollectionViewParameters.rightInset)
+        return UIEdgeInsets(
+            top: 8,
+            left: trackerCollectionViewParameters.leftInset,
+            bottom: 16,
+            right: trackerCollectionViewParameters.rightInset
+        )
     }
 }
 
@@ -419,14 +423,6 @@ extension TrackersViewController: TrackerRecordStoreDelegate {
 // MARK: - Private methods
 
 private extension TrackersViewController {
-    
-    func addingUIElements() {
-        [addTrackerButton, trackerLabel, trackersSearchBar, datePicker, localizedDateLabel,
-         collectionView, mainSpacePlaceholderStack, searchSpacePlaceholderStack, filterButton].forEach{
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview($0)
-        }
-    }
     
     func layoutConfigure() {
         NSLayoutConstraint.activate([

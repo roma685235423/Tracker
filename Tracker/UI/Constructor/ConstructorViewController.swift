@@ -427,11 +427,7 @@ private extension ConstructorViewController {
     func addingUIElements() {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
-        
-        [tableView, collectionView, buttonsStackView, textFieldStackView].forEach {
-            contentView.addSubview($0)
-            $0.translatesAutoresizingMaskIntoConstraints = false
-        }
+        contentView.addSubviews([tableView, collectionView, buttonsStackView, textFieldStackView])
         textFieldStackView.addArrangedSubview(textField)
         textFieldStackView.addArrangedSubview(textLimitLabel)
         textLimitLabel.isHidden = true

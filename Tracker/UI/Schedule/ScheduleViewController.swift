@@ -55,7 +55,7 @@ final class ScheduleViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .ypWhite
         spacing = self.view.frame.height * 0.0458
-        addingUIElements()
+        view.addSubviews([scrollView, schedulerTable, readyButton])
         configurenavigationController()
         layoutConfigure()
     }
@@ -99,13 +99,6 @@ extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
 // MARK: - Private methods
 
 private extension ScheduleViewController {
-    
-    func addingUIElements() {
-        [scrollView, schedulerTable, readyButton].forEach{
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview($0)
-        }
-    }
     
     func layoutConfigure() {
         NSLayoutConstraint.activate([

@@ -31,7 +31,8 @@ final class TrackersCollectionCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         tracker = nil
-        addingUIElements()
+        contentView.addSubviews([trackerBackgroundView, counterLabel, taskIsDoneButton])
+        trackerBackgroundView.addSubviews([emojieLabel, trackerTextLabel, pinImage])
         layoutConfigure()
     }
     
@@ -97,17 +98,6 @@ extension TrackersCollectionCell {
 // MARK: - Private methods
 
 private extension TrackersCollectionCell {
-    
-    func addingUIElements() {
-        [trackerBackgroundView, counterLabel, taskIsDoneButton, ].forEach{
-            contentView.addSubview($0)
-            $0.translatesAutoresizingMaskIntoConstraints = false
-        }
-        [emojieLabel, trackerTextLabel, pinImage].forEach{
-            trackerBackgroundView.addSubview($0)
-            $0.translatesAutoresizingMaskIntoConstraints = false
-        }
-    }
     
     func layoutConfigure() {
         NSLayoutConstraint.activate([

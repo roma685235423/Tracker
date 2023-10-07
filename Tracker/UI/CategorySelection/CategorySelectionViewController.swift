@@ -125,13 +125,6 @@ extension CategorySelectionViewController {
 
 private extension CategorySelectionViewController {
     
-    func addingUIElements() {
-        [trackerCategoryTable, addCategoryButton, mainSpacePlaceholderStack].forEach{
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview($0)
-        }
-    }
-    
     func layoutConfigure() {
         NSLayoutConstraint.activate([
             mainSpacePlaceholderStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -165,7 +158,7 @@ private extension CategorySelectionViewController {
         addCategoryButton.addTarget(self, action: #selector(didTapAddCategoryButton), for: .touchUpInside)
         configurenavigationController()
         configureTrackerCategoryTable()
-        addingUIElements()
+        view.addSubviews([trackerCategoryTable, addCategoryButton, mainSpacePlaceholderStack])
         layoutConfigure()
     }
     

@@ -36,7 +36,8 @@ final class OnboardingPageController: UIPageViewController {
         if let first = pages.first {
             self.setViewControllers([first], direction: .forward, animated: false, completion: nil)
         }
-        addingUIElements()
+        goToTrackerScreenButton.addToSuperview(view)
+        view.addSubviews([goToTrackerScreenButton, pageControl])
         goToTrackerScreenButton.addTarget(self, action: #selector(didTapGoToTrackerScreenButton), for: .touchUpInside)
         layoutConfigure()
         goToTrackerScreenButton.setStaticColors()
@@ -103,12 +104,6 @@ extension OnboardingPageController: UIPageViewControllerDelegate {
 // MARK: - Private methods
 
 private extension OnboardingPageController {
-    
-    func addingUIElements() {
-        goToTrackerScreenButton.addToSuperview(view)
-        view.addSubview(goToTrackerScreenButton)
-        view.addSubview(pageControl)
-    }
     
     func layoutConfigure() {
         goToTrackerScreenButton.translatesAutoresizingMaskIntoConstraints = false

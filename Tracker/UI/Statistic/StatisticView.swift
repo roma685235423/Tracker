@@ -35,9 +35,10 @@ final class StatisticsView: UIView {
         
         super.init(frame: .zero)
         
+        translatesAutoresizingMaskIntoConstraints = false
         setNumber(number)
         setName(name)
-        addingUIElements()
+        addSubviews([numberLabel, nameLabel])
         layoutConfigure()
     }
     
@@ -68,12 +69,6 @@ extension StatisticsView {
 // MARK: - Private methods
 
 private extension StatisticsView {
-    
-    func addingUIElements() {
-        translatesAutoresizingMaskIntoConstraints = false
-        addSubview(numberLabel)
-        addSubview(nameLabel)
-    }
     
     func layoutConfigure() {
         NSLayoutConstraint.activate([
