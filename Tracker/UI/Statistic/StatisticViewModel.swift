@@ -1,10 +1,13 @@
 import Foundation
 
 final class StatisticsViewModel {
-    // MARK: - Public properties
+    
+    // MARK: Public properties
+    
     var statisticVCCallback: (([TrackerRecord]) -> Void)?
     
-    // MARK: - Private properties
+    // MARK: Private properties
+    
     private let trackerRecordStore = TrackerRecordStore()
     private var trackers: [TrackerRecord] = [] {
         didSet {
@@ -12,7 +15,8 @@ final class StatisticsViewModel {
         }
     }
     
-    // MARK: - Public methods
+    // MARK: Public methods
+    
     func viewWillAppear() {
         guard let trackers = try? trackerRecordStore.getCompletedTrackers() else { return }
         self.trackers = trackers

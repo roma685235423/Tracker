@@ -1,7 +1,9 @@
 import UIKit
 
 final class NewCategoryViewController: UIViewController {
-    // MARK: - Properties
+    
+    // MARK: Properties
+    
     private let textField = CustomTextField(with: NSLocalizedString(
         "newCategory.categoryName",
         comment: ""
@@ -17,7 +19,8 @@ final class NewCategoryViewController: UIViewController {
     private let viewModel: CategorySelectionViewModel
     private var newCategoryName: String = ""
     
-    // MARK: - Lifecycle
+    // MARK: Lifecycle
+    
     init(viewModel: CategorySelectionViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -45,15 +48,33 @@ final class NewCategoryViewController: UIViewController {
         configureTextField()
         layoutConfigure()
     }
+}
+
+// MARK: - UITextFieldDelegate Extension
+
+extension NewCategoryViewController: UITextFieldDelegate {
     
-    // MARK: - Private methods
-    private func addingUIElements() {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
+    }
+}
+
+// MARK: - Private methods
+
+private extension NewCategoryViewController {
+    
+    func addingUIElements() {
         view.addSubview(textField)
         view.addSubview(screenTopLabel)
         createNewCategoryButton.addToSuperview(view)
     }
     
-    private func layoutConfigure() {
+    func layoutConfigure() {
         screenTopLabel.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
@@ -72,7 +93,7 @@ final class NewCategoryViewController: UIViewController {
         ])
     }
     
-    private func configureTextField() {
+    func configureTextField() {
         textField.delegate = self
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.backgroundColor = .ypBackground
@@ -89,9 +110,10 @@ final class NewCategoryViewController: UIViewController {
         )
     }
     
-    // MARK: - Actions
+    // MARK: Actions
+    
     @objc
-    private func checkIsCreateButtonActive() {
+    func checkIsCreateButtonActive() {
         if let text = textField.text, !text.isEmpty {
             newCategoryName = text
             createNewCategoryButton.isButtonActive(isActive: true)
@@ -101,22 +123,9 @@ final class NewCategoryViewController: UIViewController {
     }
     
     @objc
-    private func didTapCreateNewCategoryButton() {
+    func didTapCreateNewCategoryButton() {
         let newCategory = TrackerCategory(title: newCategoryName)
         viewModel.add(newCategory: newCategory)
         dismiss(animated: true)
-    }
-}
-
-
-// MARK: - UITextFieldDelegate Extension
-extension NewCategoryViewController: UITextFieldDelegate {
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
-    }
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        view.endEditing(true)
     }
 }

@@ -19,8 +19,11 @@ final class CustomTextField: UITextField {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // MARK: - Public methods
+}
+
+// MARK: - Public methods
+
+extension CustomTextField {
     
     override func textRect(forBounds bounds: CGRect) -> CGRect {
         return bounds.inset(by: UIEdgeInsets(
@@ -53,6 +56,7 @@ final class CustomTextField: UITextField {
 // MARK: - Private methods
 
 private extension CustomTextField {
+    
     private func uiConfiguration(with text: String) {
         font = UIFont.systemFont(ofSize: 17, weight: .regular)
         textColor = .ypBlack

@@ -1,10 +1,13 @@
 import UIKit
 
 final class ScheduleViewController: UIViewController {
-    // MARK: - Public properties
+    
+    // MARK: Public properties
+    
     var scheduleVCCallback: (([DayOfWeek], String) -> Void)?
     
-    // MARK: - Private properties
+    // MARK: Private properties
+    
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.alwaysBounceVertical = true
@@ -37,7 +40,8 @@ final class ScheduleViewController: UIViewController {
     private var spacing = CGFloat()
     private var daysOfWeekForSceduler: [DayOfWeek]
     
-    // MARK: - Life cycle
+    // MARK: Lifecycle
+    
     init(daysInScedule: [DayOfWeek]) {
         self.daysOfWeekForSceduler = daysInScedule
         super.init(nibName: nil, bundle: nil)
@@ -55,108 +59,12 @@ final class ScheduleViewController: UIViewController {
         configurenavigationController()
         layoutConfigure()
     }
-    
-    // MARK: - Private methods
-    private func addingUIElements() {
-        [scrollView, schedulerTable, readyButton].forEach{
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview($0)
-        }
-    }
-    
-    private func layoutConfigure() {
-        NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            
-            schedulerTable.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            schedulerTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            schedulerTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            schedulerTable.heightAnchor.constraint(equalToConstant: tableHeight),
-            
-            readyButton.heightAnchor.constraint(equalToConstant: buttonHeight),
-            readyButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            readyButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            readyButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
-        ])
-        scrollView.layoutIfNeeded()
-    }
-    
-    private func configurenavigationController() {
-        title = NSLocalizedString("schedule.title", comment: "")
-        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        navigationController?.navigationBar.shadowImage = UIImage()
-        
-        navigationController?.navigationBar.titleTextAttributes = [
-            .font: UIFont.systemFont(ofSize: 16, weight: .medium),
-            .foregroundColor: UIColor.ypBlack
-        ]
-    }
-    
-    private func shortWeekDaysNamesCreation() -> String {
-        var shortDaysOfWeekNames: [String] = []
-        for day in daysOfWeekForSceduler {
-            shortDaysOfWeekNames.append(day.localizedStringShort)
-        }
-        if shortDaysOfWeekNames.count < 7 {
-            let result = daysOfWeekForSceduler.isEmpty ? "" : shortDaysOfWeekNames.joined(separator: ", ")
-            return result
-        } else {
-            return NSLocalizedString("schedule.everyDay", comment: "")
-        }
-    }
-    
-    private func getDayOfWeek(at row: Int) -> DayOfWeek? {
-        guard let dayOfWeek = DayOfWeek.allCases[safe: row] else {
-            return nil
-        }
-        let changedDayOfWeek = dayOfWeek
-        return changedDayOfWeek
-    }
-    
-    private func changeSceduler(day: DayOfWeek?) {
-        guard let changedDay = day else { return }
-        if daysOfWeekForSceduler.contains(changedDay) {
-            guard let index = daysOfWeekForSceduler.firstIndex(of: changedDay) else { return }
-            daysOfWeekForSceduler.remove(at: index)
-        } else {
-            daysOfWeekForSceduler.append(changedDay)
-            sortDaysOfWeekForSceduler()
-        }
-    }
-    
-    private func sortDaysOfWeekForSceduler() {
-        if daysOfWeekForSceduler.count > 1 {
-            daysOfWeekForSceduler.sort { (day1, day2) -> Bool in
-                guard let index1 = DayOfWeek.allCases.firstIndex(of: day1),
-                      let index2 = DayOfWeek.allCases.firstIndex(of: day2) else {
-                    return false
-                }
-                return index1 < index2
-            }
-        }
-    }
-    
-    // MARK: - Actions
-    @objc
-    private func switchChanged(_ sender : UISwitch!) {
-        let row = sender.tag
-        let changedDay = getDayOfWeek(at: row)
-        changeSceduler(day: changedDay)
-    }
-    
-    @objc
-    private func didTapReadyButton() {
-        scheduleVCCallback?(daysOfWeekForSceduler, shortWeekDaysNamesCreation())
-        dismiss(animated: true)
-    }
 }
 
-
 // MARK: - UITableViewDataSource Extension
+
 extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return weekDaysForTable.count
     }
@@ -183,8 +91,109 @@ extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
         return cell
     }
     
-    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         75
+    }
+}
+
+// MARK: - Private methods
+
+private extension ScheduleViewController {
+    
+    func addingUIElements() {
+        [scrollView, schedulerTable, readyButton].forEach{
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
+    }
+    
+    func layoutConfigure() {
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            schedulerTable.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            schedulerTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            schedulerTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            schedulerTable.heightAnchor.constraint(equalToConstant: tableHeight),
+            
+            readyButton.heightAnchor.constraint(equalToConstant: buttonHeight),
+            readyButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            readyButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            readyButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
+        ])
+        scrollView.layoutIfNeeded()
+    }
+    
+    func configurenavigationController() {
+        title = NSLocalizedString("schedule.title", comment: "")
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        
+        navigationController?.navigationBar.titleTextAttributes = [
+            .font: UIFont.systemFont(ofSize: 16, weight: .medium),
+            .foregroundColor: UIColor.ypBlack
+        ]
+    }
+    
+    func shortWeekDaysNamesCreation() -> String {
+        var shortDaysOfWeekNames: [String] = []
+        for day in daysOfWeekForSceduler {
+            shortDaysOfWeekNames.append(day.localizedStringShort)
+        }
+        if shortDaysOfWeekNames.count < 7 {
+            let result = daysOfWeekForSceduler.isEmpty ? "" : shortDaysOfWeekNames.joined(separator: ", ")
+            return result
+        } else {
+            return NSLocalizedString("schedule.everyDay", comment: "")
+        }
+    }
+    
+    func getDayOfWeek(at row: Int) -> DayOfWeek? {
+        guard let dayOfWeek = DayOfWeek.allCases[safe: row] else {
+            return nil
+        }
+        let changedDayOfWeek = dayOfWeek
+        return changedDayOfWeek
+    }
+    
+    func changeSceduler(day: DayOfWeek?) {
+        guard let changedDay = day else { return }
+        if daysOfWeekForSceduler.contains(changedDay) {
+            guard let index = daysOfWeekForSceduler.firstIndex(of: changedDay) else { return }
+            daysOfWeekForSceduler.remove(at: index)
+        } else {
+            daysOfWeekForSceduler.append(changedDay)
+            sortDaysOfWeekForSceduler()
+        }
+    }
+    
+    func sortDaysOfWeekForSceduler() {
+        if daysOfWeekForSceduler.count > 1 {
+            daysOfWeekForSceduler.sort { (day1, day2) -> Bool in
+                guard let index1 = DayOfWeek.allCases.firstIndex(of: day1),
+                      let index2 = DayOfWeek.allCases.firstIndex(of: day2) else {
+                    return false
+                }
+                return index1 < index2
+            }
+        }
+    }
+    
+    // MARK:  Actions
+    
+    @objc
+    func switchChanged(_ sender : UISwitch!) {
+        let row = sender.tag
+        let changedDay = getDayOfWeek(at: row)
+        changeSceduler(day: changedDay)
+    }
+    
+    @objc
+    func didTapReadyButton() {
+        scheduleVCCallback?(daysOfWeekForSceduler, shortWeekDaysNamesCreation())
+        dismiss(animated: true)
     }
 }

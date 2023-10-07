@@ -8,7 +8,7 @@ final class OnboardingViewController: UIViewController {
     private let textLabel = UILabel()
     private let page: OnboardingPage
     
-    // MARK: Life cycle
+    // MARK: Lifecycle
     
     init(page: OnboardingPage) {
         self.page = page
@@ -25,13 +25,12 @@ final class OnboardingViewController: UIViewController {
         addingUIElements()
         layoutConfigure()
     }
-    
-    
 }
 
 // MARK: - Private methods
 
 private extension OnboardingViewController {
+    
     func addingUIElements() {
         view.addSubview(imageView)
         imageView.addSubview(textLabel)

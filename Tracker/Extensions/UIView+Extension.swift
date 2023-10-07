@@ -5,8 +5,11 @@ extension UIView {
     // MARK: Private properties
     
     private static let gradientBorderLayerName = "GradientBorderLayer"
-    
-    // MARK: Puplic methods
+}
+
+// MARK: - Public methods
+
+extension UIView {
     
     func createGradientBorder(
         width: CGFloat,
@@ -55,6 +58,7 @@ extension UIView {
 // MARK: - Private methods
 
 private extension UIView {
+    
     private func createGradientBorderLayer() -> CAGradientLayer? {
         let borderLayers = layer.sublayers?.filter {
             $0.name == UIView.gradientBorderLayerName

@@ -1,6 +1,7 @@
 import Foundation
 
 extension DayOfWeek {
+    
     static func dayCodeString(from selectedDays: [DayOfWeek]?) -> String? {
         guard let selectedDays = selectedDays else { return nil }
         var binaryRepresentation = ""

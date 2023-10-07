@@ -26,7 +26,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
     }
     static let identifier = "TrackersCollectionCell"
     
-    // MARK: - Life cycle
+    // MARK: Lifecycle
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -42,7 +42,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         tracker = nil
-        setTaskIsDoneButton(equalTo: false)
+        setTaskIsDoneButton(state: false)
         daysCounter = 0
     }
 }
@@ -50,6 +50,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
 // MARK: Public methods
 
 extension TrackersCollectionCell {
+    
     func configureCellContent(
         prototype: Tracker,
         daysCounter: Int,
@@ -66,12 +67,12 @@ extension TrackersCollectionCell {
         configureTaskIsDoneButton(color: prototype.color)
         configureCounterLabel()
         pinImageVisibitity(isVisible: isPinned)
-        setTaskIsDoneButton(equalTo: isDone)
+        setTaskIsDoneButton(state: isDone)
         configurePinImage()
     }
     
-    func setTaskIsDoneButton(equalTo: Bool) {
-        if equalTo {
+    func setTaskIsDoneButton(state: Bool) {
+        if state {
             taskIsDoneButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
             taskIsDoneButton.layer.opacity = 0.3
         } else {
@@ -96,6 +97,7 @@ extension TrackersCollectionCell {
 // MARK: - Private methods
 
 private extension TrackersCollectionCell {
+    
     func addingUIElements() {
         [trackerBackgroundView, counterLabel, taskIsDoneButton, ].forEach{
             contentView.addSubview($0)
@@ -142,7 +144,7 @@ private extension TrackersCollectionCell {
     func getCorrectRussianWordDay(days: Int) -> String {
         let formatString : String = NSLocalizedString(
             "number of days",
-            comment: "Days count string format to be found in Localized.stringsdict"
+            comment: ""
         )
         let daysCounterString = String.localizedStringWithFormat(
             formatString,

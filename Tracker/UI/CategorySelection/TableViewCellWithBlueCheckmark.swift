@@ -1,10 +1,13 @@
 import UIKit
 
 final class TableViewCellWithBlueCheckmark: UITableViewCell {
-    // MARK: - Puplic properties
+    
+    // MARK: Puplic properties
+    
     static let identifier = "CategoryCell"
     
-    // MARK: - Private properties
+    // MARK: Private properties
+    
     private let categoryLabel = UILabel()
     private let background = UIView()
     private let separatorView = UIView()
@@ -18,7 +21,8 @@ final class TableViewCellWithBlueCheckmark: UITableViewCell {
         return imageView
     }()
     
-    // MARK: - Lifecycle
+    // MARK: Lifecycle
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         addingUIElements()
@@ -29,8 +33,12 @@ final class TableViewCellWithBlueCheckmark: UITableViewCell {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
+}
+
+// MARK: - Public methods
+
+extension TableViewCellWithBlueCheckmark {
     
-    // MARK: - Public Methods
     func configureCell(with text: String, isSelected: Bool, cellIndex: Int, totalRowsInTable: Int) {
         background.backgroundColor = .ypBackground
         separatorView.backgroundColor = .ypGray
@@ -47,16 +55,20 @@ final class TableViewCellWithBlueCheckmark: UITableViewCell {
     func resetSeparatorVisibility() {
         separatorView.isHidden = false
     }
+}
+
+// MARK: - Private methods
+
+private extension TableViewCellWithBlueCheckmark {
     
-    // MARK: - Private methods
-    private func addingUIElements() {
+    func addingUIElements() {
         contentView.addSubview(background)
         background.addSubview(separatorView)
         contentView.addSubview(checkmarkImage)
         contentView.addSubview(categoryLabel)
     }
     
-    private func layoutConfigure() {
+    func layoutConfigure() {
         background.translatesAutoresizingMaskIntoConstraints = false
         separatorView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -82,7 +94,7 @@ final class TableViewCellWithBlueCheckmark: UITableViewCell {
         ])
     }
     
-    private func configureLabel(with text: String) {
+    func configureLabel(with text: String) {
         categoryLabel.configureLabel(
             text: text,
             addToView: contentView,
@@ -92,7 +104,7 @@ final class TableViewCellWithBlueCheckmark: UITableViewCell {
         categoryLabel.textAlignment = .left
     }
     
-    private func applyCornerRadius(cellIndex: Int, totalRowsInTable: Int) {
+    func applyCornerRadius(cellIndex: Int, totalRowsInTable: Int) {
         let cornerRadius: CGFloat = 16
         
         switch (cellIndex, totalRowsInTable) {

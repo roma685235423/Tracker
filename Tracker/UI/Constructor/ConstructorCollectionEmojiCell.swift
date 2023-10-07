@@ -6,7 +6,7 @@ final class CollectionEmojiCell: UICollectionViewCell {
     
     private let emojiLabel = UILabel()
     
-    // MARK: Life cycle
+    // MARK: Lifecycle
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -23,6 +23,7 @@ final class CollectionEmojiCell: UICollectionViewCell {
 // MARK: - Public methods
 
 extension CollectionEmojiCell {
+    
     func cellIsSelected(state: Bool) {
         if state == true {
             contentView.backgroundColor = .ypLightGray
@@ -39,6 +40,7 @@ extension CollectionEmojiCell {
 // MARK: - Private methods
 
 private extension CollectionEmojiCell {
+    
     private func layoutConfigure() {
         NSLayoutConstraint.activate([
             emojiLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),

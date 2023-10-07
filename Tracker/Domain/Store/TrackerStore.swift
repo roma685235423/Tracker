@@ -74,7 +74,7 @@ final class TrackerStore: NSObject {
         return sections
     }
     
-    // MARK: Life cycle
+    // MARK: Lifecycle
     
     convenience override init() {
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -85,8 +85,20 @@ final class TrackerStore: NSObject {
         self.context = context
         super.init()
     }
+}
+
+// MARK: - NSFetchedResultsControllerDelegate
+
+extension TrackerStore: NSFetchedResultsControllerDelegate {
     
-    // MARK: Public methods
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        delegate?.updateTrackers()
+    }
+}
+
+// MARK: - Public methods
+
+extension TrackerStore {
     
     func numberOfRowsInSection(_ section: Int) -> Int {
         sections[section].count
@@ -236,25 +248,19 @@ final class TrackerStore: NSObject {
             #keyPath(TrackerCoreData.trackerId), id.uuidString
         )
         try fetchedResultsController.performFetch()
-        guard let tracker = fetchedResultsController.fetchedObjects?.first else { throw CategoryStoreError.fetchTrackerError }
+        guard 
+            let tracker = fetchedResultsController.fetchedObjects?.first
+        else { throw CategoryStoreError.fetchTrackerError }
         fetchedResultsController.fetchRequest.predicate = nil
         try fetchedResultsController.performFetch()
         return tracker
     }
 }
 
-
-// MARK: - NSFetchedResultsControllerDelegate
-
-extension TrackerStore: NSFetchedResultsControllerDelegate {
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        delegate?.updateTrackers()
-    }
-}
-
 // MARK: - Private methods
 
 private extension TrackerStore {
+    
     func createWeekdayRegex(_ iso860DayOfWeekIndex: Int) -> String {
         var weekdayPattern = ""
         for index in 0..<7 {
@@ -272,13 +278,17 @@ private extension TrackerStore {
             format: "%K == nil OR (%K != nil AND %K MATCHES[c] %@)",
             #keyPath(TrackerCoreData.schedule),
             #keyPath(TrackerCoreData.schedule),
-            #keyPath(TrackerCoreData.schedule), weekdayPattern
+            #keyPath(TrackerCoreData.schedule), 
+            weekdayPattern
         )
     }
     
     func createSearchPredicate(_ searchedText: String) -> NSPredicate {
-        return NSPredicate(format: "%K CONTAINS[cd] %@",
-                           #keyPath(TrackerCoreData.label), searchedText)
+        return NSPredicate(
+            format: "%K CONTAINS[cd] %@",
+            #keyPath(TrackerCoreData.label),
+            searchedText
+        )
     }
     
     func colorFromHEX(_ hexString: String) -> UIColor {

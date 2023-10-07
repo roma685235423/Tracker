@@ -2,11 +2,10 @@ import UIKit
 
 extension UIButton {
     
-    // MARK: Life cycle
+    // MARK: Lifecycle
     
     convenience init(label: String, size: CGFloat = 16, cornerRadius: CGFloat = 16) {
         self.init(frame: .zero)
-        
         self.translatesAutoresizingMaskIntoConstraints = false
         self.backgroundColor = .ypBlack
         self.setTitle(label, for: .normal)
@@ -15,8 +14,11 @@ extension UIButton {
         self.layer.cornerRadius = cornerRadius
         self.layer.masksToBounds = true
     }
-    
-    // MARK: Public methods
+}
+
+// MARK: - Public methods
+
+extension UIButton {
     
     func addToSuperview(_ superview: UIView) {
         superview.addSubview(self)

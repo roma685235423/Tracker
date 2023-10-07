@@ -10,7 +10,7 @@ struct CollectionParameters {
     let cellSpacing: CGFloat
     let paddingWidth: CGFloat
     
-    // MARK: Life cycle
+    // MARK: Lifecycle
     
     init(cellCount: Int, leftInset: CGFloat, rightInset: CGFloat, cellSpacing: CGFloat) {
         self.cellCount = cellCount

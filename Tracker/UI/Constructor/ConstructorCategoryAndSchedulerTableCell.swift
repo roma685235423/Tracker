@@ -8,7 +8,7 @@ final class CategoryAndSchedulerTableCell: UITableViewCell {
     private let subTitleLabel = UILabel()
     private let stackView = UIStackView()
     
-    // MARK: Life cycle
+    // MARK: Lifecycle
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -28,16 +28,17 @@ final class CategoryAndSchedulerTableCell: UITableViewCell {
 // MARK: - Public methods
 
 extension CategoryAndSchedulerTableCell {
+    
     func configure(title: String, subTitle: String) {
         configureTitleLabel(with: title)
         configureSubitleLabel(with: subTitle)
     }
 }
 
-
 // MARK: - Private methods
 
 private extension CategoryAndSchedulerTableCell {
+    
     func addingUIElements() {
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(subTitleLabel)

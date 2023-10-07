@@ -124,7 +124,7 @@ class TrackersViewController: UIViewController {
         cellSpacing: 9
     )
     
-    // MARK: Life cycle
+    // MARK: Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -163,6 +163,7 @@ class TrackersViewController: UIViewController {
 //MARK: - UISearchBarDelegate
 
 extension TrackersViewController: UISearchBarDelegate {
+    
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
         checkPlaceholderVisabilityAfterSearch()
         searchBar.setShowsCancelButton(true, animated: true)
@@ -196,6 +197,7 @@ extension TrackersViewController: UISearchBarDelegate {
 //MARK: - UICollectionViewDataSource, UICollectionViewDelegate
 
 extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         checkMainPlaceholderVisability()
         return trackerStore.numberOfSections
@@ -263,15 +265,16 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
 // MARK: - TrackersCollectinCellDelegate
 
 extension TrackersViewController: TrackersCollectinCellDelegate {
+    
     func didTapTaskIsDoneButton(cell: TrackersCollectionCell, tracker: Tracker) {
         if let removedRecord = complitedTrackers.first(where: { $0.date == currentDate && $0.trackerId == tracker.id }) {
             try? trackerRecordStore.remove(record: removedRecord)
-            cell.setTaskIsDoneButton(equalTo: false)
+            cell.setTaskIsDoneButton(state: false)
             cell.counterSub()
         } else {
             let trackerRecord = TrackerRecord(trackerId: tracker.id, date: currentDate)
             try? trackerRecordStore.add(record: trackerRecord)
-            cell.setTaskIsDoneButton(equalTo: true)
+            cell.setTaskIsDoneButton(state: true)
             cell.counterAdd()
         }
     }
@@ -280,6 +283,7 @@ extension TrackersViewController: TrackersCollectinCellDelegate {
 //MARK: - UICollectionViewDelegateFlowLayout
 
 extension TrackersViewController: UICollectionViewDelegateFlowLayout {
+    
     func collectionView(
         _ collectionView: UICollectionView,
         layout collectionViewLayout: UICollectionViewLayout,
@@ -342,6 +346,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 // MARK: - UIContextMenuInteractionDelegate
 
 extension TrackersViewController: UIContextMenuInteractionDelegate {
+    
     func contextMenuInteraction(
         _ interaction: UIContextMenuInteraction,
         configurationForMenuAtLocation location: CGPoint
@@ -394,6 +399,7 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
 // MARK: - TrackerStoreDelegate
 
 extension TrackersViewController: TrackerStoreDelegate {
+    
     func updateTrackers() {
         checkMainPlaceholderVisability()
         checkPlaceholderVisabilityAfterSearch()
@@ -404,6 +410,7 @@ extension TrackersViewController: TrackerStoreDelegate {
 // MARK: - TrackerRecordStoreDelegate
 
 extension TrackersViewController: TrackerRecordStoreDelegate {
+    
     func didUpdate(records: Set<TrackerRecord>) {
         complitedTrackers = records
     }
@@ -412,6 +419,7 @@ extension TrackersViewController: TrackerRecordStoreDelegate {
 // MARK: - Private methods
 
 private extension TrackersViewController {
+    
     func addingUIElements() {
         [addTrackerButton, trackerLabel, trackersSearchBar, datePicker, localizedDateLabel,
          collectionView, mainSpacePlaceholderStack, searchSpacePlaceholderStack, filterButton].forEach{

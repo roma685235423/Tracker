@@ -5,10 +5,9 @@ final class TabBarViewController: UITabBarController {
     // MARK: Private properties
     
     private let borderView = UIView()
-    
     private var tabBarHeight: CGFloat = 0
     
-    // MARK: Life cycle
+    // MARK: Lifecycle
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -41,6 +40,7 @@ final class TabBarViewController: UITabBarController {
 // MARK: - Private properties
 
 private extension TabBarViewController {
+    
     func borderConfigure() {
         borderView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(borderView)

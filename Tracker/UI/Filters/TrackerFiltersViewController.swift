@@ -12,7 +12,7 @@ final class TrackerFilteringViewController: UIViewController {
         NSLocalizedString("filters.notCompleted", comment: "")
     ]
     
-    // MARK: Life cycle
+    // MARK: Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +26,7 @@ final class TrackerFilteringViewController: UIViewController {
 // MARK: - UITableViewDelegate, UITableViewDataSource
 
 extension TrackerFilteringViewController: UITableViewDelegate, UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         filters.count
     }
@@ -50,6 +51,7 @@ extension TrackerFilteringViewController: UITableViewDelegate, UITableViewDataSo
 // MARK: - Private methods
 
 private extension TrackerFilteringViewController {
+    
     func layoutConfigure() {
         view.addSubview(tableView)
         
@@ -69,14 +71,18 @@ private extension TrackerFilteringViewController {
         tableView.backgroundColor = .clear
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.clipsToBounds = true
-        
         tableView.register(
             TableViewCellWithBlueCheckmark.self,
             forCellReuseIdentifier: TableViewCellWithBlueCheckmark.identifier
         )
         tableView.layer.cornerRadius = 16
         tableView.tableHeaderView = UIView(
-            frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 1)
+            frame: CGRect(
+                x: 0,
+                y: 0,
+                width: tableView.bounds.width,
+                height: 1
+            )
         )
         tableView.tableHeaderView?.backgroundColor = .ypWhite
     }
@@ -85,7 +91,6 @@ private extension TrackerFilteringViewController {
         title = NSLocalizedString("filters", comment: "")
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
-        
         navigationController?.navigationBar.titleTextAttributes = [
             .font: UIFont.systemFont(ofSize: 16, weight: .medium),
             .foregroundColor: UIColor.ypBlack

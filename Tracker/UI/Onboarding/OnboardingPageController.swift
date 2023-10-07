@@ -25,7 +25,7 @@ final class OnboardingPageController: UIPageViewController {
         OnboardingViewController(page: .second)
     ]
     
-    // MARK: Life cycle
+    // MARK: Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,6 +52,7 @@ final class OnboardingPageController: UIPageViewController {
 // MARK: - UIPageViewControllerDataSource
 
 extension OnboardingPageController: UIPageViewControllerDataSource {
+    
     func pageViewController(
         _ pageViewController: UIPageViewController,
         viewControllerBefore viewController: UIViewController
@@ -84,6 +85,7 @@ extension OnboardingPageController: UIPageViewControllerDataSource {
 // MARK: - UIPageViewControllerDelegate
 
 extension OnboardingPageController: UIPageViewControllerDelegate {
+    
     func pageViewController(
         _ pageViewController: UIPageViewController,
         didFinishAnimating finished: Bool,
@@ -101,6 +103,7 @@ extension OnboardingPageController: UIPageViewControllerDelegate {
 // MARK: - Private methods
 
 private extension OnboardingPageController {
+    
     func addingUIElements() {
         goToTrackerScreenButton.addToSuperview(view)
         view.addSubview(goToTrackerScreenButton)

@@ -1,10 +1,13 @@
 import UIKit
 
 final class StatisticViewController: UIViewController {
-    // MARK: - Public properties
+    
+    // MARK: Public properties
+    
     var statisticsViewModel: StatisticsViewModel?
     
-    // MARK: - Private properties
+    // MARK: Private properties
+    
     private let statisticLabel = UILabel()
     private let mainSpacePlaceholderStack = UIStackView(
         imageName: "statisticPlaceholder",
@@ -21,7 +24,8 @@ final class StatisticViewController: UIViewController {
     )
     private var currentDate = Date.getDate(Date())
     
-    // MARK: - Life cycle
+    // MARK: Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .ypWhite

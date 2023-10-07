@@ -7,7 +7,7 @@ final class CollectionColorCell: UICollectionViewCell {
     private let framelabel = UILabel()
     private let colorLabel = UILabel()
     
-    // MARK: Life cycle
+    // MARK: Lifecycle
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -27,6 +27,7 @@ final class CollectionColorCell: UICollectionViewCell {
 // MARK: - Public methods
 
 extension CollectionColorCell {
+    
     func setCellColor(color: UIColor) {
         self.colorLabel.backgroundColor = color
     }
@@ -44,6 +45,7 @@ extension CollectionColorCell {
 // MARK: - Private methods
 
 private extension CollectionColorCell {
+    
     func layoutConfigure() {
         NSLayoutConstraint.activate([
             framelabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),

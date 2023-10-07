@@ -117,7 +117,8 @@ final class ConstructorViewController: UIViewController {
         }
     }()
     
-    // MARK: - Lifecycle
+    // MARK: Lifecycle
+    
     init(isRegularEvent: Bool) {
         self.isRegularEvent = isRegularEvent
         self.scrollViewInterElementOffsets = .init()
@@ -163,6 +164,7 @@ final class ConstructorViewController: UIViewController {
 // MARK: - UITableViewDataSource Extension
 
 extension ConstructorViewController: UITableViewDataSource, UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         actionsArray.count
     }
@@ -214,6 +216,7 @@ extension ConstructorViewController: UITableViewDataSource, UITableViewDelegate 
 // MARK: - UICollectionViewDataSource
 
 extension ConstructorViewController: UICollectionViewDataSource {
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return collectionViewSectionHeaders.count
     }
@@ -231,14 +234,21 @@ extension ConstructorViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.section == 0 {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "emojieCell", for: indexPath) as? CollectionEmojiCell
+            guard
+                let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: "emojieCell",
+                    for: indexPath
+                ) as? CollectionEmojiCell
             else { fatalError("Cell configure error!") }
             cell.setEmojieLabel(emojie: emojies[indexPath.row])
             let isSelected = isNeedToSelectEmoji(for: indexPath)
             cell.cellIsSelected(state: isSelected)
             return cell
         } else {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "colorCell", for: indexPath) as? CollectionColorCell
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "colorCell",
+                for: indexPath
+            ) as? CollectionColorCell
             else { fatalError("Cell configure error!") }
             cell.setCellColor(color: cellColors[indexPath.row])
             let isSelected = isNeedToSelectColor(for: indexPath)
@@ -258,7 +268,12 @@ extension ConstructorViewController: UICollectionViewDataSource {
         default:
             id = ""
         }
-        guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? SupplementaryView
+        guard
+            let view = collectionView.dequeueReusableSupplementaryView(
+                ofKind: kind,
+                withReuseIdentifier: id,
+                for: indexPath
+            ) as? SupplementaryView
         else {fatalError("Supplementary view configuration error")}
         let topOffset: CGFloat = indexPath.section == 0 ? 0 : 40
         view.configoreLayout(leftOffset: 10, topOffset: topOffset, bottomOffset: 24)
@@ -271,19 +286,36 @@ extension ConstructorViewController: UICollectionViewDataSource {
 // MARK: - UICollectionViewDelegateFlowLayout
 
 extension ConstructorViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width:52, height: 52)
-    }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+    func collectionView(
+        _ collectionView: UICollectionView, 
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+            return CGSize(width:52, height: 52)
+        }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        minimumInteritemSpacingForSectionAt section: Int
+    ) -> CGFloat {
         0
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        minimumLineSpacingForSectionAt section: Int
+    ) -> CGFloat {
         0
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        referenceSizeForHeaderInSection section: Int
+    ) -> CGSize {
         let indexPath = IndexPath(row: 0, section: section)
         let headerView = self.collectionView(
             collectionView,
@@ -301,6 +333,7 @@ extension ConstructorViewController: UICollectionViewDelegateFlowLayout {
 // MARK: - UICollectionViewDelegate
 
 extension ConstructorViewController: UICollectionViewDelegate {
+    
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         selectedItem = indexPath
         return true
@@ -362,6 +395,7 @@ extension ConstructorViewController: UICollectionViewDelegate {
 // MARK: - UITextFieldDelegate
 
 extension ConstructorViewController: UITextFieldDelegate {
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         tracker.label = textField.text ?? ""
         textField.resignFirstResponder()
@@ -389,6 +423,7 @@ extension ConstructorViewController: UITextFieldDelegate {
 // MARK: - Private methods
 
 private extension ConstructorViewController {
+    
     func addingUIElements() {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)

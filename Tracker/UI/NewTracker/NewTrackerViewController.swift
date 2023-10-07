@@ -1,7 +1,9 @@
 import UIKit
 
 final class NewTrackerViewController: UIViewController {
-    // MARK: - Private properties
+    
+    // MARK: Private properties
+    
     private let goToCreateHabitScreenButton = UIButton(
         label: NSLocalizedString(
             "newTracker.habitButton",
@@ -23,7 +25,8 @@ final class NewTrackerViewController: UIViewController {
         return stack
     }()
     
-    // MARK: - Lifecycle
+    // MARK: Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .ypWhite
@@ -32,9 +35,13 @@ final class NewTrackerViewController: UIViewController {
         configureButtons()
         
     }
+}
+
+// MARK: - Private methods
+
+private extension NewTrackerViewController {
     
-    // MARK: - Private methods
-    private func configureButtons() {
+    func configureButtons() {
         goToCreateHabitScreenButton.addTarget(
             self,
             action: #selector(didTapGoToCreateHabitScreenButton),
@@ -47,9 +54,8 @@ final class NewTrackerViewController: UIViewController {
         )
     }
     
-    private func configureStackView() {
+    func configureStackView() {
         view.addSubview(buttonsStackView)
-        
         buttonsStackView.addArrangedSubview(goToCreateHabitScreenButton)
         buttonsStackView.addArrangedSubview(goToCreateIrregularEventScreenButton)
         
@@ -63,26 +69,26 @@ final class NewTrackerViewController: UIViewController {
         ])
     }
     
-    private func configurenavigationController() {
+    func configurenavigationController() {
         title = NSLocalizedString("newTracker.title", comment: "")
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
-        
         navigationController?.navigationBar.titleTextAttributes = [
             .font: UIFont.systemFont(ofSize: 16, weight: .medium),
             .foregroundColor: UIColor.ypBlack
         ]
     }
     
-    // MARK: - Actions
+    // MARK: Actions
+    
     @objc
-    private func didTapGoToCreateHabitScreenButton() {
+    func didTapGoToCreateHabitScreenButton() {
         let newTrackerConstructorView = ConstructorViewController(isRegularEvent: true)
         navigationController?.pushViewController(newTrackerConstructorView, animated: true)
     }
     
     @objc
-    private func didTapGoToCreateIrregularEventScreenButton() {
+    func didTapGoToCreateIrregularEventScreenButton() {
         let newTrackerConstructorView = ConstructorViewController(isRegularEvent: false)
         navigationController?.pushViewController(newTrackerConstructorView, animated: true)
     }

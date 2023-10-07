@@ -13,7 +13,7 @@ final class TrackerCategoryStore: NSObject {
     private var newIndexes: [IndexPath] = []
     private var deletedIndexes: [IndexPath] = []
     
-    // MARK: Life cycle
+    // MARK: Lifecycle
     
     convenience override init() {
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext

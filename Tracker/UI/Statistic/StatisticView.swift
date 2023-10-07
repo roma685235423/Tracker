@@ -1,7 +1,9 @@
 import UIKit
 
 final class StatisticsView: UIView {
-    // MARK: - Private properties
+    
+    // MARK: Private properties
+    
     private let numberLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -25,7 +27,8 @@ final class StatisticsView: UIView {
         }
     }
     
-    // MARK: - Life Cycle
+    // MARK: Lifecycle
+    
     required init(number: Int = 0, name: String) {
         self.number = number
         self.name = name
@@ -46,8 +49,12 @@ final class StatisticsView: UIView {
         super.layoutSubviews()
         setupBorder()
     }
+}
+
+// MARK: - Public methods
+
+extension StatisticsView {
     
-    // MARK: - Public methods
     func setNumber(_ number: Int) {
         self.number = number
     }
@@ -55,8 +62,13 @@ final class StatisticsView: UIView {
     func setName(_ name: String) {
         self.name = name
     }
+}
+
+
+// MARK: - Private methods
+
+private extension StatisticsView {
     
-    // MARK: - Layout Configuration
     func addingUIElements() {
         translatesAutoresizingMaskIntoConstraints = false
         addSubview(numberLabel)
