@@ -1,6 +1,9 @@
 import Foundation
 
 extension Date {
+    
+    // MARK: Public methods
+    
     func getDate() -> Date? {
         let calendarComponents = Calendar.current.dateComponents([.year, .month, .day], from: self)
         guard let day = calendarComponents.day, let month = calendarComponents.month, let year = calendarComponents.year
@@ -22,7 +25,6 @@ extension Date {
         } else {
             dateFormatter.dateFormat = "MM/dd/yy"
         }
-        
         return dateFormatter.string(from: self)
     }
 }

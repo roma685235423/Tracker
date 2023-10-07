@@ -1,10 +1,13 @@
 import UIKit
 
 final class TrackersCollectionCell: UICollectionViewCell {
-    // MARK: - Public properties
+    
+    // MARK: Public properties
+    
     weak var delegate: TrackersCollectinCellDelegate?
     
-    // MARK: - Private properties
+    // MARK: Private properties
+    
     private let trackerBackgroundView = UIView()
     private let emojieLabel = UILabel()
     private let trackerTextLabel = UILabel()
@@ -21,9 +24,10 @@ final class TrackersCollectionCell: UICollectionViewCell {
             counterLabel.text = "\(getCorrectRussianWordDay(days: newValue))"
         }
     }
-    
     static let identifier = "TrackersCollectionCell"
+    
     // MARK: - Life cycle
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         tracker = nil
@@ -41,8 +45,11 @@ final class TrackersCollectionCell: UICollectionViewCell {
         setTaskIsDoneButton(equalTo: false)
         daysCounter = 0
     }
-    
-    // MARK: - Public methods
+}
+
+// MARK: Public methods
+
+extension TrackersCollectionCell {
     func configureCellContent(
         prototype: Tracker,
         daysCounter: Int,
@@ -84,9 +91,12 @@ final class TrackersCollectionCell: UICollectionViewCell {
     func pinImageVisibitity(isVisible: Bool) {
         pinImage.isHidden = !isVisible
     }
-    
-    // MARK: - Private methods
-    private func addingUIElements() {
+}
+
+// MARK: - Private methods
+
+private extension TrackersCollectionCell {
+    func addingUIElements() {
         [trackerBackgroundView, counterLabel, taskIsDoneButton, ].forEach{
             contentView.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
@@ -97,7 +107,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
         }
     }
     
-    private func layoutConfigure() {
+    func layoutConfigure() {
         NSLayoutConstraint.activate([
             trackerBackgroundView.topAnchor.constraint(equalTo: self.topAnchor),
             trackerBackgroundView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
@@ -129,7 +139,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
         ])
     }
     
-    private func getCorrectRussianWordDay(days: Int) -> String {
+    func getCorrectRussianWordDay(days: Int) -> String {
         let formatString : String = NSLocalizedString(
             "number of days",
             comment: "Days count string format to be found in Localized.stringsdict"
@@ -141,19 +151,19 @@ final class TrackersCollectionCell: UICollectionViewCell {
         return daysCounterString
     }
     
-    private func configureCounterLabel() {
+    func configureCounterLabel() {
         counterLabel.textAlignment = .left
         counterLabel.font = UIFont.systemFont(ofSize: 12)
         counterLabel.textColor = .ypBlack
         counterLabel.text = getCorrectRussianWordDay(days: daysCounter)
     }
     
-    private func configurePinImage() {
+    func configurePinImage() {
         pinImage.image = UIImage(systemName: "pin.fill")
         pinImage.tintColor = .ypWhiteDay
     }
     
-    private func configureBackground(color: UIColor) {
+    func configureBackground(color: UIColor) {
         self.contentView.layer.cornerRadius = 16
         trackerBackgroundView.layer.cornerRadius = 16
         trackerTextLabel.layer.borderWidth = 1
@@ -163,7 +173,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
         trackerBackgroundView.layer.borderColor = color.withAlphaComponent(0.3).cgColor
     }
     
-    private func configureEmojiLabel(with emoji: String) {
+    func configureEmojiLabel(with emoji: String) {
         emojieLabel.frame.size = CGSize(width: 24, height: 24)
         emojieLabel.layer.cornerRadius =  emojieLabel.layer.frame.height/2
         emojieLabel.layer.masksToBounds = true
@@ -174,7 +184,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
         emojieLabel.textAlignment = .center
     }
     
-    private func configureTextLabel(with text: String) {
+    func configureTextLabel(with text: String) {
         trackerTextLabel.configureLabel(
             text: text,
             addToView: trackerBackgroundView,
@@ -187,7 +197,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
         trackerTextLabel.textColor = .ypWhiteDay
     }
     
-    private func configureTaskIsDoneButton(color: UIColor) {
+    func configureTaskIsDoneButton(color: UIColor) {
         taskIsDoneButton.frame.size = CGSize(width: 34, height: 34)
         taskIsDoneButton.layer.cornerRadius =  taskIsDoneButton.layer.frame.height/2
         taskIsDoneButton.layer.masksToBounds = true
@@ -198,7 +208,8 @@ final class TrackersCollectionCell: UICollectionViewCell {
         taskIsDoneButton.addTarget(self, action: #selector(didTapTaskIsDoneButton), for: .touchUpInside)
     }
     
-    // MARK: - Actions
+    // MARK: Actions
+    
     @objc
     private func didTapTaskIsDoneButton() {
         guard let tracker else { return }
@@ -206,7 +217,6 @@ final class TrackersCollectionCell: UICollectionViewCell {
             "screen": "Main",
             "item": "track"
         ])
-        
         delegate?.didTapTaskIsDoneButton(cell: self, tracker: tracker)
     }
 }

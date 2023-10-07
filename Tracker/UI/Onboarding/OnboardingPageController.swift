@@ -7,7 +7,6 @@ final class OnboardingPageController: UIPageViewController {
     private let goToTrackerScreenButton = UIButton(
         label: NSLocalizedString("onboarding.button", comment: "")
     )
-    
     private lazy var pageControl: UIPageControl = {
         let pageControl = UIPageControl()
         pageControl.numberOfPages = pages.count

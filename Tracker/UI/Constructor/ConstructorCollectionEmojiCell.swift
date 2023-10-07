@@ -1,10 +1,13 @@
 import UIKit
 
 final class CollectionEmojiCell: UICollectionViewCell {
-    // MARK: - Private properties
+    
+    // MARK:  Private properties
+    
     private let emojiLabel = UILabel()
     
-    // MARK: - Life cycle
+    // MARK: Life cycle
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureContentView()
@@ -15,8 +18,11 @@ final class CollectionEmojiCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // MARK: - Public methods
+}
+
+// MARK: - Public methods
+
+extension CollectionEmojiCell {
     func cellIsSelected(state: Bool) {
         if state == true {
             contentView.backgroundColor = .ypLightGray
@@ -28,8 +34,11 @@ final class CollectionEmojiCell: UICollectionViewCell {
     func setEmojieLabel(emojie: String) {
         emojiLabel.text = emojie
     }
-    
-    // MARK: - Private methods
+}
+
+// MARK: - Private methods
+
+private extension CollectionEmojiCell {
     private func layoutConfigure() {
         NSLayoutConstraint.activate([
             emojiLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),

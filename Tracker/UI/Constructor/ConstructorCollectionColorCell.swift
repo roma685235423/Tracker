@@ -1,11 +1,14 @@
 import UIKit
 
 final class CollectionColorCell: UICollectionViewCell {
-    // MARK: - Private properties
+    
+    // MARK: Private properties
+    
     private let framelabel = UILabel()
     private let colorLabel = UILabel()
     
-    // MARK: - Life cycle
+    // MARK: Life cycle
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.addSubview(framelabel)
@@ -19,8 +22,11 @@ final class CollectionColorCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // MARK: - Public methods
+}
+
+// MARK: - Public methods
+
+extension CollectionColorCell {
     func setCellColor(color: UIColor) {
         self.colorLabel.backgroundColor = color
     }
@@ -33,9 +39,12 @@ final class CollectionColorCell: UICollectionViewCell {
             framelabel.layer.borderColor = UIColor.clear.cgColor
         }
     }
-    
-    // MARK: - Private methods
-    private func layoutConfigure() {
+}
+
+// MARK: - Private methods
+
+private extension CollectionColorCell {
+    func layoutConfigure() {
         NSLayoutConstraint.activate([
             framelabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             framelabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
@@ -49,13 +58,13 @@ final class CollectionColorCell: UICollectionViewCell {
         ])
     }
     
-    private func configureColorLabel() {
+    func configureColorLabel() {
         colorLabel.translatesAutoresizingMaskIntoConstraints = false
         colorLabel.layer.cornerRadius = 8
         colorLabel.layer.masksToBounds = true
     }
     
-    private func configureFrameLabel() {
+    func configureFrameLabel() {
         framelabel.translatesAutoresizingMaskIntoConstraints = false
         framelabel.layer.cornerRadius = 52/5
         framelabel.layer.borderWidth = 3

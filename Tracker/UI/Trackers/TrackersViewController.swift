@@ -478,7 +478,6 @@ private extension TrackersViewController {
             message: NSLocalizedString("trackers.deleteTrackerAlertTitle", comment: ""),
             preferredStyle: .actionSheet
         )
-        
         let deleteAction = UIAlertAction(
             title: NSLocalizedString("trackers.deleteTrackerAlertAction", comment: ""),
             style: .destructive
@@ -494,7 +493,6 @@ private extension TrackersViewController {
         )
         alert.addAction(cancelAction)
         alert.addAction(deleteAction)
-        
         present(alert, animated: true)
     }
     
@@ -512,7 +510,8 @@ private extension TrackersViewController {
         present(navigationController, animated: true)
     }
     
-    // MARK: - Actions
+    // MARK: Actions
+    
     @objc
     func didChangedDatePickerValue(_ sender: UIDatePicker) {
         currentDate = sender.date.getDate()!
@@ -530,7 +529,6 @@ private extension TrackersViewController {
             "screen": "Main",
             "item": "add_track"
         ])
-        
         let createTrackerViewController = NewTrackerViewController()
         let navigationController = UINavigationController(rootViewController: createTrackerViewController)
         present(navigationController, animated: true)
@@ -542,7 +540,6 @@ private extension TrackersViewController {
             "screen": "Main",
             "item": "filter"
         ])
-        
         let TrackerFiltersViewController = TrackerFilteringViewController()
         let navigationController = UINavigationController(rootViewController: TrackerFiltersViewController)
         present(navigationController, animated: true)

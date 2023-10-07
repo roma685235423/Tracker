@@ -1,10 +1,13 @@
 import UIKit
 
 final class CategorySelectionViewController: UIViewController {
-    // MARK: - Public properties
+    
+    // MARK: Public properties
+    
     var trackerCategorySelectorVCCallback: ((TrackerCategory) -> Void)?
     
-    // MARK: - Private properties
+    // MARK: Private properties
+    
     private let trackerCategoryTable = UITableView()
     private let mainSpacePlaceholderStack = UIStackView(
         imageName: "starPlaceholder",
@@ -16,10 +19,10 @@ final class CategorySelectionViewController: UIViewController {
             comment: ""
         )
     )
-    
     private let viewModel: CategorySelectionViewModel
     
-    // MARK: - Life Cycle
+    // MARK: Life Cycle
+    
     init(selectedCategory: TrackerCategory?) {
         self.viewModel = CategorySelectionViewModel(for: selectedCategory)
         super.init(nibName: nil, bundle: nil)
